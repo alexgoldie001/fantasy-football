@@ -1,0 +1,4 @@
+import { AppShell } from '@/components/app-shell';
+import { players } from '@/lib/demo-data';
+import { Coins, UsersRound } from 'lucide-react';
+export default function TeamPage(){ const squad=players.slice(0,11); return <AppShell><section className="page-heading compact"><p className="eyebrow">Alex Grant’s team</p><h1>North Bank</h1></section><section className="team-stats"><div><UsersRound/><span><small>Formation</small><strong>4–3–3</strong></span></div><div><Coins/><span><small>Available funds</small><strong>£8.5m</strong></span></div><div><span><small>Gameweek 12</small><strong>57 pts</strong></span></div></section><section className="pitch panel"><div className="pitch-top"><span>STARTING XI</span><strong>Gameweek 12</strong></div><div className="pitch-grass">{squad.map((p,i)=><div className={'pitch-player p'+i} key={p.id}><b>{p.name}</b><small>{p.points} pts</small></div>)}</div></section></AppShell> }
