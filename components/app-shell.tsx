@@ -15,7 +15,7 @@ const links = [
 export function AppShell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   return <div className="app-shell">
-    <header className="topbar"><Link href="/" className="brand"><span className="brand-mark">D</span><span>The Draft League<small>2025 / 26</small></span></Link>
+    <header className="topbar"><Link href="/" className="brand"><span className="brand-mark">B</span><span>Bails and Goldies<small>Fantasy Football · 2025 / 26</small></span></Link>
       <nav>{links.map(({ href, label, icon: Icon }) => <Link key={href} href={href} className={path === href ? 'active' : ''}><Icon size={17}/>{label}</Link>)}</nav>
       <button className="profile">AG <ChevronDown size={15}/></button>
     </header>
