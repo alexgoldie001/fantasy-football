@@ -10,7 +10,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ slug: stri
     const db = supabaseAdmin();
     const { data: squads, error: squadsError } = await db.from('squads').select('id,name,budget,manager_id');
     if (squadsError) throw squadsError;
-    const squad = (squads || []).find(row => slugify(row.name) === slug);
+    const squad = (squads || []).find(row => row.id === slug) || (squads || []).find(row => slugify(row.name) === slug);
     if (!squad) return NextResponse.json({ error: 'Team not found.' }, { status: 404 });
     const [{ data: profile, error: profileError }, { data: memberships, error: membershipError }] = await Promise.all([
       db.from('profiles').select('display_name').eq('id', squad.manager_id).single(),
