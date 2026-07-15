@@ -1,16 +1,16 @@
 'use client';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { BarChart3, LogOut, Shield, Trophy, Users, UserRoundCog } from 'lucide-react';
+import { BarChart3, ChevronDown, KeyRound, LogOut, Shield, Trophy, Users, UserRoundCog } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { supabaseBrowser } from '@/lib/supabase-browser';
 
 type Account = { email?:string; name:string; isAdmin:boolean; squad:{id:string;name:string}|null };
 export function AppShell({ children }: { children: React.ReactNode }) {
- const path=usePathname(), router=useRouter(); const [account,setAccount]=useState<Account|null>(null),[ready,setReady]=useState(false);
+ const path=usePathname(), router=useRouter(); const [account,setAccount]=useState<Account|null>(null),[ready,setReady]=useState(false),[menuOpen,setMenuOpen]=useState(false);
  useEffect(()=>{let active=true;async function load(){const {data:{session}}=await supabaseBrowser().auth.getSession();if(!session){router.replace('/');return;}const response=await fetch('/api/me',{headers:{Authorization:`Bearer ${session.access_token}`},cache:'no-store'});if(!response.ok){await supabaseBrowser().auth.signOut();router.replace('/');return;}const data=await response.json();if(active){setAccount(data.user);setReady(true);if(path==='/admin/managers'&&!data.user.isAdmin)router.replace('/league');}}load();return()=>{active=false};},[path,router]);
  async function logout(){await supabaseBrowser().auth.signOut();router.replace('/');router.refresh();}
  if(!ready||!account)return <div className="app-loading">Loading your league…</div>;
  const links=[{href:'/league',label:'League',icon:Trophy},{href:account.squad?`/team/${account.squad.id}`:'/team',label:'My team',icon:Shield},{href:'/players',label:'Players',icon:Users},{href:'/transfers',label:'Transfers',icon:BarChart3},...(account.isAdmin?[{href:'/admin/managers',label:'Manage',icon:UserRoundCog}]:[])]; const initials=account.name.split(/\s+/).map(part=>part[0]).slice(0,2).join('').toUpperCase();
- return <div className="app-shell"><header className="topbar"><Link href="/league" className="brand"><span className="brand-mark">B</span><span>Bails &amp; Goldies<small>Fantasy Football · 2025 / 26</small></span></Link><nav>{links.map(({href,label,icon:Icon})=><Link key={href} href={href} className={path===href?'active':''}><Icon size={17}/>{label}</Link>)}</nav><button className="profile" title={`Signed in as ${account.name}`} onClick={logout}>{initials}<LogOut size={13}/></button></header><main>{children}</main></div>;
+ return <div className="app-shell"><header className="topbar"><Link href="/league" className="brand"><span className="brand-mark">B</span><span>Bails &amp; Goldies<small>Fantasy Football · 2025 / 26</small></span></Link><nav>{links.map(({href,label,icon:Icon})=><Link key={href} href={href} className={path===href?'active':''}><Icon size={17}/>{label}</Link>)}</nav><div className="account-menu"><button className="profile" title={`Signed in as ${account.name}`} onClick={()=>setMenuOpen(open=>!open)}>{initials}<ChevronDown size={13}/></button>{menuOpen&&<div className="account-dropdown"><span>{account.name}</span><small>{account.email}</small><Link href="/account/password" onClick={()=>setMenuOpen(false)}><KeyRound size={15}/> Change password</Link><button onClick={logout}><LogOut size={15}/> Log out</button></div>}</div></header><main>{children}</main></div>;
 }
