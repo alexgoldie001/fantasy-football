@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { syncFixtureScores } from '@/lib/fixture-sync';
 
 const positions = ['', 'GK', 'DEF', 'MID', 'FWD'];
 // Protect this endpoint with CRON_SECRET before adding it to Vercel Cron.
@@ -24,6 +25,7 @@ export async function POST(request: NextRequest) {
         method: 'POST', headers: { 'Content-Type': 'application/json', ...(process.env.CRON_SECRET ? { Authorization: `Bearer ${process.env.CRON_SECRET}` } : {}) }, body: JSON.stringify({ leagueId: league.id, gameweek: currentGameweek }), cache: 'no-store',
       })));
     }
-    return NextResponse.json({ synced: records.length, at: new Date().toISOString() });
+    const fixtureStatsSynced = await syncFixtureScores();
+    return NextResponse.json({ synced: records.length, fixtureStatsSynced, at: new Date().toISOString() });
   } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : 'Sync failed' }, { status: 500 }); }
 }
