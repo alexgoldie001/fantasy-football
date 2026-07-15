@@ -2,16 +2,24 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { calculatePoints } from '@/lib/scoring';
 
-const authorised = (request: NextRequest) => Boolean(process.env.ADMIN_SETUP_CODE) && request.headers.get('x-commissioner-code') === process.env.ADMIN_SETUP_CODE;
+async function authorised(request: NextRequest) {
+  const token = request.headers.get('authorization')?.replace(/^Bearer\s+/i, '');
+  if (!token) return false;
+  const db = supabaseAdmin();
+  const { data: auth } = await db.auth.getUser(token);
+  if (!auth.user) return false;
+  const { data: profile } = await db.from('profiles').select('is_admin').eq('id', auth.user.id).maybeSingle();
+  return Boolean(profile?.is_admin);
+}
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ managerId:string }> }) {
-  if (!authorised(request)) return NextResponse.json({ error:'Incorrect commissioner code.' },{status:401});
+  if (!(await authorised(request))) return NextResponse.json({ error:'Commissioner access required.' },{status:401});
   const { managerId } = await params;
   try { const db=supabaseAdmin(); const { data:squad,error }=await db.from('squads').select('id,name,budget,profiles(display_name),squad_players(id,fpl_id,purchase_price,fpl_players(web_name,first_name,second_name,team_name,position))').eq('manager_id',managerId).single(); if(error)throw error; return NextResponse.json({squad}); } catch(error){return NextResponse.json({error:error instanceof Error?error.message:'Unable to load squad.'},{status:500});}
 }
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ managerId:string }> }) {
-  if (!authorised(request)) return NextResponse.json({ error:'Incorrect commissioner code.' },{status:401});
+  if (!(await authorised(request))) return NextResponse.json({ error:'Commissioner access required.' },{status:401});
   const { managerId }=await params; const { changes }=await request.json() as { changes:{ squadPlayerId:string; price:number; replacementFplId?:number }[] };
   if(!Array.isArray(changes)) return NextResponse.json({error:'Invalid squad changes.'},{status:400});
   try { const db=supabaseAdmin(); const {data:squad,error:squadError}=await db.from('squads').select('id,league_id,budget').eq('manager_id',managerId).single(); if(squadError||!squad)throw squadError||new Error('Squad not found.'); const {data:rules}=await db.from('scoring_rules').select('*').eq('league_id',squad.league_id).eq('is_active',true).maybeSingle();
