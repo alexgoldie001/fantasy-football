@@ -12,4 +12,5 @@ create table if not exists public.squad_player_gameweeks (
 );
 
 alter table public.squad_player_gameweeks enable row level security;
+drop policy if exists "league members view squad gameweek history" on public.squad_player_gameweeks;
 create policy "league members view squad gameweek history" on public.squad_player_gameweeks for select using (auth.uid() is not null);
