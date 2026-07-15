@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
     const { count } = await db.from('profiles').select('*', { count: 'exact', head: true }).eq('league_id', league.id);
     if ((count || 0) >= league.max_managers) return NextResponse.json({ error: `This league is limited to ${league.max_managers} managers.` }, { status: 400 });
-    const temporaryPassword = `Draft${Math.random().toString(36).slice(-7)}!`;
+    const temporaryPassword = 'password';
     const auth = await db.auth.admin.createUser({ email, password: temporaryPassword, email_confirm: true });
     if (auth.error) throw auth.error;
     const profile = await db.from('profiles').insert({ id: auth.data.user.id, league_id: league.id, display_name: name, is_admin: isAdmin }).select().single();
