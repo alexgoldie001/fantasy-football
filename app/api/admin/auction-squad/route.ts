@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
   const { commissionerCode, managerId, entries } = await request.json() as { commissionerCode?: string; managerId?: string; entries?: { player: string; price: number }[] };
   if (!authorised(commissionerCode)) return NextResponse.json({ error: 'Incorrect commissioner code.' }, { status: 401 });
   if (!managerId || !Array.isArray(entries) || entries.length !== 11) return NextResponse.json({ error: 'Enter exactly 11 players and their purchase prices.' }, { status: 400 });
-  if (entries.some(entry => !entry.player?.trim() || !Number.isInteger(entry.price) || entry.price < 1)) return NextResponse.json({ error: 'Each player needs a name and a valid £m price.' }, { status: 400 });
+  if (entries.some(entry => !entry.player?.trim() || !Number.isInteger(entry.price) || entry.price < 0 || entry.price % 10 !== 0)) return NextResponse.json({ error: 'Each player needs a name and a price in whole £1m increments (including £0m).' }, { status: 400 });
   const spend = entries.reduce((total, entry) => total + entry.price, 0);
   if (spend > 1000) return NextResponse.json({ error: `This squad costs £${(spend / 10).toFixed(1)}m, which exceeds the £100m budget.` }, { status: 400 });
   try {

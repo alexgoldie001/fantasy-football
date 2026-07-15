@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     contenders.sort((a, b) => b.maximum_bid - a.maximum_bid || (a.gameweek_scores?.[0]?.total_points || 0) - (b.gameweek_scores?.[0]?.total_points || 0));
     const winner = contenders[0];
     const { data: squad } = await db.from('squads').select('id,budget').eq('manager_id', winner.manager_id).single();
-    if (!squad || squad.budget < winner.maximum_bid) { await db.from('transfer_bids').update({ status: 'invalid' }).eq('id', winner.id); continue; }
+    if (!squad || squad.budget < winner.maximum_bid || winner.maximum_bid % 5 !== 0) { await db.from('transfer_bids').update({ status: 'invalid' }).eq('id', winner.id); continue; }
     const { data: old } = await db.from('squad_players').select('purchase_price').eq('squad_id', squad.id).eq('fpl_id', winner.sell_fpl_id).is('released_at', null).single();
     if (!old) { await db.from('transfer_bids').update({ status: 'invalid' }).eq('id', winner.id); continue; }
     const credit = Math.floor(old.purchase_price * .5);
