@@ -17,6 +17,13 @@ export async function POST(request: NextRequest) {
     }));
     const { error } = await supabaseAdmin().from('fpl_players').upsert(records, { onConflict: 'fpl_id' });
     if (error) throw error;
+    const currentGameweek = fpl.events?.find((event: { is_current?: boolean }) => event.is_current)?.id;
+    if (currentGameweek) {
+      const { data: leagues } = await supabaseAdmin().from('leagues').select('id');
+      await Promise.all((leagues || []).map(league => fetch(new URL('/api/admin/score-gameweek', request.url), {
+        method: 'POST', headers: { 'Content-Type': 'application/json', ...(process.env.CRON_SECRET ? { Authorization: `Bearer ${process.env.CRON_SECRET}` } : {}) }, body: JSON.stringify({ leagueId: league.id, gameweek: currentGameweek }), cache: 'no-store',
+      })));
+    }
     return NextResponse.json({ synced: records.length, at: new Date().toISOString() });
   } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : 'Sync failed' }, { status: 500 }); }
 }

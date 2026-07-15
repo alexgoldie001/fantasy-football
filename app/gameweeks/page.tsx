@@ -1,0 +1,5 @@
+'use client';
+import { AppShell } from '@/components/app-shell';
+import { useEffect, useState } from 'react';
+type Row={manager:string;team:string;scores:Record<number,number>};
+export default function GameweeksPage(){const [rows,setRows]=useState<Row[]>([]);useEffect(()=>{fetch('/api/gameweeks',{cache:'no-store'}).then(r=>r.json()).then(data=>setRows(data.rows||[]));},[]);return <AppShell><section className="page-heading"><p className="eyebrow">Season record</p><h1>Gameweek table.</h1><p className="sub">All managers, alphabetically, with their official 38-gameweek score history.</p></section><section className="panel gameweek-table"><div className="gameweek-scroll"><div className="gameweek-head"><span>Manager</span><span>Team</span>{Array.from({length:38},(_,i)=><span key={i}>GW{i+1}</span>)}</div>{rows.map(row=><div className="gameweek-row" key={row.manager}><strong>{row.manager}</strong><span>{row.team}</span>{Array.from({length:38},(_,i)=><b key={i}>{row.scores[i+1]??'—'}</b>)}</div>)}</div></section></AppShell>}

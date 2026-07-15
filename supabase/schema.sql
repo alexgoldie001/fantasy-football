@@ -74,7 +74,18 @@ create table public.squad_players (
   purchase_price integer not null,
   acquired_at timestamptz not null default now(),
   released_at timestamptz,
+  score_offset_gameweek integer,
+  score_offset_points integer not null default 0,
   unique (squad_id, fpl_id, acquired_at)
+);
+
+create table public.squad_player_gameweeks (
+  squad_id uuid not null references public.squads on delete cascade,
+  fpl_id integer not null references public.fpl_players on delete restrict,
+  gameweek integer not null check (gameweek between 1 and 38),
+  points integer not null default 0,
+  recorded_at timestamptz not null default now(),
+  primary key (squad_id, fpl_id, gameweek)
 );
 
 create unique index active_player_owner on public.squad_players(fpl_id) where released_at is null;
@@ -119,9 +130,11 @@ alter table public.gameweek_scores enable row level security;
 alter table public.fpl_players enable row level security;
 alter table public.transfer_windows enable row level security;
 alter table public.transfer_bids enable row level security;
+alter table public.squad_player_gameweeks enable row level security;
 create policy "league members view profiles" on public.profiles for select using (auth.uid() is not null);
 create policy "league members view squads" on public.squads for select using (auth.uid() is not null);
 create policy "league members view squad players" on public.squad_players for select using (auth.uid() is not null);
+create policy "league members view squad gameweek history" on public.squad_player_gameweeks for select using (auth.uid() is not null);
 create policy "league members view scores" on public.gameweek_scores for select using (auth.uid() is not null);
 create policy "league members view players" on public.fpl_players for select using (auth.uid() is not null);
 create policy "league members view windows" on public.transfer_windows for select using (auth.uid() is not null);
