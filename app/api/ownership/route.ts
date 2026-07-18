@@ -14,7 +14,7 @@ export async function GET() {
     const [{ data: squads, error: squadsError }, { data: profiles, error: profilesError }, { data: memberships, error: membershipsError }, { data: players, error: playersError }] = await Promise.all([
       db.from('squads').select('id,name,manager_id'),
       db.from('profiles').select('id,display_name'),
-      db.from('squad_players').select('squad_id,fpl_id,acquired_at,released_at'),
+      db.from('squad_players').select('id,squad_id,fpl_id,acquired_at,released_at'),
       db.from('fpl_players').select('fpl_id,web_name'),
     ]);
     if (squadsError) throw squadsError;
@@ -29,7 +29,7 @@ export async function GET() {
       id: squad.id,
       manager: managerNames.get(squad.manager_id) || 'Manager',
       team: squad.name,
-      weeks: weeks.map(week => ({ key: week.key, players: (membershipsBySquad.get(squad.id) || []).filter(member => member.acquired_at < week.end && (!member.released_at || member.released_at > week.start)).map(member => ({ name:playersById.get(member.fpl_id) || 'Unknown player', changed:(member.acquired_at >= week.start && member.acquired_at < week.end) || Boolean(member.released_at && member.released_at >= week.start && member.released_at < week.end) })).sort((a, b) => a.name.localeCompare(b.name)) })),
+      weeks: weeks.map(week => { const allMemberships = membershipsBySquad.get(squad.id) || []; const owned = allMemberships.filter(member => member.acquired_at < week.end && (!member.released_at || member.released_at > week.start)); const assigned = new Set<string>(); const players:{name:string;changed:boolean}[] = []; for (const incoming of owned.filter(member => allMemberships.some(previous => previous.id !== member.id && previous.released_at === member.acquired_at))) { const outgoing = owned.find(member => member.id !== incoming.id && member.released_at === incoming.acquired_at && !assigned.has(member.id)); if (outgoing) { players.push({ name:`${playersById.get(outgoing.fpl_id) || 'Unknown player'} / ${playersById.get(incoming.fpl_id) || 'Unknown player'}`, changed:true }); assigned.add(outgoing.id); assigned.add(incoming.id); } } for (const member of owned) if (!assigned.has(member.id)) players.push({ name:playersById.get(member.fpl_id) || 'Unknown player', changed:(member.acquired_at >= week.start && member.acquired_at < week.end) || Boolean(member.released_at && member.released_at >= week.start && member.released_at < week.end) }); return { key:week.key, players:players.sort((a, b) => a.name.localeCompare(b.name)) }; }),
     })).sort((a, b) => a.manager.localeCompare(b.manager) || a.team.localeCompare(b.team));
     return NextResponse.json({ weeks: weeks.map(({ key, label }) => ({ key, label })), managers }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
