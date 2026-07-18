@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 
 export const dynamic = 'force-dynamic';
 const positionOrder: Record<string, number> = { GK: 1, DEF: 2, MID: 3, FWD: 4 };
+const positionPrefix: Record<string, string> = { GK: 'G', DEF: 'D', MID: 'M', FWD: 'F' };
 const weeks = Array.from({ length: 42 }, (_, index) => {
   const start = new Date(Date.parse('2025-08-12T05:00:00.000Z') + index * 7 * 24 * 60 * 60 * 1000);
   const end = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
@@ -40,13 +41,13 @@ export async function GET() {
           const outgoing = owned.find(member => member.id !== incoming.id && member.released_at === incoming.acquired_at && !assigned.has(member.id));
           if (outgoing) {
             const oldPlayer = playerDetails(outgoing.fpl_id), newPlayer = playerDetails(incoming.fpl_id);
-            playerRows.push({ name:`${oldPlayer.position} ${oldPlayer.name} / ${newPlayer.position} ${newPlayer.name}`, changed:true, position:oldPlayer.position });
+            playerRows.push({ name:`${positionPrefix[oldPlayer.position] || '—'} ${oldPlayer.name} / ${positionPrefix[newPlayer.position] || '—'} ${newPlayer.name}`, changed:true, position:oldPlayer.position });
             assigned.add(outgoing.id); assigned.add(incoming.id);
           }
         }
         for (const member of owned) if (!assigned.has(member.id)) {
           const player = playerDetails(member.fpl_id);
-          playerRows.push({ name:`${player.position} ${player.name}`, position:player.position, changed:(member.acquired_at >= week.start && member.acquired_at < week.end) || Boolean(member.released_at && member.released_at >= week.start && member.released_at < week.end) });
+          playerRows.push({ name:`${positionPrefix[player.position] || '—'} ${player.name}`, position:player.position, changed:(member.acquired_at >= week.start && member.acquired_at < week.end) || Boolean(member.released_at && member.released_at >= week.start && member.released_at < week.end) });
         }
         return { key:week.key, players:playerRows.sort((a, b) => (positionOrder[a.position] || 9) - (positionOrder[b.position] || 9) || a.name.localeCompare(b.name)) };
       }),
