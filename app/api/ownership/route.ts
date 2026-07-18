@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { currentSeasonBudgetDate, remainingBudget } from '@/lib/budget';
+import { currentSeasonBudgetDate, remainingBudget, saleReturn } from '@/lib/budget';
 
 export const dynamic = 'force-dynamic';
 const positionOrder: Record<string, number> = { GK: 1, DEF: 2, MID: 3, FWD: 4 };
@@ -43,7 +43,8 @@ export async function GET() {
           const outgoing = owned.find(member => member.id !== incoming.id && member.released_at === incoming.acquired_at && !assigned.has(member.id));
           if (outgoing) {
             const oldPlayer = playerDetails(outgoing.fpl_id), newPlayer = playerDetails(incoming.fpl_id);
-            playerRows.push({ name:`${positionPrefix[oldPlayer.position] || '—'} ${oldPlayer.name} / ${positionPrefix[newPlayer.position] || '—'} ${newPlayer.name}${incoming.purchase_price > 0 ? ` £${(incoming.purchase_price / 10).toFixed(1)}m` : ''}`, changed:true, position:oldPlayer.position });
+            const returned = saleReturn(outgoing.purchase_price);
+            playerRows.push({ name:`${positionPrefix[oldPlayer.position] || '—'} ${oldPlayer.name}${returned > 0 ? ` £${(returned / 10).toFixed(1)}m` : ''} / ${positionPrefix[newPlayer.position] || '—'} ${newPlayer.name}${incoming.purchase_price > 0 ? ` £${(incoming.purchase_price / 10).toFixed(1)}m` : ''}`, changed:true, position:oldPlayer.position });
             assigned.add(outgoing.id); assigned.add(incoming.id);
           }
         }

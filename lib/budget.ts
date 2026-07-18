@@ -1,6 +1,6 @@
 export type BudgetMembership = { id:string; purchase_price:number; acquired_at:string; released_at:string | null };
 
-const saleReturn = (price:number) => Math.floor((price / 2) / 5) * 5;
+export const saleReturn = (price:number) => Math.floor((price / 2) / 5) * 5;
 
 export function remainingBudget(memberships:BudgetMembership[], at?:string) {
   const cutoff = at ? new Date(at).getTime() : Number.POSITIVE_INFINITY;
