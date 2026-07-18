@@ -3,7 +3,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import { Upload } from 'lucide-react';
 type Manager = { id: string; display_name: string; squads: { name: string; budget: number }[] };
 type PlayerOption = { id: number; label: string };
-const blank = Array.from({ length: 11 }, () => ({ player: '', price: '' }));
+const blank = Array.from({ length: 11 }, () => ({ player: '', price: '0' }));
 export function AuctionSetup() {
  const [managers,setManagers]=useState<Manager[]>([]), [playerOptions,setPlayerOptions]=useState<PlayerOption[]>([]), [managerId,setManagerId]=useState(''), [code,setCode]=useState(''), [entries,setEntries]=useState(blank), [message,setMessage]=useState(''), [saving,setSaving]=useState(false);
  async function loadPlayers(){const data=await fetch('/api/players').then(r=>r.json());setPlayerOptions((data.players||[]).map((player:any)=>({id:player.id,label:`${player.fullName} · ${player.team} (${player.position})`})));}
