@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { currentSeasonBudgetDate, remainingBudget } from '@/lib/budget';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -78,7 +79,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         price: orderedGroup.map(row => row.purchase_price).join(' / '),
       };
     }).sort((a, b) => positionOrder[a.position] - positionOrder[b.position] || a.name.localeCompare(b.name));
-    return NextResponse.json({ name: squad.name, manager: profile.display_name, budget: squad.budget, players, weeks: weeks.map(({ key, label }) => ({ key, label })), selectedWeek: selectedWeek?.key || '', pointsLabel: selectedWeek ? selectedWeek.label : 'Season points' }, { headers: { 'Cache-Control': 'no-store' } });
+    const budget = remainingBudget(memberships || [], currentSeasonBudgetDate());
+    return NextResponse.json({ name: squad.name, manager: profile.display_name, budget, players, weeks: weeks.map(({ key, label }) => ({ key, label })), selectedWeek: selectedWeek?.key || '', pointsLabel: selectedWeek ? selectedWeek.label : 'Season points' }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : 'Unable to load team.' }, { status: 500 });
   }

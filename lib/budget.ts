@@ -13,3 +13,9 @@ export function remainingBudget(memberships:BudgetMembership[], at?:string) {
   }
   return balance;
 }
+
+export function currentSeasonBudgetDate(now = new Date()) {
+  const seasonEnd = new Date(Date.parse('2025-08-12T05:00:00.000Z') + 42 * 7 * 24 * 60 * 60 * 1000).toISOString();
+  const current = now.toISOString();
+  return current < seasonEnd ? current : seasonEnd;
+}

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { remainingBudget } from '@/lib/budget';
+import { currentSeasonBudgetDate, remainingBudget } from '@/lib/budget';
 
 export const dynamic = 'force-dynamic';
 const positionOrder: Record<string, number> = { GK: 1, DEF: 2, MID: 3, FWD: 4 };
@@ -29,8 +29,7 @@ export async function GET() {
     const membershipsBySquad = new Map<string, any[]>();
     for (const membership of memberships || []) membershipsBySquad.set(membership.squad_id, [...(membershipsBySquad.get(membership.squad_id) || []), membership]);
     const playerDetails = (fplId:number) => playersById.get(fplId) || { name:'Unknown player', position:'—' };
-    const today = new Date().toISOString();
-    const balanceDate = today < weeks[weeks.length - 1].end ? today : weeks[weeks.length - 1].end;
+    const balanceDate = currentSeasonBudgetDate();
     const managers = (squads || []).map(squad => ({
       id: squad.id,
       manager: managerNames.get(squad.manager_id) || 'Manager',

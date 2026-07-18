@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { currentSeasonBudgetDate, remainingBudget } from '@/lib/budget';
 
 function authorised(code: string | null) {
   return Boolean(process.env.ADMIN_SETUP_CODE) && code === process.env.ADMIN_SETUP_CODE;
@@ -10,9 +11,17 @@ export async function GET() {
     const db = supabaseAdmin();
     const { data: league } = await db.from('leagues').select('id,name,max_managers').order('created_at').limit(1).maybeSingle();
     if (!league) return NextResponse.json({ league: null, managers: [] });
-    const { data: managers, error } = await db.from('profiles').select('id,display_name,is_admin,squads(name,budget)').eq('league_id', league.id).order('display_name');
+    const [{ data: managers, error }, { data: memberships, error:membershipsError }] = await Promise.all([
+      db.from('profiles').select('id,display_name,is_admin,squads(id,name,budget)').eq('league_id', league.id).order('display_name'),
+      db.from('squad_players').select('id,squad_id,purchase_price,acquired_at,released_at'),
+    ]);
     if (error) throw error;
-    return NextResponse.json({ league, managers });
+    if (membershipsError) throw membershipsError;
+    const bySquad = new Map<string, any[]>();
+    for (const membership of memberships || []) bySquad.set(membership.squad_id, [...(bySquad.get(membership.squad_id) || []), membership]);
+    const currentDate = currentSeasonBudgetDate();
+    const managersWithBudget = (managers || []).map((manager:any) => ({ ...manager, squads:(manager.squads || []).map((squad:any) => ({ ...squad, budget:remainingBudget(bySquad.get(squad.id) || [], currentDate) })) }));
+    return NextResponse.json({ league, managers:managersWithBudget });
   } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : 'Unable to load managers.' }, { status: 500 }); }
 }
 
