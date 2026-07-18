@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { remainingBudget } from '@/lib/budget';
 
 export const dynamic = 'force-dynamic';
 const positionOrder: Record<string, number> = { GK: 1, DEF: 2, MID: 3, FWD: 4 };
@@ -16,7 +17,7 @@ export async function GET() {
     const [{ data: squads, error: squadsError }, { data: profiles, error: profilesError }, { data: memberships, error: membershipsError }, { data: players, error: playersError }] = await Promise.all([
       db.from('squads').select('id,name,manager_id'),
       db.from('profiles').select('id,display_name'),
-      db.from('squad_players').select('id,squad_id,fpl_id,acquired_at,released_at'),
+      db.from('squad_players').select('id,squad_id,fpl_id,purchase_price,acquired_at,released_at'),
       db.from('fpl_players').select('fpl_id,web_name,position'),
     ]);
     if (squadsError) throw squadsError;
@@ -41,18 +42,21 @@ export async function GET() {
           const outgoing = owned.find(member => member.id !== incoming.id && member.released_at === incoming.acquired_at && !assigned.has(member.id));
           if (outgoing) {
             const oldPlayer = playerDetails(outgoing.fpl_id), newPlayer = playerDetails(incoming.fpl_id);
-            playerRows.push({ name:`${positionPrefix[oldPlayer.position] || '—'} ${oldPlayer.name} / ${positionPrefix[newPlayer.position] || '—'} ${newPlayer.name}`, changed:true, position:oldPlayer.position });
+            playerRows.push({ name:`${positionPrefix[oldPlayer.position] || '—'} ${oldPlayer.name} / ${positionPrefix[newPlayer.position] || '—'} ${newPlayer.name}${incoming.purchase_price > 0 ? ` £${(incoming.purchase_price / 10).toFixed(1)}m` : ''}`, changed:true, position:oldPlayer.position });
             assigned.add(outgoing.id); assigned.add(incoming.id);
           }
         }
         for (const member of owned) if (!assigned.has(member.id)) {
           const player = playerDetails(member.fpl_id);
-          playerRows.push({ name:`${positionPrefix[player.position] || '—'} ${player.name}`, position:player.position, changed:(member.acquired_at >= week.start && member.acquired_at < week.end) || Boolean(member.released_at && member.released_at >= week.start && member.released_at < week.end) });
+          const joined = member.acquired_at >= week.start && member.acquired_at < week.end;
+          playerRows.push({ name:`${positionPrefix[player.position] || '—'} ${player.name}${joined && member.purchase_price > 0 ? ` £${(member.purchase_price / 10).toFixed(1)}m` : ''}`, position:player.position, changed:joined || Boolean(member.released_at && member.released_at >= week.start && member.released_at < week.end) });
         }
-        return { key:week.key, players:playerRows.sort((a, b) => (positionOrder[a.position] || 9) - (positionOrder[b.position] || 9) || a.name.localeCompare(b.name)) };
+        return { key:week.key, players:playerRows.sort((a, b) => (positionOrder[a.position] || 9) - (positionOrder[b.position] || 9) || a.name.localeCompare(b.name)), budget:remainingBudget(allMemberships, week.end) };
       }),
+      budget: remainingBudget(membershipsBySquad.get(squad.id) || []),
     })).sort((a, b) => a.manager.localeCompare(b.manager) || a.team.localeCompare(b.team));
-    return NextResponse.json({ weeks: weeks.map(({ key, label }) => ({ key, label })), managers }, { headers: { 'Cache-Control': 'no-store' } });
+    const budgets = managers.map(manager => ({ id:manager.id, manager:manager.manager, team:manager.team, budget:manager.budget })).sort((a, b) => b.budget - a.budget || a.manager.localeCompare(b.manager));
+    return NextResponse.json({ weeks: weeks.map(({ key, label }) => ({ key, label })), managers, budgets }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : 'Unable to load player ownership.' }, { status: 500 });
   }

@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import OwnershipPage from '@/app/ownership/page';
 
 export default function TransfersPage() {
-  redirect('/ownership');
+  return <OwnershipPage />;
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { calculatePoints } from '@/lib/scoring';
+import { remainingBudget } from '@/lib/budget';
 
 function errorMessage(error:unknown) { if (error instanceof Error) return error.message; if (error && typeof error === 'object' && 'message' in error) return String((error as { message:unknown }).message); return 'Unable to save squad amendments.'; }
 async function authorised(request:NextRequest) { const token = request.headers.get('authorization')?.replace(/^Bearer\s+/i, ''); if (!token) return false; const db = supabaseAdmin(); const { data:auth } = await db.auth.getUser(token); if (!auth.user) return false; const { data:profile } = await db.from('profiles').select('is_admin').eq('id', auth.user.id).maybeSingle(); return Boolean(profile?.is_admin); }
@@ -65,11 +66,11 @@ export async function PATCH(request:NextRequest, { params }:{ params:Promise<{ m
       const { error:releaseError } = await db.from('squad_players').update({ released_at:transferAt }).eq('id', current.id);
       if (releaseError) throw releaseError;
     }
-    const { data:active, error:activeError } = await db.from('squad_players').select('purchase_price').eq('squad_id', squad.id).is('released_at', null);
-    if (activeError) throw activeError;
-    const spent = (active || []).reduce((sum, row) => sum + row.purchase_price, 0);
-    const { error:budgetError } = await db.from('squads').update({ budget:1000 - spent }).eq('id', squad.id);
+    const { data:memberships, error:membershipsError } = await db.from('squad_players').select('id,purchase_price,acquired_at,released_at').eq('squad_id', squad.id);
+    if (membershipsError) throw membershipsError;
+    const budget = remainingBudget(memberships || []);
+    const { error:budgetError } = await db.from('squads').update({ budget }).eq('id', squad.id);
     if (budgetError) throw budgetError;
-    return NextResponse.json({ saved:true, budget:1000 - spent });
+    return NextResponse.json({ saved:true, budget });
   } catch (error) { return NextResponse.json({ error:`Unable to save squad amendments: ${errorMessage(error)}` }, { status:500 }); }
 }
