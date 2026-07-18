@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'The Draft League',
+  title: 'B&G Fantasy Football 2025-26',
   description: 'Your private Premier League fantasy draft.',
 };
 
