@@ -15,14 +15,14 @@ export async function GET() {
       db.from('squads').select('id,name,manager_id'),
       db.from('profiles').select('id,display_name'),
       db.from('squad_players').select('squad_id,fpl_id,acquired_at,released_at'),
-      db.from('fpl_players').select('fpl_id,web_name,first_name,second_name'),
+      db.from('fpl_players').select('fpl_id,web_name'),
     ]);
     if (squadsError) throw squadsError;
     if (profilesError) throw profilesError;
     if (membershipsError) throw membershipsError;
     if (playersError) throw playersError;
     const managerNames = new Map((profiles || []).map(profile => [profile.id, profile.display_name]));
-    const playersById = new Map((players || []).map(player => [player.fpl_id, `${player.first_name || ''} ${player.second_name || ''}`.trim() || player.web_name]));
+    const playersById = new Map((players || []).map(player => [player.fpl_id, player.web_name]));
     const membershipsBySquad = new Map<string, any[]>();
     for (const membership of memberships || []) membershipsBySquad.set(membership.squad_id, [...(membershipsBySquad.get(membership.squad_id) || []), membership]);
     const managers = (squads || []).map(squad => ({
