@@ -29,7 +29,7 @@ export async function GET() {
       id: squad.id,
       manager: managerNames.get(squad.manager_id) || 'Manager',
       team: squad.name,
-      weeks: weeks.map(week => ({ key: week.key, players: (membershipsBySquad.get(squad.id) || []).filter(member => member.acquired_at < week.end && (!member.released_at || member.released_at > week.start)).map(member => playersById.get(member.fpl_id) || 'Unknown player').sort((a, b) => a.localeCompare(b)) })),
+      weeks: weeks.map(week => ({ key: week.key, players: (membershipsBySquad.get(squad.id) || []).filter(member => member.acquired_at < week.end && (!member.released_at || member.released_at > week.start)).map(member => ({ name:playersById.get(member.fpl_id) || 'Unknown player', changed:(member.acquired_at >= week.start && member.acquired_at < week.end) || Boolean(member.released_at && member.released_at >= week.start && member.released_at < week.end) })).sort((a, b) => a.name.localeCompare(b.name)) })),
     })).sort((a, b) => a.manager.localeCompare(b.manager) || a.team.localeCompare(b.team));
     return NextResponse.json({ weeks: weeks.map(({ key, label }) => ({ key, label })), managers }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {

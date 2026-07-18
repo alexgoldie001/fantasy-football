@@ -24,7 +24,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     if (!squad) return NextResponse.json({ error: 'Team not found.' }, { status: 404 });
     const [{ data: profile, error: profileError }, { data: memberships, error: membershipError }] = await Promise.all([
       db.from('profiles').select('display_name').eq('id', squad.manager_id).single(),
-      db.from('squad_players').select('fpl_id,purchase_price,acquired_at,released_at').eq('squad_id', squad.id),
+      db.from('squad_players').select('id,fpl_id,purchase_price,acquired_at,released_at').eq('squad_id', squad.id),
     ]);
     if (profileError) throw profileError;
     if (membershipError) throw membershipError;
@@ -55,14 +55,27 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       }
     }
 
-    const players = relevant.map(row => {
-      const player: any = byId.get(row.fpl_id);
+    // A swap made inside one score week is shown as one squad slot: outgoing / incoming.
+    const groupedMemberships: any[][] = [];
+    if (selectedWeek) {
+      const assigned = new Set<string>();
+      for (const incoming of relevant.filter(member => (memberships || []).some(previous => previous.id !== member.id && previous.released_at === member.acquired_at))) {
+        const outgoing = relevant.find(member => member.id !== incoming.id && member.released_at === incoming.acquired_at && !assigned.has(member.id));
+        if (outgoing) { groupedMemberships.push([outgoing, incoming]); assigned.add(outgoing.id); assigned.add(incoming.id); }
+      }
+      for (const member of relevant) if (!assigned.has(member.id)) groupedMemberships.push([member]);
+    } else groupedMemberships.push(...relevant.map(member => [member]));
+    const players = groupedMemberships.map(group => {
+      const orderedGroup = [...group].sort((a, b) => a.acquired_at.localeCompare(b.acquired_at));
+      const playerRecords = orderedGroup.map(row => byId.get(row.fpl_id) as any);
+      const individualPoints = orderedGroup.map((row, index) => selectedWeek ? (pointsById.get(row.fpl_id) || 0) : Number(playerRecords[index]?.raw?.total_points || 0) - Number(playerRecords[index]?.raw?.bonus || 0));
       return {
-        name: player?.web_name || 'Unknown player',
-        team: player?.team_name || '—',
-        position: player?.position || 'MID',
-        points: selectedWeek ? (pointsById.get(row.fpl_id) || 0) : Number(player?.raw?.total_points || 0) - Number(player?.raw?.bonus || 0),
-        price: row.purchase_price,
+        name: playerRecords.map(player => player?.web_name || 'Unknown player').join(' / '),
+        team: playerRecords.map(player => player?.team_name || '—').join(' / '),
+        position: playerRecords[0]?.position || 'MID',
+        points: individualPoints.length > 1 ? individualPoints.join(' / ') : individualPoints[0] || 0,
+        totalPoints: individualPoints.reduce((total, points) => total + points, 0),
+        price: orderedGroup.map(row => row.purchase_price).join(' / '),
       };
     }).sort((a, b) => positionOrder[a.position] - positionOrder[b.position] || a.name.localeCompare(b.name));
     return NextResponse.json({ name: squad.name, manager: profile.display_name, budget: squad.budget, players, weeks: weeks.map(({ key, label }) => ({ key, label })), selectedWeek: selectedWeek?.key || '', pointsLabel: selectedWeek ? selectedWeek.label : 'Season points' }, { headers: { 'Cache-Control': 'no-store' } });

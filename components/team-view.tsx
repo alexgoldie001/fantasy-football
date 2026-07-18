@@ -6,7 +6,7 @@ import { getTeam } from '@/lib/teams';
 import { Coins, UsersRound } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-type Player = { name: string; team: string; position: string; points: number; price: number };
+type Player = { name: string; team: string; position: string; points: number | string; totalPoints?: number; price: number | string };
 type Week = { key: string; label: string };
 type Team = { name: string; manager: string; budget: number; players: Player[]; weeks?: Week[]; selectedWeek?: string; pointsLabel?: string };
 
@@ -32,11 +32,11 @@ export function TeamView({ slug = 'north-bank' }: { slug?: string }) {
     <section className="team-stats">
       <div><UsersRound/><span><small>Squad size</small><strong>{team.players.length} players</strong></span></div>
       <div><Coins/><span><small>Available funds</small><strong>£{(team.budget / 10).toFixed(1)}m</strong></span></div>
-      <div className="team-points"><span><small>{team.pointsLabel || 'Season points'}</small><strong>{team.players.reduce((sum, player) => sum + player.points, 0)} pts</strong></span><select aria-label="Select score week" value={week} onChange={event => setWeek(event.target.value)}><option value="">Season points</option>{(team.weeks || []).map(option => <option key={option.key} value={option.key}>{option.label}</option>)}</select></div>
+      <div className="team-points"><span><small>{team.pointsLabel || 'Season points'}</small><strong>{team.players.reduce((sum, player) => sum + (player.totalPoints ?? Number(player.points)), 0)} pts</strong></span><select aria-label="Select score week" value={week} onChange={event => setWeek(event.target.value)}><option value="">Season points</option>{(team.weeks || []).map(option => <option key={option.key} value={option.key}>{option.label}</option>)}</select></div>
     </section>
     <section className="panel squad-list">
       <div className="squad-list-head"><span>Player</span><span>Club</span><span>Position</span><span>{showingWeek ? 'Week points' : 'Season points'}</span><span>Purchase price</span></div>
-      {orderedPlayers.map((player, index) => <div className="squad-list-row" key={`${player.name}-${index}`}><div><strong>{player.name}</strong><small>Purchased player</small></div><span>{player.team}</span><span className={`position-chip ${player.position.toLowerCase()}`}>{player.position}</span><strong>{player.points}</strong><strong>£{(player.price / 10).toFixed(1)}m</strong></div>)}
+      {orderedPlayers.map((player, index) => <div className="squad-list-row" key={`${player.name}-${index}`}><div><strong>{player.name}</strong><small>Purchased player</small></div><span>{player.team}</span><span className={`position-chip ${player.position.toLowerCase()}`}>{player.position}</span><strong>{player.points}</strong><strong>{typeof player.price === 'string' ? player.price.split(' / ').map(price => `£${(Number(price) / 10).toFixed(1)}m`).join(' / ') : `£${(player.price / 10).toFixed(1)}m`}</strong></div>)}
     </section>
   </AppShell>;
 }
