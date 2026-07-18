@@ -23,7 +23,8 @@ export async function POST(request: NextRequest) {
     const { data: owned } = await db.from('squad_players').select('fpl_id,squad_id').in('fpl_id', fplIds).is('released_at', null);
     if ((owned || []).some(owner => owner.squad_id !== squad.id)) return NextResponse.json({ error: 'One or more players are already owned by another manager.' }, { status: 409 });
     await db.from('squad_players').update({ released_at: new Date().toISOString() }).eq('squad_id', squad.id).is('released_at', null);
-    const { error: insertError } = await db.from('squad_players').insert(entries.map((entry, index) => ({ squad_id: squad.id, fpl_id: fplIds[index], purchase_price: entry.price })));
+    const seasonStart = '2025-08-01T00:00:00.000Z';
+    const { error: insertError } = await db.from('squad_players').insert(entries.map((entry, index) => ({ squad_id: squad.id, fpl_id: fplIds[index], purchase_price: entry.price, acquired_at: seasonStart })));
     if (insertError) throw insertError;
     const { error: budgetError } = await db.from('squads').update({ budget: 1000 - spend }).eq('id', squad.id);
     if (budgetError) throw budgetError;
