@@ -35,7 +35,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       : (memberships || []).filter(member => !member.released_at);
     const ids = [...new Set(relevant.map(row => row.fpl_id))];
     const { data: fplPlayers, error: playersError } = ids.length
-      ? await db.from('fpl_players').select('fpl_id,web_name,team_name,position,raw').in('fpl_id', ids)
+      ? await db.from('fpl_players').select('fpl_id,web_name,team_id,team_name,position,raw').in('fpl_id', ids)
       : { data: [], error: null };
     if (playersError) throw playersError;
     const byId = new Map((fplPlayers || []).map(player => [player.fpl_id, player]));
@@ -72,6 +72,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       const individualPoints = orderedGroup.map((row, index) => selectedWeek ? (pointsById.get(row.fpl_id) || 0) : Number(playerRecords[index]?.raw?.total_points || 0) - Number(playerRecords[index]?.raw?.bonus || 0));
       return {
         name: playerRecords.map(player => player?.web_name || 'Unknown player').join(' / '),
+        teamId: playerRecords[0]?.team_id || null,
         team: playerRecords.map(player => player?.team_name || '—').join(' / '),
         position: playerRecords[0]?.position || 'MID',
         points: individualPoints.length > 1 ? individualPoints.join(' / ') : individualPoints[0] || 0,
