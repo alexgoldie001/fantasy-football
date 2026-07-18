@@ -30,6 +30,7 @@ export async function GET() {
     for (const membership of memberships || []) membershipsBySquad.set(membership.squad_id, [...(membershipsBySquad.get(membership.squad_id) || []), membership]);
     const playerDetails = (fplId:number) => playersById.get(fplId) || { name:'Unknown player', position:'—' };
     const today = new Date().toISOString();
+    const balanceDate = today < weeks[weeks.length - 1].end ? today : weeks[weeks.length - 1].end;
     const managers = (squads || []).map(squad => ({
       id: squad.id,
       manager: managerNames.get(squad.manager_id) || 'Manager',
@@ -54,7 +55,7 @@ export async function GET() {
         }
         return { key:week.key, players:playerRows.sort((a, b) => (positionOrder[a.position] || 9) - (positionOrder[b.position] || 9) || a.name.localeCompare(b.name)), budget:remainingBudget(allMemberships, week.end) };
       }),
-      budget: remainingBudget(membershipsBySquad.get(squad.id) || [], today),
+      budget: remainingBudget(membershipsBySquad.get(squad.id) || [], balanceDate),
     })).sort((a, b) => a.manager.localeCompare(b.manager) || a.team.localeCompare(b.team));
     const budgets = managers.map(manager => ({ id:manager.id, manager:manager.manager, team:manager.team, budget:manager.budget })).sort((a, b) => b.budget - a.budget || a.manager.localeCompare(b.manager));
     return NextResponse.json({ weeks: weeks.map(({ key, label }) => ({ key, label })), managers, budgets }, { headers: { 'Cache-Control': 'no-store' } });
