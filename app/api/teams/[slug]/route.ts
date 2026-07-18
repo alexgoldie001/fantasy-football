@@ -41,18 +41,17 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const byId = new Map((fplPlayers || []).map(player => [player.fpl_id, player]));
     const pointsById = new Map<number, number>();
 
-    if (selectedWeek && ids.length) {
-      const { data: stats, error: statsError } = await db.from('fpl_fixture_player_stats')
+    if (ids.length) {
+      let statsQuery = db.from('fpl_fixture_player_stats')
         .select('fpl_id,kickoff_at,points_excluding_bonus')
-        .in('fpl_id', ids)
-        .gte('kickoff_at', selectedWeek.start)
-        .lt('kickoff_at', selectedWeek.end);
+        .in('fpl_id', ids);
+      if (selectedWeek) statsQuery = statsQuery.gte('kickoff_at', selectedWeek.start).lt('kickoff_at', selectedWeek.end);
+      else statsQuery = statsQuery.gte('kickoff_at', '2025-08-01T00:00:00.000Z').lt('kickoff_at', '2026-06-01T00:00:00.000Z');
+      const { data: stats, error: statsError } = await statsQuery;
       if (statsError) throw statsError;
       for (const stat of stats || []) {
         const ownedAtKickoff = relevant.some(member => member.fpl_id === stat.fpl_id && member.acquired_at <= stat.kickoff_at && (!member.released_at || member.released_at > stat.kickoff_at));
-        // The 2025/26 backfill records the current squad as the owner throughout that completed season.
-        const legacyOwner = stat.kickoff_at >= '2025-08-01T00:00:00Z' && stat.kickoff_at < '2026-06-01T00:00:00Z' && relevant.some(member => member.fpl_id === stat.fpl_id && !member.released_at);
-        if (ownedAtKickoff || legacyOwner) pointsById.set(stat.fpl_id, (pointsById.get(stat.fpl_id) || 0) + Number(stat.points_excluding_bonus || 0));
+        if (ownedAtKickoff) pointsById.set(stat.fpl_id, (pointsById.get(stat.fpl_id) || 0) + Number(stat.points_excluding_bonus || 0));
       }
     }
 
@@ -69,7 +68,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const players = groupedMemberships.map(group => {
       const orderedGroup = [...group].sort((a, b) => a.acquired_at.localeCompare(b.acquired_at));
       const playerRecords = orderedGroup.map(row => byId.get(row.fpl_id) as any);
-      const individualPoints = orderedGroup.map((row, index) => selectedWeek ? (pointsById.get(row.fpl_id) || 0) : Number(playerRecords[index]?.raw?.total_points || 0) - Number(playerRecords[index]?.raw?.bonus || 0));
+      const individualPoints = orderedGroup.map(row => pointsById.get(row.fpl_id) || 0);
       return {
         name: playerRecords.map(player => player?.web_name || 'Unknown player').join(' / '),
         teamId: playerRecords[0]?.team_id || null,
@@ -81,7 +80,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       };
     }).sort((a, b) => positionOrder[a.position] - positionOrder[b.position] || a.name.localeCompare(b.name));
     const budget = remainingBudget(memberships || [], currentSeasonBudgetDate());
-    return NextResponse.json({ name: squad.name, manager: profile.display_name, budget, players, weeks: weeks.map(({ key, label }) => ({ key, label })), selectedWeek: selectedWeek?.key || '', pointsLabel: selectedWeek ? selectedWeek.label : 'Season points' }, { headers: { 'Cache-Control': 'no-store' } });
+    return NextResponse.json({ name: squad.name, manager: profile.display_name, budget, players, weeks: weeks.map(({ key, label }) => ({ key, label })), selectedWeek: selectedWeek?.key || '', pointsLabel: selectedWeek ? selectedWeek.label : 'Team points' }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : 'Unable to load team.' }, { status: 500 });
   }
