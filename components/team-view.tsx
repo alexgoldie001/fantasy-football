@@ -41,7 +41,7 @@ export function TeamView({ slug = 'north-bank' }:{ slug?:string }) {
   return <AppShell>
     <section className="page-heading compact"><p className="eyebrow">{team.manager}&rsquo;s team</p><h1>{team.name}</h1></section>
     <section className="team-stats">
-      <div><UsersRound/><span><small>Squad size</small><strong>{team.players.length} players</strong></span></div>
+      <div><UsersRound/><span><small>Formation</small><strong>{formation}</strong></span></div>
       <div><Coins/><span><small>Available funds</small><strong>£{(team.budget / 10).toFixed(1)}m</strong></span></div>
       <div className="team-points"><span><small>{team.pointsLabel || 'Season points'}</small><strong>{pointsTotal} pts</strong></span><select aria-label="Select score week" value={week} onChange={event => setWeek(event.target.value)}><option value="">Season points</option>{(team.weeks || []).map(option => <option key={option.key} value={option.key}>{option.label}</option>)}</select></div>
     </section>
