@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { BarChart3, ChevronDown, KeyRound, LogOut, Pencil, Shield, Trophy, Users, UserRoundCog } from 'lucide-react';
+import { BarChart3, ChevronDown, KeyRound, LogOut, Menu, Pencil, Shield, Trophy, Users, UserRoundCog, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { supabaseBrowser } from '@/lib/supabase-browser';
 
@@ -14,6 +14,7 @@ export function AppShell({ children }:{ children:React.ReactNode }) {
   const [account, setAccount] = useState<Account | null>(null);
   const [ready, setReady] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -43,7 +44,9 @@ export function AppShell({ children }:{ children:React.ReactNode }) {
 
   return <div className="app-shell"><header className="topbar">
     <Link href="/league" className="brand brand-logo-link" aria-label="Bails & Goldie Fantasy Football home"><img className="brand-logo-image" src="/branding/bails-goldie-header.png" alt="B&G Fantasy Football"/></Link>
-    <nav>{links.map(({ href, label, icon:Icon }) => <Link key={href} href={href} className={path === href ? 'active' : ''}><Icon size={17}/>{label}</Link>)}</nav>
+    <nav className="desktop-nav">{links.map(({ href, label, icon:Icon }) => <Link key={href} href={href} className={path === href ? 'active' : ''}><Icon size={17}/>{label}</Link>)}</nav>
+    <button className="mobile-nav-trigger" aria-label={mobileNavOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={mobileNavOpen} onClick={() => setMobileNavOpen(open => !open)}>{mobileNavOpen ? <X size={20}/> : <Menu size={21}/>}</button>
     <div className="account-menu"><button className="profile" title={`Signed in as ${account.name}`} onClick={() => setMenuOpen(open => !open)}>{initials}<ChevronDown size={13}/></button>{menuOpen && <div className="account-dropdown"><span>{account.name}</span><small>{account.email}</small><Link href="/account/password" onClick={() => setMenuOpen(false)}><KeyRound size={15}/> Change password</Link><Link href="/account/team-name" onClick={() => setMenuOpen(false)}><Pencil size={15}/> Change team name</Link><button onClick={logout}><LogOut size={15}/> Log out</button></div>}</div>
+    {mobileNavOpen && <nav className="mobile-nav">{links.map(({ href, label, icon:Icon }) => <Link key={href} href={href} onClick={() => setMobileNavOpen(false)} className={path === href ? 'active' : ''}><Icon size={18}/><span>{label}</span></Link>)}</nav>}
   </header><main>{children}</main></div>;
 }
