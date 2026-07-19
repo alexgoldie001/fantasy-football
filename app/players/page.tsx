@@ -39,9 +39,9 @@ export default function PlayersPage() {
   return <AppShell>
     <section className="page-heading"><p className="eyebrow">Official FPL data</p><h1>The player market.</h1><a className="excel-link" href="/api/players/export"><Download size={16}/> Excel format</a></section>
     <section className="filters"><label><Search size={18}/><input value={search} onChange={event => setSearch(event.target.value)} placeholder="Search players or teams"/></label><div className="selects">
-      <select value={position} onChange={event => setPosition(event.target.value)}><option value="All">Positions</option><option>GK</option><option>DEF</option><option>MID</option><option>FWD</option></select>
-      <select value={club} onChange={event => setClub(event.target.value)}><option value="All">Teams</option>{clubs.map(team => <option key={team}>{team}</option>)}</select>
-      <select value={ownership} onChange={event => setOwnership(event.target.value)}><option value="All">Ownership</option><option>Available</option><option>Owned</option></select>
+      <select value={position} onChange={event => setPosition(event.target.value)}><option value="All">All Positions</option><option>GK</option><option>DEF</option><option>MID</option><option>FWD</option></select>
+      <select value={club} onChange={event => setClub(event.target.value)}><option value="All">All Teams</option>{clubs.map(team => <option key={team}>{team}</option>)}</select>
+      <select value={ownership} onChange={event => setOwnership(event.target.value)}><option value="All">All Ownership</option><option>Available</option><option>Owned</option></select>
       <button><SlidersHorizontal size={16}/> {filtered.length || '—'} players</button>
     </div></section>
     <section className="panel player-table player-market">{loading ? <p className="table-message">Loading the official FPL player list…</p> : error ? <p className="form-error">{error}</p> : <div className="market-scroll">
