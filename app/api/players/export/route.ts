@@ -26,12 +26,12 @@ export async function GET() {
     if (error) throw error;
 
     const ownerById = new Map((ownership || []).map((row:any) => [row.fpl_id, row.squads?.name || '']));
-    const headers = ['Player', 'Club', 'Position', 'Owner', 'Points (excl. bonus)', 'FPL price (£m)'];
+    const headers = ['Player', 'Club', 'Position', 'Points (excl. bonus)', 'FPL price (£m)', 'Owner'];
     const sortedPlayers = [...(players || [])].sort((a:any, b:any) => a.team_name.localeCompare(b.team_name) || (positionOrder[a.position] || 9) - (positionOrder[b.position] || 9) || a.web_name.localeCompare(b.web_name));
     const rows = sortedPlayers.map((player:any) => {
       const raw = player.raw || {};
       return [
-        player.web_name, clubCode(player.team_name || ''), player.position, ownerById.get(player.fpl_id) || '', n(raw, 'total_points') - n(raw, 'bonus'), player.current_price / 10,
+        player.web_name, clubCode(player.team_name || ''), player.position, n(raw, 'total_points') - n(raw, 'bonus'), player.current_price / 10, ownerById.get(player.fpl_id) || '',
       ];
     });
 
@@ -41,7 +41,6 @@ export async function GET() {
     const sheet = workbook.addWorksheet('Players', { views:[{ state:'frozen', ySplit:1, showGridLines:false }] });
     sheet.addRow(headers);
     sheet.addRows(rows);
-    sheet.autoFilter = { from:'A1', to:`F${rows.length + 1}` };
     sheet.getRow(1).eachCell(cell => {
       cell.font = { bold:true, color:{ argb:'FFFFFFFF' } };
       cell.fill = { type:'pattern', pattern:'solid', fgColor:{ argb:'FF0C3A2B' } };
@@ -53,10 +52,10 @@ export async function GET() {
     sheet.getColumn(1).width = 22;
     sheet.getColumn(2).width = 10;
     sheet.getColumn(3).width = 12;
-    sheet.getColumn(4).width = 22;
-    sheet.getColumn(5).width = 20;
-    sheet.getColumn(6).width = 14;
-    sheet.getColumn(6).numFmt = '0.0';
+    sheet.getColumn(4).width = 20;
+    sheet.getColumn(5).width = 14;
+    sheet.getColumn(6).width = 22;
+    sheet.getColumn(5).numFmt = '0.0';
 
     const file = await workbook.xlsx.writeBuffer();
     return new NextResponse(file, { headers:{
