@@ -45,7 +45,8 @@ export async function GET() {
       const assigned = new Set<string>();
       const playerRows:{ name:string; changed:boolean; position:string }[] = [];
       for (const incoming of owned.filter(member => member.acquired_at >= period.start && member.acquired_at < period.end)) {
-        const outgoing = owned.find(member => member.id !== incoming.id && member.released_at === incoming.acquired_at && !assigned.has(member.id));
+        const candidates = owned.filter(member => member.id !== incoming.id && member.released_at === incoming.acquired_at && !assigned.has(member.id));
+        const outgoing = candidates.find(member => playerDetails(member.fpl_id).position === playerDetails(incoming.fpl_id).position) || candidates[0];
         if (!outgoing) continue;
         const oldPlayer = playerDetails(outgoing.fpl_id), newPlayer = playerDetails(incoming.fpl_id);
         const returned = saleReturn(outgoing.purchase_price);
