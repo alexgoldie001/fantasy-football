@@ -42,7 +42,7 @@ export function AppShell({ children }:{ children:React.ReactNode }) {
   const initials = account.name.split(/\s+/).map(part => part[0]).slice(0, 2).join('').toUpperCase();
 
   return <div className="app-shell"><header className="topbar">
-    <Link href="/league" className="brand brand-logo-link" aria-label="Bails & Goldie Fantasy Football home"><img className="brand-logo-image" src="/branding/bails-goldie-badge.png" alt="Bails & Goldie Fantasy Football"/></Link>
+    <Link href="/league" className="brand brand-logo-link" aria-label="Bails & Goldie Fantasy Football home"><img className="brand-logo-image" src="/branding/bails-goldie-header.png" alt="B&G Fantasy Football"/></Link>
     <nav>{links.map(({ href, label, icon:Icon }) => <Link key={href} href={href} className={path === href ? 'active' : ''}><Icon size={17}/>{label}</Link>)}</nav>
     <div className="account-menu"><button className="profile" title={`Signed in as ${account.name}`} onClick={() => setMenuOpen(open => !open)}>{initials}<ChevronDown size={13}/></button>{menuOpen && <div className="account-dropdown"><span>{account.name}</span><small>{account.email}</small><Link href="/account/password" onClick={() => setMenuOpen(false)}><KeyRound size={15}/> Change password</Link><Link href="/account/team-name" onClick={() => setMenuOpen(false)}><Pencil size={15}/> Change team name</Link><button onClick={logout}><LogOut size={15}/> Log out</button></div>}</div>
   </header><main>{children}</main></div>;
