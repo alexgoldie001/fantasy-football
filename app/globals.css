@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
 .brand-logo-link{width:230px;height:62px;flex:0 0 230px}.brand-logo-image{display:block;width:230px;height:62px;object-fit:contain}
+.league-dashboard{padding:54px 0 72px}
 @media(max-width:720px){.brand-logo-link{width:112px;height:48px;flex-basis:112px}.brand-logo-image{width:112px;height:48px}}
 .ownership-section-heading{margin:44px 0 14px}.ownership-section-heading h2{margin:0}.monthly-ownership-table .ownership-head,.monthly-ownership-table .ownership-row{min-width:1490px;grid-template-columns:190px repeat(10,130px)}
 /* Pitch readability corrections */
