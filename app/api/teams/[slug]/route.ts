@@ -70,6 +70,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       const playerRecords = orderedGroup.map(row => byId.get(row.fpl_id) as any);
       const individualPoints = orderedGroup.map(row => pointsById.get(row.fpl_id) || 0);
       return {
+        fplId: orderedGroup[0]?.fpl_id || null,
         name: playerRecords.map(player => player?.web_name || 'Unknown player').join(' / '),
         teamId: playerRecords[0]?.team_id || null,
         team: playerRecords.map(player => player?.team_name || '—').join(' / '),
