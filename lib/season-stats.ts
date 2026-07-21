@@ -1,6 +1,6 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { loadSeasonFixtureStats, type FixtureStat } from '@/lib/fixture-stats';
 
-type FixtureStat = { fpl_id:number; kickoff_at:string; points_excluding_bonus:number; goals:number; assists:number };
 type Period = { label:string; start:string; end:string };
 type RecordRow = { id:string; category:string; subject:string; value:string; detail:string; playerId?:number };
 
@@ -14,10 +14,7 @@ export async function seasonStats() {
   const [{ data:memberships, error:membershipsError }, { data:squads, error:squadsError }, { data:players, error:playersError }] = await Promise.all([db.from('squad_players').select('squad_id,fpl_id,acquired_at,released_at'), db.from('squads').select('id,name'), db.from('fpl_players').select('fpl_id,web_name,position')]);
   if (membershipsError) throw membershipsError; if (squadsError) throw squadsError; if (playersError) throw playersError;
   const playerIds = [...new Set((memberships || []).map((member:any) => member.fpl_id))];
-  const { count, error:countError } = playerIds.length ? await db.from('fpl_fixture_player_stats').select('*', { count:'exact', head:true }).in('fpl_id', playerIds) : { count:0, error:null };
-  if (countError) throw countError;
-  const pages = await Promise.all(Array.from({ length:Math.ceil((count || 0) / 1000) }, (_, page) => db.from('fpl_fixture_player_stats').select('fpl_id,kickoff_at,points_excluding_bonus,goals,assists').in('fpl_id', playerIds).range(page * 1000, page * 1000 + 999)));
-  const stats = pages.flatMap(page => { if (page.error) throw page.error; return page.data || []; }) as FixtureStat[];
+  const stats = await loadSeasonFixtureStats(playerIds);
   const squadNames = new Map((squads || []).map((squad:any) => [squad.id, squad.name]));
   const playerInfo = new Map((players || []).map((player:any) => [player.fpl_id, player]));
   const playerNames = new Map((players || []).map((player:any) => [player.fpl_id, player.web_name]));

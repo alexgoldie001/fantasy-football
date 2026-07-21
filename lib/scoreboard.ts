@@ -1,7 +1,7 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { loadSeasonFixtureStats, type FixtureStat } from '@/lib/fixture-stats';
 
 type Period = 'season' | 'week' | 'month';
-type FixtureStat = { fpl_id:number; gameweek:number; kickoff_at:string; points_excluding_bonus:number; goals:number; assists:number; clean_sheets:number };
 type PeriodOption = { key:string; label:string; start:string; end:string };
 
 const monthNames = ['August','September','October','November','December','January','February','March','April','May'];
@@ -34,10 +34,7 @@ export async function scoreBoard(period:Period = 'season', key?:string) {
   if (playersError) throw playersError;
 
   const playerIds = [...new Set((memberships || []).map((membership:any) => membership.fpl_id))];
-  const { count, error:countError } = playerIds.length ? await db.from('fpl_fixture_player_stats').select('*', { count:'exact', head:true }).in('fpl_id', playerIds) : { count:0, error:null };
-  if (countError) throw countError;
-  const statPages = await Promise.all(Array.from({ length:Math.ceil((count || 0) / 1000) }, (_, page) => db.from('fpl_fixture_player_stats').select('fpl_id,gameweek,kickoff_at,points_excluding_bonus,goals,assists,clean_sheets').in('fpl_id', playerIds).range(page * 1000, page * 1000 + 999)));
-  const allStats = statPages.flatMap(result => { if (result.error) throw result.error; return result.data || []; }) as FixtureStat[];
+  const allStats = await loadSeasonFixtureStats(playerIds);
 
   const squadById = new Map((squads || []).map((squad:any) => [squad.id, squad]));
   const profileById = new Map((profiles || []).map((profile:any) => [profile.id, profile]));
