@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-
-const authorised = (code: string | undefined) => Boolean(process.env.ADMIN_SETUP_CODE) && code === process.env.ADMIN_SETUP_CODE;
+import { commissionerFromRequest } from '@/lib/api-auth';
 
 function detailedError(error: unknown, action: string) {
   const databaseError = error as { code?: string; message?: string; details?: string };
@@ -12,15 +11,16 @@ function detailedError(error: unknown, action: string) {
 }
 
 export async function POST(request: NextRequest) {
-  const { commissionerCode, managerId, entries } = await request.json() as { commissionerCode?: string; managerId?: string; entries?: { fplId: number; price: number }[] };
-  if (!authorised(commissionerCode)) return NextResponse.json({ error: 'Incorrect commissioner code.' }, { status: 401 });
+  const commissioner = await commissionerFromRequest(request);
+  if (!commissioner) return NextResponse.json({ error: 'Commissioner access required.' }, { status: 401 });
+  const { managerId, entries } = await request.json() as { managerId?: string; entries?: { fplId: number; price: number }[] };
   if (!managerId || !Array.isArray(entries) || entries.length !== 11) return NextResponse.json({ error: 'Enter exactly 11 players and their purchase prices.' }, { status: 400 });
   if (entries.some(entry => !Number.isInteger(entry.fplId) || !Number.isInteger(entry.price) || entry.price < 0 || entry.price % 10 !== 0)) return NextResponse.json({ error: 'Select every player from the FPL lookup and use whole £1m price increments (including £0m).' }, { status: 400 });
   const spend = entries.reduce((total, entry) => total + entry.price, 0);
   if (spend > 1000) return NextResponse.json({ error: `This squad costs £${(spend / 10).toFixed(1)}m, which exceeds the £100m budget.` }, { status: 400 });
   try {
     const db = supabaseAdmin();
-    const { data: squad, error: squadError } = await db.from('squads').select('id').eq('manager_id', managerId).single();
+    const { data: squad, error: squadError } = await db.from('squads').select('id').eq('manager_id', managerId).eq('league_id', commissioner.leagueId).single();
     if (squadError || !squad) throw squadError || new Error('Squad not found.');
     const { data: allPlayers, error: playersError } = await db.from('fpl_players').select('fpl_id');
     if (playersError) throw playersError;

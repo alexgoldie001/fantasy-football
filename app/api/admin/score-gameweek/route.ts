@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { calculatePoints } from '@/lib/scoring';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { cronAuthorised } from '@/lib/api-auth';
 
 // Snapshot custom scores per manager. Run after FPL updates, and once after the gameweek closes.
 export async function POST(request: NextRequest) {
-  if (process.env.CRON_SECRET && request.headers.get('authorization') !== `Bearer ${process.env.CRON_SECRET}`) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 });
+  if (!cronAuthorised(request)) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 });
   const { leagueId, gameweek } = await request.json();
   if (!leagueId || !gameweek) return NextResponse.json({ error: 'leagueId and gameweek are required' }, { status: 400 });
   try {

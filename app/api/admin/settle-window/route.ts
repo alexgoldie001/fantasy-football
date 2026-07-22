@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { commissionerFromRequest, cronAuthorised } from '@/lib/api-auth';
 
 // Commissioner endpoint: winners are chosen by max bid, then the *lower* league rank wins a tie.
 export async function POST(request: NextRequest) {
-  if (process.env.CRON_SECRET && request.headers.get('authorization') !== `Bearer ${process.env.CRON_SECRET}`) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 });
+  if (!cronAuthorised(request) && !(await commissionerFromRequest(request))) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 });
   const { windowId } = await request.json(); if (!windowId) return NextResponse.json({ error: 'windowId is required' }, { status: 400 });
   const db = supabaseAdmin();
   const { data: bids, error } = await db.from('transfer_bids').select('*, profiles!transfer_bids_manager_id_fkey(display_name), gameweek_scores(points,total_points)').eq('window_id', windowId).eq('status', 'submitted');

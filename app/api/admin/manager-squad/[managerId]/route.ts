@@ -2,16 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { calculatePoints } from '@/lib/scoring';
 import { remainingBudget } from '@/lib/budget';
+import { commissionerFromRequest } from '@/lib/api-auth';
 
 function errorMessage(error:unknown) { if (error instanceof Error) return error.message; if (error && typeof error === 'object' && 'message' in error) return String((error as { message:unknown }).message); return 'Unable to save squad amendments.'; }
-async function authorised(request:NextRequest) { const token = request.headers.get('authorization')?.replace(/^Bearer\s+/i, ''); if (!token) return false; const db = supabaseAdmin(); const { data:auth } = await db.auth.getUser(token); if (!auth.user) return false; const { data:profile } = await db.from('profiles').select('is_admin').eq('id', auth.user.id).maybeSingle(); return Boolean(profile?.is_admin); }
 async function managerLeague(db:ReturnType<typeof supabaseAdmin>, managerId:string) { const { data:profile, error } = await db.from('profiles').select('league_id').eq('id', managerId).maybeSingle(); if (error) throw error; if (!profile) throw new Error('Manager not found.'); return profile.league_id; }
 async function repairIncompleteSquad(db:ReturnType<typeof supabaseAdmin>, squadId:string) { const { data:active, error:activeError } = await db.from('squad_players').select('id,fpl_id,purchase_price').eq('squad_id', squadId).is('released_at', null); if (activeError) throw activeError; if ((active || []).length >= 11) return false; const { data:released, error:releasedError } = await db.from('squad_players').select('id,fpl_id,purchase_price').eq('squad_id', squadId).not('released_at', 'is', null).order('released_at', { ascending:false }); if (releasedError) throw releasedError; let restored = false; for (const player of released || []) { if ((active || []).length >= 11) break; const { data:owner, error:ownerError } = await db.from('squad_players').select('id').eq('fpl_id', player.fpl_id).is('released_at', null).maybeSingle(); if (ownerError) throw ownerError; if (owner) continue; const { error } = await db.from('squad_players').update({ released_at:null }).eq('id', player.id); if (error) throw error; active?.push(player); restored = true; } if (restored) { const spent = (active || []).reduce((sum, row) => sum + row.purchase_price, 0); const { error } = await db.from('squads').update({ budget:1000 - spent }).eq('id', squadId); if (error) throw error; } return restored; }
 
 export async function GET(request:NextRequest, { params }:{ params:Promise<{ managerId:string }> }) {
-  if (!(await authorised(request))) return NextResponse.json({ error:'Commissioner access required.' }, { status:401 });
+  const commissioner = await commissionerFromRequest(request);
+  if (!commissioner) return NextResponse.json({ error:'Commissioner access required.' }, { status:401 });
   try {
     const { managerId } = await params, db = supabaseAdmin(), leagueId = await managerLeague(db, managerId);
+    if (leagueId !== commissioner.leagueId) return NextResponse.json({ error:'Commissioner access required.' }, { status:403 });
     const { data:summary, error:summaryError } = await db.from('squads').select('id').eq('manager_id', managerId).eq('league_id', leagueId).maybeSingle();
     if (summaryError) throw summaryError;
     if (!summary) return NextResponse.json({ error:'This manager does not have a squad in this league yet.' }, { status:404 });
@@ -23,12 +25,14 @@ export async function GET(request:NextRequest, { params }:{ params:Promise<{ man
 }
 
 export async function PATCH(request:NextRequest, { params }:{ params:Promise<{ managerId:string }> }) {
-  if (!(await authorised(request))) return NextResponse.json({ error:'Commissioner access required.' }, { status:401 });
+  const commissioner = await commissionerFromRequest(request);
+  if (!commissioner) return NextResponse.json({ error:'Commissioner access required.' }, { status:401 });
   try {
     const { managerId } = await params;
     const { changes } = await request.json() as { changes:{ squadPlayerId:string; price:number; replacementFplId?:number; replacementPrice?:number; effectiveDate?:string }[] };
     if (!Array.isArray(changes) || !changes.length) return NextResponse.json({ error:'Make at least one squad change.' }, { status:400 });
     const db = supabaseAdmin(), leagueId = await managerLeague(db, managerId);
+    if (leagueId !== commissioner.leagueId) return NextResponse.json({ error:'Commissioner access required.' }, { status:403 });
     const { data:squad, error:squadError } = await db.from('squads').select('id,league_id,budget').eq('manager_id', managerId).eq('league_id', leagueId).maybeSingle();
     if (squadError) throw squadError;
     if (!squad) return NextResponse.json({ error:'This manager does not have a squad in this league yet.' }, { status:404 });

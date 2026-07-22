@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { syncFixtureScores } from '@/lib/fixture-sync';
+import { commissionerFromRequest, cronAuthorised } from '@/lib/api-auth';
 
 const positions = ['', 'GK', 'DEF', 'MID', 'FWD'];
 // Protect this endpoint with CRON_SECRET before adding it to Vercel Cron.
 export async function POST(request: NextRequest) {
-  const cronAuthorised = Boolean(process.env.CRON_SECRET) && request.headers.get('authorization') === `Bearer ${process.env.CRON_SECRET}`;
-  const commissionerAuthorised = Boolean(process.env.ADMIN_SETUP_CODE) && request.headers.get('x-commissioner-code') === process.env.ADMIN_SETUP_CODE;
-  if (!cronAuthorised && !commissionerAuthorised) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 });
+  const cron = cronAuthorised(request);
+  if (!cron && !(await commissionerFromRequest(request))) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 });
   try {
     const fpl = await fetch('https://fantasy.premierleague.com/api/bootstrap-static/', { headers: { 'User-Agent': 'TheDraftLeague/1.0' } }).then(r => r.json());
     const teamNames = new Map(fpl.teams.map((team: { id: number; name: string }) => [team.id, team.name]));

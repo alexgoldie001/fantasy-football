@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { currentSeasonBudgetDate, remainingBudget } from '@/lib/budget';
+import { commissionerFromRequest } from '@/lib/api-auth';
 
-function authorised(code: string | null) {
-  return Boolean(process.env.ADMIN_SETUP_CODE) && code === process.env.ADMIN_SETUP_CODE;
-}
-
-export async function GET() {
+export async function GET(request: NextRequest) {
+  if (!(await commissionerFromRequest(request))) return NextResponse.json({ error: 'Commissioner access required.' }, { status: 401 });
   try {
     const db = supabaseAdmin();
     const { data: league } = await db.from('leagues').select('id,name,max_managers').order('created_at').limit(1).maybeSingle();
@@ -29,12 +27,13 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const { commissionerCode, name, email, teamName, budget = 1000, isAdmin = false } = await request.json();
-  if (!authorised(commissionerCode)) return NextResponse.json({ error: 'Incorrect commissioner code.' }, { status: 401 });
+  const commissioner = await commissionerFromRequest(request);
+  if (!commissioner) return NextResponse.json({ error: 'Commissioner access required.' }, { status: 401 });
+  const { name, email, teamName, budget = 1000, isAdmin = false } = await request.json();
   if (!name || !email || !teamName) return NextResponse.json({ error: 'Name, email and team name are required.' }, { status: 400 });
   try {
     const db = supabaseAdmin();
-    let { data: league } = await db.from('leagues').select('id,max_managers').order('created_at').limit(1).maybeSingle();
+    let { data: league } = commissioner.leagueId ? await db.from('leagues').select('id,max_managers').eq('id', commissioner.leagueId).maybeSingle() : { data: null };
     if (!league) {
       const created = await db.from('leagues').insert({ name: 'The Draft League', season: '2025/26' }).select('id,max_managers').single();
       if (created.error) throw created.error; league = created.data;
