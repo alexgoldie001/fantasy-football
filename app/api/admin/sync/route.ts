@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { syncFixtureScores } from '@/lib/fixture-sync';
 import { commissionerFromRequest, cronAuthorised } from '@/lib/api-auth';
+import { syncFpl2026Players } from '@/lib/fpl-2026-sync';
 
 const positions = ['', 'GK', 'DEF', 'MID', 'FWD'];
 // Protect this endpoint with CRON_SECRET before adding it to Vercel Cron.
@@ -10,6 +11,11 @@ export async function POST(request: NextRequest) {
   if (!cron && !(await commissionerFromRequest(request))) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 });
   try {
     const fpl = await fetch('https://fantasy.premierleague.com/api/bootstrap-static/', { headers: { 'User-Agent': 'TheDraftLeague/1.0' } }).then(r => r.json());
+    const firstDeadline = fpl.events?.find((event: { id?:number }) => event.id === 1)?.deadline_time || '';
+    if (String(firstDeadline).startsWith('2026-')) {
+      const synced = await syncFpl2026Players();
+      return NextResponse.json({ synced, season:'2026/27', fixtureStatsSynced:0, at:new Date().toISOString() });
+    }
     const teamNames = new Map(fpl.teams.map((team: { id: number; name: string }) => [team.id, team.name]));
     const records = fpl.elements.map((p: Record<string, unknown>) => ({
       fpl_id: p.id, web_name: p.web_name, first_name: p.first_name, second_name: p.second_name,
