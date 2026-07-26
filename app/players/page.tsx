@@ -2,6 +2,7 @@
 
 import { AppShell } from '@/components/app-shell';
 import { Download, Search } from 'lucide-react';
+import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 
 type Player = { id:number; name:string; team:string; position:string; price:number; owner:string|null; points:number; cleanSheets:number; defensiveContribution:number; assists:number; goals:number; penaltiesMissed:number; penaltiesSaved:number; yellowCards:number; redCards:number };
@@ -38,7 +39,7 @@ export default function PlayersPage() {
   ).sort((a, b) => (sort === 'position' ? positionOrder[a.position] - positionOrder[b.position] : Number(b[sort]) - Number(a[sort])) || a.name.localeCompare(b.name)), [players, search, position, club, ownership, sort]);
 
   return <AppShell>
-    <section className="page-heading"><p className="eyebrow">Official FPL data</p><h1>The player market.</h1><a className="excel-link" href="/api/players/export"><Download size={16}/> Excel format</a></section>
+    <section className="page-heading"><p className="eyebrow">Official FPL data</p><h1>The player market.</h1><div className="player-page-links"><a className="excel-link" href="/api/players/export"><Download size={16}/> Excel format</a><Link className="excel-link" href="/players/tff-stats">TFF Stats</Link></div></section>
     <section className="filters"><label><Search size={18}/><input value={search} onChange={event => setSearch(event.target.value)} placeholder="Search players or teams"/></label><div className="selects">
       <select value={position} onChange={event => setPosition(event.target.value)}><option value="All">All Positions</option><option>GK</option><option>DEF</option><option>MID</option><option>FWD</option></select>
       <select value={club} onChange={event => setClub(event.target.value)}><option value="All">All Teams</option>{clubs.map(team => <option key={team}>{team}</option>)}</select>
