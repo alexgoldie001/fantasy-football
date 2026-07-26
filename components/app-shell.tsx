@@ -24,7 +24,7 @@ export function AppShell({ children }:{ children:React.ReactNode }) {
       const response = await fetch('/api/me', { headers:{ Authorization:`Bearer ${session.access_token}` }, cache:'no-store' });
       if (!response.ok) { await supabaseBrowser().auth.signOut(); router.replace('/'); return; }
       const data = await response.json();
-      if (active) { setAccount(data.user); setReady(true); if (path === '/admin/managers' && !data.user.isAdmin) router.replace('/league'); }
+      if (active) { setAccount(data.user); setReady(true); if (path.startsWith('/admin/') && !data.user.isAdmin) router.replace('/league'); }
     }
     load();
     return () => { active = false; };

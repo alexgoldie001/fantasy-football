@@ -18,7 +18,8 @@ export async function GET() {
     }
     return NextResponse.json({ season:'2026/27', players:(players || []).map((player:any) => {
       const raw = player.raw || {};
-      return { id:player.fpl_id, name:player.web_name, team:player.team_name, position:player.position, price:player.current_price, owner:null, points:stat(raw, 'total_points') - stat(raw, 'bonus'), cleanSheets:stat(raw, 'clean_sheets'), defensiveContribution:stat(raw, 'defensive_contribution'), assists:stat(raw, 'assists'), goals:stat(raw, 'goals_scored'), penaltiesMissed:stat(raw, 'penalties_missed'), penaltiesSaved:stat(raw, 'penalties_saved'), yellowCards:stat(raw, 'yellow_cards'), redCards:stat(raw, 'red_cards') };
+      const fullName = `${player.first_name || ''} ${player.second_name || ''}`.trim() || player.web_name;
+      return { id:player.fpl_id, name:player.web_name, fullName, lookupLabel:`${fullName} · ${player.team_name}`, team:player.team_name, position:player.position, price:player.current_price, owner:null, points:stat(raw, 'total_points') - stat(raw, 'bonus'), cleanSheets:stat(raw, 'clean_sheets'), defensiveContribution:stat(raw, 'defensive_contribution'), assists:stat(raw, 'assists'), goals:stat(raw, 'goals_scored'), penaltiesMissed:stat(raw, 'penalties_missed'), penaltiesSaved:stat(raw, 'penalties_saved'), yellowCards:stat(raw, 'yellow_cards'), redCards:stat(raw, 'red_cards') };
     }) });
   } catch (error) { return NextResponse.json({ error:error instanceof Error ? error.message : 'Unable to load 2026/27 players.' }, { status:500 }); }
 }
