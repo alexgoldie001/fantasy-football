@@ -60,7 +60,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     if (selectedWeek) {
       const assigned = new Set<string>();
       for (const incoming of relevant.filter(member => (memberships || []).some(previous => previous.id !== member.id && previous.released_at === member.acquired_at))) {
-        const outgoing = relevant.find(member => member.id !== incoming.id && member.released_at === incoming.acquired_at && !assigned.has(member.id));
+        const candidates = relevant.filter(member => member.id !== incoming.id && member.released_at === incoming.acquired_at && !assigned.has(member.id));
+        // Keep like-for-like swaps together first, matching the Transfers view.
+        const outgoing = candidates.find(member => (byId.get(member.fpl_id) as any)?.position === (byId.get(incoming.fpl_id) as any)?.position) || candidates[0];
         if (outgoing) { groupedMemberships.push([outgoing, incoming]); assigned.add(outgoing.id); assigned.add(incoming.id); }
       }
       for (const member of relevant) if (!assigned.has(member.id)) groupedMemberships.push([member]);
