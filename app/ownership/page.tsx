@@ -2,6 +2,7 @@
 
 import { AppShell } from '@/components/app-shell';
 import { useEffect, useState } from 'react';
+import styles from './ownership.module.css';
 
 type Period = { key:string; label:string };
 type OwnershipPeriod = { key:string; budget:number; players:{ name:string; changed:boolean }[] };
@@ -17,7 +18,7 @@ function MonthlyOwnershipTable({ periods, managers }:{ periods:Period[]; manager
       <div className="ownership-head"><span>Manager</span>{periods.map(period => <span key={period.key}>{period.label}</span>)}</div>
       {managers.map(manager => <div className="ownership-row" key={manager.id}>
         <div><strong>{manager.manager}</strong><small>{manager.team}</small></div>
-        {manager.months.map(period => <div key={period.key}>{period.players.length ? period.players.map(player => <span className={player.changed ? 'ownership-change' : ''} key={player.name}>{player.name}</span>) : <small>—</small>}<strong className="ownership-budget">{formatBudget(period.budget)} left</strong></div>)}
+        {manager.months.map(period => <div key={period.key}>{period.players.length ? period.players.map(player => <span className={player.changed ? 'ownership-change' : ''} key={player.name}>{player.name}</span>) : <small>—</small>}<strong className={`ownership-budget ${styles.budget}`}>{formatBudget(period.budget)} left</strong></div>)}
       </div>)}
       {!managers.length && <p className="table-message">No manager squads have been created yet.</p>}
     </div>
