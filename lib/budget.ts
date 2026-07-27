@@ -2,6 +2,14 @@ export type BudgetMembership = { id:string; purchase_price:number; acquired_at:s
 
 export const saleReturn = (price:number) => Math.floor((price / 2) / 5) * 5;
 
+// Older squad-history rows were saved as a date (rather than a full timestamp).
+// The ownership table includes a boundary date in the period it displays, so the
+// financial ledger must do the same.
+function occursBeforeCutoff(value:string, cutoff:number) {
+  const time = new Date(value).getTime();
+  return time < cutoff || (/^\d{4}-\d{2}-\d{2}$/.test(value) && time === cutoff);
+}
+
 export function remainingBudget(memberships:BudgetMembership[], at?:string) {
   const cutoff = at ? new Date(at).getTime() : Number.POSITIVE_INFINITY;
   let balance = 1000;
@@ -9,8 +17,8 @@ export function remainingBudget(memberships:BudgetMembership[], at?:string) {
   // sale and purchase sharing the same timestamp, so monthly balances remain
   // correct even when transfer records were created at slightly different times.
   for (const player of memberships) {
-    if (new Date(player.acquired_at).getTime() < cutoff) balance -= player.purchase_price;
-    if (player.released_at && new Date(player.released_at).getTime() < cutoff) balance += saleReturn(player.purchase_price);
+    if (occursBeforeCutoff(player.acquired_at, cutoff)) balance -= player.purchase_price;
+    if (player.released_at && occursBeforeCutoff(player.released_at, cutoff)) balance += saleReturn(player.purchase_price);
   }
   return balance;
 }
