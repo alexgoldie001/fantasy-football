@@ -5,11 +5,12 @@ export const saleReturn = (price:number) => Math.floor((price / 2) / 5) * 5;
 export function remainingBudget(memberships:BudgetMembership[], at?:string) {
   const cutoff = at ? new Date(at).getTime() : Number.POSITIVE_INFINITY;
   let balance = 1000;
-  const ordered = [...memberships].sort((a, b) => a.acquired_at.localeCompare(b.acquired_at));
-  for (const player of ordered) {
-    if (new Date(player.acquired_at).getTime() >= cutoff) continue;
-    const outgoing = memberships.find(previous => previous.id !== player.id && previous.released_at === player.acquired_at);
-    balance += outgoing ? saleReturn(outgoing.purchase_price) - player.purchase_price : -player.purchase_price;
+  // Treat the squad history as a financial ledger. This does not rely on a
+  // sale and purchase sharing the same timestamp, so monthly balances remain
+  // correct even when transfer records were created at slightly different times.
+  for (const player of memberships) {
+    if (new Date(player.acquired_at).getTime() < cutoff) balance -= player.purchase_price;
+    if (player.released_at && new Date(player.released_at).getTime() < cutoff) balance += saleReturn(player.purchase_price);
   }
   return balance;
 }
