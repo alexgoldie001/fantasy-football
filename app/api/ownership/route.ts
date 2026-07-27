@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { currentSeasonBudgetDate, remainingBudget, saleReturn } from '@/lib/budget';
+import { saleReturn } from '@/lib/budget';
 
 export const dynamic = 'force-dynamic';
 
@@ -68,10 +68,11 @@ export async function GET() {
       return { key:period.key, players:playerRows.sort((a, b) => (positionOrder[a.position] || 9) - (positionOrder[b.position] || 9) || a.name.localeCompare(b.name)), budget:budgetAtPeriodEnd(allMemberships, period) };
     };
 
-    const balanceDate = currentSeasonBudgetDate();
     const managers = (squads || []).map(squad => {
       const allMemberships = membershipsBySquad.get(squad.id) || [];
-      return { id:squad.id, manager:managerNames.get(squad.manager_id) || 'Manager', team:squad.name, weeks:weeks.map(period => buildPeriodRows(allMemberships, period)), months:months.map(period => buildPeriodRows(allMemberships, period)), budget:remainingBudget(allMemberships, balanceDate) };
+      const weeklyRows = weeks.map(period => buildPeriodRows(allMemberships, period));
+      const monthlyRows = months.map(period => buildPeriodRows(allMemberships, period));
+      return { id:squad.id, manager:managerNames.get(squad.manager_id) || 'Manager', team:squad.name, weeks:weeklyRows, months:monthlyRows, budget:monthlyRows.at(-1)?.budget ?? 1000 };
     }).sort((a, b) => a.manager.localeCompare(b.manager) || a.team.localeCompare(b.team));
     const budgets = managers.map(manager => ({ id:manager.id, manager:manager.manager, team:manager.team, budget:manager.budget })).sort((a, b) => b.budget - a.budget || a.manager.localeCompare(b.manager));
     return NextResponse.json({ weeks:weeks.map(({ key, label }) => ({ key, label })), months:months.map(({ key, label }) => ({ key, label })), managers, budgets }, { headers:{ 'Cache-Control':'no-store' } });
