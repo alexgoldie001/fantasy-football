@@ -40,6 +40,12 @@ export async function GET() {
     for (const membership of memberships || []) membershipsBySquad.set(membership.squad_id, [...(membershipsBySquad.get(membership.squad_id) || []), membership]);
     const playerDetails = (fplId:number) => playersById.get(fplId) || { name:'Unknown player', position:'—' };
 
+    const budgetAtPeriodEnd = (allMemberships:any[], period:Period) => allMemberships.reduce((balance, member) => {
+      if (member.acquired_at < period.end) balance -= member.purchase_price;
+      if (member.released_at && member.released_at < period.end) balance += saleReturn(member.purchase_price);
+      return balance;
+    }, 1000);
+
     const buildPeriodRows = (allMemberships:any[], period:Period) => {
       const owned = allMemberships.filter(member => member.acquired_at < period.end && (!member.released_at || member.released_at > period.start));
       const assigned = new Set<string>();
@@ -59,7 +65,7 @@ export async function GET() {
         const left = Boolean(member.released_at && member.released_at >= period.start && member.released_at < period.end);
         playerRows.push({ name:`${positionPrefix[player.position] || '—'} ${player.name}${joined && member.purchase_price > 0 ? ` £${(member.purchase_price / 10).toFixed(1)}m` : ''}`, position:player.position, changed:joined || left });
       }
-      return { key:period.key, players:playerRows.sort((a, b) => (positionOrder[a.position] || 9) - (positionOrder[b.position] || 9) || a.name.localeCompare(b.name)), budget:remainingBudget(allMemberships, period.end) };
+      return { key:period.key, players:playerRows.sort((a, b) => (positionOrder[a.position] || 9) - (positionOrder[b.position] || 9) || a.name.localeCompare(b.name)), budget:budgetAtPeriodEnd(allMemberships, period) };
     };
 
     const balanceDate = currentSeasonBudgetDate();
