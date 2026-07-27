@@ -4,87 +4,29 @@ import { currentSeasonBudgetDate, remainingBudget } from '@/lib/budget';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+const slugify = (value:string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+const positionOrder:Record<string, number> = { GK:1, DEF:2, MID:3, FWD:4 };
+type Period = { key:string; label:string; start:string; end:string };
+const weeks:Period[] = Array.from({ length:42 }, (_, index) => { const start = new Date(Date.parse('2025-08-12T05:00:00.000Z') + index * 7 * 86400000); const end = new Date(start.getTime() + 7 * 86400000); return { key:String(index + 1), label:`Week ${index + 1} · ${start.toLocaleDateString('en-GB', { day:'numeric', month:'short', timeZone:'Europe/London' })} – ${new Date(end.getTime() - 1).toLocaleDateString('en-GB', { day:'numeric', month:'short', timeZone:'Europe/London' })}`, start:start.toISOString(), end:end.toISOString() }; });
+const months:Period[] = ['Aug','Sept','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May'].map((label, index) => { const year = index < 5 ? 2025 : 2026; const month = index < 5 ? index + 7 : index - 5; const start = new Date(Date.UTC(year, month, 1)); const end = new Date(Date.UTC(year, month + 1, 1)); return { key:`${year}-${month + 1}`, label, start:start.toISOString(), end:end.toISOString() }; });
 
-const slugify = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-const positionOrder: Record<string, number> = { GK: 1, DEF: 2, MID: 3, FWD: 4 };
-const weeks = Array.from({ length: 42 }, (_, index) => {
-  const start = new Date(Date.parse('2025-08-12T05:00:00.000Z') + index * 7 * 24 * 60 * 60 * 1000);
-  const end = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
-  return { key: String(index + 1), label: `Week ${index + 1} · ${start.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'Europe/London' })} – ${new Date(end.getTime() - 1).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'Europe/London' })}`, start: start.toISOString(), end: end.toISOString() };
-});
-
-export async function GET(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+export async function GET(request:NextRequest, { params }:{ params:Promise<{ slug:string }> }) {
   const { slug } = await params;
-  const requestedWeek = request.nextUrl.searchParams.get('week') || '';
-  const selectedWeek = weeks.find(week => week.key === requestedWeek);
+  const selectedWeek = weeks.find(period => period.key === (request.nextUrl.searchParams.get('week') || ''));
+  const selectedMonth = months.find(period => period.key === (request.nextUrl.searchParams.get('month') || ''));
+  const selectedPeriod = selectedWeek || selectedMonth;
   try {
     const db = supabaseAdmin();
-    const { data: squads, error: squadsError } = await db.from('squads').select('id,name,budget,manager_id');
-    if (squadsError) throw squadsError;
-    const squad = (squads || []).find(row => row.id === slug) || (squads || []).find(row => slugify(row.name) === slug);
-    if (!squad) return NextResponse.json({ error: 'Team not found.' }, { status: 404 });
-    const [{ data: profile, error: profileError }, { data: memberships, error: membershipError }] = await Promise.all([
-      db.from('profiles').select('display_name').eq('id', squad.manager_id).single(),
-      db.from('squad_players').select('id,fpl_id,purchase_price,acquired_at,released_at').eq('squad_id', squad.id),
-    ]);
-    if (profileError) throw profileError;
-    if (membershipError) throw membershipError;
-
-    const relevant = selectedWeek
-      ? (memberships || []).filter(member => member.acquired_at < selectedWeek.end && (!member.released_at || member.released_at > selectedWeek.start))
-      : (memberships || []).filter(member => !member.released_at);
+    const { data:squads, error:squadsError } = await db.from('squads').select('id,name,budget,manager_id'); if (squadsError) throw squadsError;
+    const squad = (squads || []).find(row => row.id === slug) || (squads || []).find(row => slugify(row.name) === slug); if (!squad) return NextResponse.json({ error:'Team not found.' }, { status:404 });
+    const [{ data:profile, error:profileError }, { data:memberships, error:membershipError }] = await Promise.all([db.from('profiles').select('display_name').eq('id', squad.manager_id).single(), db.from('squad_players').select('id,fpl_id,purchase_price,acquired_at,released_at').eq('squad_id', squad.id)]); if (profileError) throw profileError; if (membershipError) throw membershipError;
+    const relevant = selectedPeriod ? (memberships || []).filter(member => member.acquired_at < selectedPeriod.end && (!member.released_at || member.released_at > selectedPeriod.start)) : (memberships || []).filter(member => !member.released_at);
     const ids = [...new Set(relevant.map(row => row.fpl_id))];
-    const { data: fplPlayers, error: playersError } = ids.length
-      ? await db.from('fpl_players').select('fpl_id,web_name,team_id,team_name,position,raw').in('fpl_id', ids)
-      : { data: [], error: null };
-    if (playersError) throw playersError;
-    const byId = new Map((fplPlayers || []).map(player => [player.fpl_id, player]));
-    const pointsById = new Map<number, number>();
-
-    if (ids.length) {
-      let statsQuery = db.from('fpl_fixture_player_stats')
-        .select('fpl_id,kickoff_at,points_excluding_bonus')
-        .in('fpl_id', ids);
-      if (selectedWeek) statsQuery = statsQuery.gte('kickoff_at', selectedWeek.start).lt('kickoff_at', selectedWeek.end);
-      else statsQuery = statsQuery.gte('kickoff_at', '2025-08-01T00:00:00.000Z').lt('kickoff_at', '2026-06-01T00:00:00.000Z');
-      const { data: stats, error: statsError } = await statsQuery;
-      if (statsError) throw statsError;
-      for (const stat of stats || []) {
-        const ownedAtKickoff = relevant.some(member => member.fpl_id === stat.fpl_id && member.acquired_at <= stat.kickoff_at && (!member.released_at || member.released_at > stat.kickoff_at));
-        if (ownedAtKickoff) pointsById.set(stat.fpl_id, (pointsById.get(stat.fpl_id) || 0) + Number(stat.points_excluding_bonus || 0));
-      }
-    }
-
-    // A swap made inside one score week is shown as one squad slot: outgoing / incoming.
-    const groupedMemberships: any[][] = [];
-    if (selectedWeek) {
-      const assigned = new Set<string>();
-      for (const incoming of relevant.filter(member => (memberships || []).some(previous => previous.id !== member.id && previous.released_at === member.acquired_at))) {
-        const candidates = relevant.filter(member => member.id !== incoming.id && member.released_at === incoming.acquired_at && !assigned.has(member.id));
-        // Keep like-for-like swaps together first, matching the Transfers view.
-        const outgoing = candidates.find(member => (byId.get(member.fpl_id) as any)?.position === (byId.get(incoming.fpl_id) as any)?.position) || candidates[0];
-        if (outgoing) { groupedMemberships.push([outgoing, incoming]); assigned.add(outgoing.id); assigned.add(incoming.id); }
-      }
-      for (const member of relevant) if (!assigned.has(member.id)) groupedMemberships.push([member]);
-    } else groupedMemberships.push(...relevant.map(member => [member]));
-    const players = groupedMemberships.map(group => {
-      const orderedGroup = [...group].sort((a, b) => a.acquired_at.localeCompare(b.acquired_at));
-      const playerRecords = orderedGroup.map(row => byId.get(row.fpl_id) as any);
-      const individualPoints = orderedGroup.map(row => pointsById.get(row.fpl_id) || 0);
-      return {
-        fplId: orderedGroup[0]?.fpl_id || null,
-        name: playerRecords.map(player => player?.web_name || 'Unknown player').join(' / '),
-        teamId: playerRecords[0]?.team_id || null,
-        team: playerRecords.map(player => player?.team_name || '—').join(' / '),
-        position: playerRecords[0]?.position || 'MID',
-        points: individualPoints.length > 1 ? individualPoints.join(' / ') : individualPoints[0] || 0,
-        totalPoints: individualPoints.reduce((total, points) => total + points, 0),
-        price: orderedGroup.map(row => row.purchase_price).join(' / '),
-      };
-    }).sort((a, b) => positionOrder[a.position] - positionOrder[b.position] || a.name.localeCompare(b.name));
+    const { data:fplPlayers, error:playersError } = ids.length ? await db.from('fpl_players').select('fpl_id,web_name,team_id,team_name,position').in('fpl_id', ids) : { data:[], error:null }; if (playersError) throw playersError;
+    const byId = new Map((fplPlayers || []).map(player => [player.fpl_id, player])); const pointsById = new Map<number, number>();
+    if (ids.length) { let statsQuery = db.from('fpl_fixture_player_stats').select('fpl_id,kickoff_at,points_excluding_bonus').in('fpl_id', ids); if (selectedPeriod) statsQuery = statsQuery.gte('kickoff_at', selectedPeriod.start).lt('kickoff_at', selectedPeriod.end); else statsQuery = statsQuery.gte('kickoff_at', '2025-08-01T00:00:00.000Z').lt('kickoff_at', '2026-06-01T00:00:00.000Z'); const { data:stats, error:statsError } = await statsQuery; if (statsError) throw statsError; for (const stat of stats || []) { const ownedAtKickoff = relevant.some(member => member.fpl_id === stat.fpl_id && member.acquired_at <= stat.kickoff_at && (!member.released_at || member.released_at > stat.kickoff_at)); if (ownedAtKickoff) pointsById.set(stat.fpl_id, (pointsById.get(stat.fpl_id) || 0) + Number(stat.points_excluding_bonus || 0)); } }
+    const players = relevant.map(row => { const player = byId.get(row.fpl_id) as any; const points = pointsById.get(row.fpl_id) || 0; return { fplId:row.fpl_id, name:player?.web_name || 'Unknown player', teamId:player?.team_id || null, team:player?.team_name || '—', position:player?.position || 'MID', points, totalPoints:points, price:row.purchase_price }; }).sort((a,b) => positionOrder[a.position] - positionOrder[b.position] || a.name.localeCompare(b.name));
     const budget = remainingBudget(memberships || [], currentSeasonBudgetDate());
-    return NextResponse.json({ name: squad.name, manager: profile.display_name, budget, players, weeks: weeks.map(({ key, label }) => ({ key, label })), selectedWeek: selectedWeek?.key || '', pointsLabel: selectedWeek ? selectedWeek.label : 'Team points' }, { headers: { 'Cache-Control': 'no-store' } });
-  } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Unable to load team.' }, { status: 500 });
-  }
+    return NextResponse.json({ name:squad.name, manager:profile.display_name, budget, players, weeks:weeks.map(({ key,label }) => ({ key,label })), months:months.map(({ key,label }) => ({ key,label })), selectedWeek:selectedWeek?.key || '', selectedMonth:selectedMonth?.key || '', pointsLabel:selectedPeriod?.label || 'Season points' }, { headers:{ 'Cache-Control':'no-store' } });
+  } catch (error) { return NextResponse.json({ error:error instanceof Error ? error.message : 'Unable to load team.' }, { status:500 }); }
 }
