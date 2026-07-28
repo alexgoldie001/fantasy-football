@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
         const player:any = playerById.get(id) || {};
         return player.web_name || [player.first_name, player.second_name].filter(Boolean).join(' ') || `Player ${id}`;
       });
-      return NextResponse.json({ error: conflicts.map(player => `${player} is already owned by another manager and cannot be added.`).join(' ') }, { status: 409 });
+      return NextResponse.json({ error: `${conflicts.join(', ')} ${conflicts.length === 1 ? 'is' : 'are'} already owned by another manager and cannot be added.` }, { status: 409 });
     }
     // A commissioner entering a completed auction squad is a clean replacement, including an incomplete prior squad.
     // Clearing old rows avoids the unique historical (squad, player, acquired date) conflict when a player is re-added.
