@@ -1,0 +1,3 @@
+'use client';
+import { useState } from 'react'; import { supabaseBrowser } from '@/lib/supabase-browser';
+export function CupGenerator(){const [message,setMessage]=useState('');async function generate(){const {data:{session}}=await supabaseBrowser().auth.getSession();const response=await fetch('/api/cups',{method:'POST',headers:{Authorization:`Bearer ${session?.access_token||''}`}});const data=await response.json();setMessage(response.ok?'Cups generated.':data.error||'Unable to generate cups.');}return <div className="cup-generator"><button className="primary" onClick={generate}>Generate cups</button>{message&&<small>{message}</small>}</div>}
