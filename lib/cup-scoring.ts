@@ -1,19 +1,36 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { loadSeasonFixtureStats } from '@/lib/fixture-stats';
 
 type Fixture={id:string;division_id:string;home_squad_id:string;away_squad_id:string;starts_at:string;ends_at:string};
 type Membership={squad_id:string;fpl_id:number;acquired_at:string;released_at:string|null};
 
 export async function scoreCupFixtures(fixtures:Fixture[]){
   if(!fixtures.length)return new Map<string,{home:number;away:number}>();
-  const db=supabaseAdmin(); const start=[...fixtures].sort((a,b)=>a.starts_at.localeCompare(b.starts_at))[0].starts_at; const end=[...fixtures].sort((a,b)=>b.ends_at.localeCompare(a.ends_at))[0].ends_at;
-  const [{data:memberships,error:membershipError},{data:stats,error:statsError}]=await Promise.all([
-    db.from('squad_players').select('squad_id,fpl_id,acquired_at,released_at'),
-    db.from('fpl_fixture_player_stats').select('fpl_id,kickoff_at,points_excluding_bonus').gte('kickoff_at',start).lt('kickoff_at',end),
-  ]);
-  if(membershipError)throw membershipError;if(statsError)throw statsError;
-  const owned=new Map<number,Membership[]>();for(const row of memberships||[])owned.set(row.fpl_id,[...(owned.get(row.fpl_id)||[]),row]);
+  const db=supabaseAdmin();
+  const {data:memberships,error:membershipError}=await db.from('squad_players').select('squad_id,fpl_id,acquired_at,released_at');
+  if(membershipError)throw membershipError;
+
+  // Uses the same paginated, de-duplicated fixture source as League and My Team.
+  // A direct Supabase select is limited to one page, which previously caused cup
+  // fixtures later in the season to omit players and return too few points.
+  const stats=await loadSeasonFixtureStats([...new Set((memberships||[]).map(row=>row.fpl_id))]);
+  const owned=new Map<number,Membership[]>();
+  for(const row of memberships||[])owned.set(row.fpl_id,[...(owned.get(row.fpl_id)||[]),row]);
+
   const result=new Map<string,{home:number;away:number}>();
-  for(const fixture of fixtures){let home=0,away=0;for(const stat of stats||[]){if(stat.kickoff_at<fixture.starts_at||stat.kickoff_at>=fixture.ends_at)continue;const owner=(owned.get(stat.fpl_id)||[]).find(row=>row.acquired_at<=stat.kickoff_at&&(!row.released_at||row.released_at>stat.kickoff_at));if(!owner)continue;if(owner.squad_id===fixture.home_squad_id)home+=Number(stat.points_excluding_bonus||0);if(owner.squad_id===fixture.away_squad_id)away+=Number(stat.points_excluding_bonus||0);}result.set(fixture.id,{home,away});}
+  for(const fixture of fixtures){
+    let home=0,away=0;
+    const start=new Date(fixture.starts_at).getTime(),end=new Date(fixture.ends_at).getTime();
+    for(const stat of stats){
+      const kickoff=new Date(stat.kickoff_at).getTime();
+      if(kickoff<start||kickoff>=end)continue;
+      const owner=(owned.get(stat.fpl_id)||[]).find(row=>new Date(row.acquired_at).getTime()<=kickoff&&(!row.released_at||new Date(row.released_at).getTime()>kickoff));
+      if(!owner)continue;
+      if(owner.squad_id===fixture.home_squad_id)home+=Number(stat.points_excluding_bonus||0);
+      if(owner.squad_id===fixture.away_squad_id)away+=Number(stat.points_excluding_bonus||0);
+    }
+    result.set(fixture.id,{home,away});
+  }
   return result;
 }
 
