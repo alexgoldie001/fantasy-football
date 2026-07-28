@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     const db = supabaseAdmin();
     const { data: squad, error: squadError } = await db.from('squads').select('id').eq('manager_id', managerId).eq('league_id', commissioner.leagueId).single();
     if (squadError || !squad) throw squadError || new Error('Squad not found.');
-    const { data: allPlayers, error: playersError } = await db.from('fpl_players').select('fpl_id');
+    const { data: allPlayers, error: playersError } = await db.from('fpl_players').select('fpl_id,raw');
     if (playersError) throw playersError;
     const validIds = new Set((allPlayers || []).map(player => player.fpl_id));
     const fplIds = entries.map(entry => entry.fplId);
@@ -30,7 +30,15 @@ export async function POST(request: NextRequest) {
     if (new Set(fplIds).size !== 11) return NextResponse.json({ error: 'Each player can only appear once in this squad.' }, { status: 400 });
     const { data: owned, error: ownedError } = await db.from('squad_players').select('fpl_id,squad_id').in('fpl_id', fplIds).is('released_at', null);
     if (ownedError) throw ownedError;
-    if ((owned || []).some(owner => owner.squad_id !== squad.id)) return NextResponse.json({ error: 'One or more players are already owned by another manager.' }, { status: 409 });
+    const conflictingIds = new Set((owned || []).filter(owner => owner.squad_id !== squad.id).map(owner => owner.fpl_id));
+    if (conflictingIds.size) {
+      const playerById = new Map((allPlayers || []).map(player => [player.fpl_id, player.raw || {}]));
+      const conflicts = [...conflictingIds].map(id => {
+        const player:any = playerById.get(id) || {};
+        return player.web_name || [player.first_name, player.second_name].filter(Boolean).join(' ') || `Player ${id}`;
+      });
+      return NextResponse.json({ error: conflicts.map(player => `${player} is already owned by another manager and cannot be added.`).join(' ') }, { status: 409 });
+    }
     // A commissioner entering a completed auction squad is a clean replacement, including an incomplete prior squad.
     // Clearing old rows avoids the unique historical (squad, player, acquired date) conflict when a player is re-added.
     const { error: historyDeleteError } = await db.from('squad_player_gameweeks').delete().eq('squad_id', squad.id);
