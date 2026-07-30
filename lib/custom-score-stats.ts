@@ -12,14 +12,14 @@ export type CustomScoreStat = {
   position:string;
 };
 
-type FplPlayer = { fpl_id:number; web_name:string; first_name:string|null; second_name:string|null; team_name:string; position:string };
-type TffPlayer = { display_name:string; team_name:string; position:string; raw:Record<string, unknown> };
+export type FplPlayer = { fpl_id:number; web_name:string; first_name:string|null; second_name:string|null; team_name:string; position:string };
+export type TffPlayer = { display_name:string; team_name:string; position:string; raw:Record<string, unknown> };
 const fallbackSeasonStart = Date.parse('2025-08-12T05:00:00.000Z');
 const normalize = (value:string) => value.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/ı/g, 'i').toLowerCase().replace(/[^a-z0-9]/g, '');
 const tokens = (value:string) => value.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/ı/g, 'i').toLowerCase().split(/[^a-z0-9]+/).filter(token => token.length > 1);
 const normalizeTeam = (value:string) => normalize(value.replace('Manchester', 'Man').replace('United', 'Utd').replace('Nottingham Forest', 'Nottm Forest').replace('Tottenham Hotspur', 'Spurs'));
 
-function matchTffPlayer(player:FplPlayer, tffPlayers:TffPlayer[]) {
+export function matchTffPlayer(player:FplPlayer, tffPlayers:TffPlayer[]) {
   const fullName = [player.first_name, player.second_name].filter(Boolean).join(' ');
   const full = normalize(fullName), web = normalize(player.web_name), team = normalizeTeam(player.team_name);
   const aliases:Record<string, string> = { juniorkroupi:'elikroupi', kroupijr:'elikroupi' };
