@@ -9,7 +9,7 @@ import { PlayerStatsModal } from '@/components/player-stats-modal';
 
 type Player = { fplId?:number | null; name:string; teamId?:number | null; team:string; position:string; points:number | string; totalPoints?:number; price:number | string };
 type Period = { key:string; label:string };
-type Team = { name:string; manager:string; budget:number; players:Player[]; weeks?:Period[]; months?:Period[]; selectedWeek?:string; selectedMonth?:string; pointsLabel?:string };
+type Team = { name:string; manager:string; budget:number; teamPoints?:number; players:Player[]; weeks?:Period[]; months?:Period[]; selectedWeek?:string; selectedMonth?:string; pointsLabel?:string };
 
 const positions = ['GK', 'DEF', 'MID', 'FWD'];
 const positionOrder:Record<string, number> = { GK:1, DEF:2, MID:3, FWD:4 };
@@ -30,7 +30,7 @@ export function TeamView({ slug = 'north-bank' }:{ slug?:string }) {
   if (loadError) return <AppShell><section className="page-heading"><p className="eyebrow">Team unavailable</p><h1>{loadError}</h1><p className="sub">Return to the league table and open the team again from its current link.</p></section></AppShell>;
   const orderedPlayers = [...team.players].sort((a, b) => (positionOrder[a.position] || 9) - (positionOrder[b.position] || 9) || a.name.localeCompare(b.name));
   const showingPeriod = Boolean(week || month);
-  const pointsTotal = team.players.reduce((sum, player) => sum + (player.totalPoints ?? Number(player.points)), 0);
+  const pointsTotal = team.teamPoints ?? team.players.reduce((sum, player) => sum + (player.totalPoints ?? Number(player.points)), 0);
   const formation = `${orderedPlayers.filter(player => player.position === 'DEF').length}-${orderedPlayers.filter(player => player.position === 'MID').length}-${orderedPlayers.filter(player => player.position === 'FWD').length}`;
   const selectWeek = (value:string) => { setWeek(value); if (value) setMonth(''); };
   const selectMonth = (value:string) => { setMonth(value); if (value) setWeek(''); };
