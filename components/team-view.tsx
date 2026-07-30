@@ -40,7 +40,7 @@ export function TeamView({ slug = 'north-bank' }:{ slug?:string }) {
     <section className="team-stats">
       <div><UsersRound/><span><small>Formation</small><strong>{formation}</strong></span></div>
       <div><Coins/><span><small>Available funds</small><strong>£{(team.budget / 10).toFixed(1)}m</strong></span></div>
-      <div className="team-points"><span><small>{week ? 'Weekly score' : 'Season points'}</small><strong>{week ? `${pointsTotal} pts` : '—'}</strong></span><select aria-label="Select weekly score" value={week} onChange={event => selectWeek(event.target.value)}><option value="">Weekly scores</option>{(team.weeks || []).map(option => <option key={option.key} value={option.key}>{option.label}</option>)}</select></div>
+      <div className="team-points"><span><small>{week ? 'Weekly score' : 'Season points'}</small><strong>{`${pointsTotal} pts`}</strong></span><select aria-label="Select weekly score" value={week} onChange={event => selectWeek(event.target.value)}><option value="">Weekly scores</option>{(team.weeks || []).map(option => <option key={option.key} value={option.key}>{option.label}</option>)}</select></div>
       <div className="team-points"><span><small>{month ? 'Monthly score' : 'Monthly scores'}</small><strong>{month ? `${pointsTotal} pts` : '—'}</strong></span><select aria-label="Select monthly score" value={month} onChange={event => selectMonth(event.target.value)}><option value="">Monthly scores</option>{(team.months || []).map(option => <option key={option.key} value={option.key}>{option.label}</option>)}</select></div>
     </section>
     <section className="panel squad-pitch">
