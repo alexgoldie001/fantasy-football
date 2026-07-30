@@ -21,7 +21,7 @@ export async function GET(request:NextRequest, { params }:{ params:Promise<{ slu
     const { data:squads, error:squadsError } = await db.from('squads').select('id,name,budget,manager_id'); if (squadsError) throw squadsError;
     const squad = (squads || []).find(row => row.id === slug) || (squads || []).find(row => slugify(row.name) === slug); if (!squad) return NextResponse.json({ error:'Team not found.' }, { status:404 });
     const [{ data:profile, error:profileError }, { data:memberships, error:membershipError }] = await Promise.all([db.from('profiles').select('display_name').eq('id', squad.manager_id).single(), db.from('squad_players').select('id,fpl_id,purchase_price,acquired_at,released_at').eq('squad_id', squad.id)]); if (profileError) throw profileError; if (membershipError) throw membershipError;
-    const relevant = selectedPeriod ? (memberships || []).filter(member => member.acquired_at < selectedPeriod.end && (!member.released_at || member.released_at > selectedPeriod.start)) : (memberships || []);
+    const relevant = selectedPeriod ? (memberships || []).filter(member => member.acquired_at < selectedPeriod.end && (!member.released_at || member.released_at > selectedPeriod.start)) : (memberships || []).filter(member => !member.released_at);
     const ids = [...new Set(relevant.map(row => row.fpl_id))];
     const { data:fplPlayers, error:playersError } = ids.length ? await db.from('fpl_players').select('fpl_id,web_name,team_id,team_name,position').in('fpl_id', ids) : { data:[], error:null }; if (playersError) throw playersError;
     const byId = new Map((fplPlayers || []).map(player => [player.fpl_id, player])); const pointsById = new Map<number, number>();
