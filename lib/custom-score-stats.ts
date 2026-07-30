@@ -9,6 +9,7 @@ export type CustomScoreStat = {
   goals:number;
   assists:number;
   clean_sheets:number;
+  position:string;
 };
 
 type FplPlayer = { fpl_id:number; web_name:string; first_name:string|null; second_name:string|null; team_name:string; position:string };
@@ -81,7 +82,9 @@ export async function loadCustomScoreStats(playerIds?:number[]) {
       const gameweek = Number(round);
       if (!Number.isInteger(gameweek) || gameweek < 1 || gameweek > 38) continue;
       const fixture = fixtureWeeks.get(`${player.fpl_id}:${gameweek}`);
-      rows.push({ fpl_id:player.fpl_id, gameweek, kickoff_at:fixture?.kickoff_at || new Date(fallbackSeasonStart + (gameweek - 1) * 604800000).toISOString(), points:Number(score || 0), goals:fixture?.goals || 0, assists:fixture?.assists || 0, clean_sheets:fixture?.clean_sheets || 0 });
+      const points = Number(score || 0);
+      const cleanSheets = (source.position === 'GK' || source.position === 'DEF') && points > 0 ? fixture?.clean_sheets || 0 : 0;
+      rows.push({ fpl_id:player.fpl_id, gameweek, kickoff_at:fixture?.kickoff_at || new Date(fallbackSeasonStart + (gameweek - 1) * 604800000).toISOString(), points, goals:fixture?.goals || 0, assists:fixture?.assists || 0, clean_sheets:cleanSheets, position:source.position });
     }
   }
   return { rows, matchedPlayerIds:new Set(matched.keys()), unmatchedPlayers:((players || []) as FplPlayer[]).filter(player => !matched.has(player.fpl_id)).map(player => ({ fplId:player.fpl_id, name:player.web_name, team:player.team_name })) };
