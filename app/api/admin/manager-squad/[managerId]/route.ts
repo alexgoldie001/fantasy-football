@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { calculatePoints } from '@/lib/scoring';
 import { remainingBudget } from '@/lib/budget';
 import { commissionerFromRequest } from '@/lib/api-auth';
 
@@ -37,13 +36,7 @@ export async function PATCH(request:NextRequest, { params }:{ params:Promise<{ m
     if (squadError) throw squadError;
     if (!squad) return NextResponse.json({ error:'This manager does not have a squad in this league yet.' }, { status:404 });
     await repairIncompleteSquad(db, squad.id);
-    let rules:any = null, currentEvent:number | null = null, liveStats = new Map<number, Record<string,number>>();
-    if (changes.some(change => Boolean(change.replacementFplId))) {
-      const rulesResult = await db.from('scoring_rules').select('*').eq('league_id', squad.league_id).eq('is_active', true).maybeSingle();
-      if (rulesResult.error) throw rulesResult.error;
-      rules = rulesResult.data;
-      try { const bootstrapResponse = await fetch('https://fantasy.premierleague.com/api/bootstrap-static/', { cache:'no-store' }); if (bootstrapResponse.ok) { const bootstrap = await bootstrapResponse.json(); currentEvent = bootstrap.events.find((event:any) => event.is_current)?.id || bootstrap.events.find((event:any) => event.is_next)?.id || null; if (currentEvent) { const liveResponse = await fetch(`https://fantasy.premierleague.com/api/event/${currentEvent}/live/`, { cache:'no-store' }); if (liveResponse.ok) { const live = await liveResponse.json(); liveStats = new Map(live.elements.map((row:any) => [row.id, row.stats])); } } } } catch { /* A pre-gameweek replacement starts on zero points. */ }
-    }
+    const currentEvent:number | null = null;
     for (const change of changes) {
       if (!Number.isInteger(change.price) || change.price < 0) return NextResponse.json({ error:'Prices must be whole values in tenths of a million.' }, { status:400 });
       const { data:current, error:currentError } = await db.from('squad_players').select('id,fpl_id,purchase_price').eq('id', change.squadPlayerId).eq('squad_id', squad.id).is('released_at', null).single();
@@ -62,7 +55,7 @@ export async function PATCH(request:NextRequest, { params }:{ params:Promise<{ m
       if (owner) return NextResponse.json({ error:'That replacement player is already owned by another manager.' }, { status:409 });
       const { data:replacement, error:replacementError } = await db.from('fpl_players').select('position').eq('fpl_id', change.replacementFplId).single();
       if (replacementError || !replacement) throw replacementError || new Error('Replacement player not found.');
-      const offset = rules ? calculatePoints((liveStats.get(change.replacementFplId) || {}) as Record<string,number>, replacement.position, rules) : 0;
+      const offset = 0;
       const transferAt = effectiveAt.toISOString();
       if (change.price !== current.purchase_price) { const { error } = await db.from('squad_players').update({ purchase_price:change.price }).eq('id', current.id); if (error) throw error; }
       const { error:insertError } = await db.from('squad_players').insert({ squad_id:squad.id, fpl_id:change.replacementFplId, purchase_price:replacementPrice, acquired_at:transferAt, score_offset_gameweek:currentEvent, score_offset_points:offset });

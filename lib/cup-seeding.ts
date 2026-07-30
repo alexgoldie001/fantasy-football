@@ -1,4 +1,4 @@
-import { loadSeasonFixtureStats } from '@/lib/fixture-stats';
+import { loadCustomScoreStats } from '@/lib/custom-score-stats';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 
 const seasonStart='2025-08-01T00:00:00.000Z';
@@ -19,7 +19,7 @@ export async function cupSeedingRows(){
   if(membershipError||squadError||profileError)throw membershipError||squadError||profileError;
 
   const playerIds=[...new Set((memberships||[]).map(row=>row.fpl_id))];
-  const stats=await loadSeasonFixtureStats(playerIds);
+  const stats=await loadCustomScoreStats(playerIds).then(result => result.rows);
   const profilesById=new Map((profiles||[]).map(profile=>[profile.id,profile.display_name]));
   const ownedByPlayer=new Map<number,any[]>();
   for(const membership of memberships||[])ownedByPlayer.set(membership.fpl_id,[...(ownedByPlayer.get(membership.fpl_id)||[]),membership]);
@@ -29,7 +29,7 @@ export async function cupSeedingRows(){
     if(stat.kickoff_at<seasonStart||stat.kickoff_at>=seedingCutoff)continue;
     const owner=(ownedByPlayer.get(stat.fpl_id)||[]).find(membership=>membership.acquired_at<=stat.kickoff_at&&(!membership.released_at||membership.released_at>stat.kickoff_at));
     const row=owner&&totals.get(owner.squad_id);
-    if(row)row.points+=Number(stat.points_excluding_bonus||0);
+    if(row)row.points+=Number(stat.points||0);
   }
   return [...totals.values()].sort((a,b)=>b.points-a.points||a.team.localeCompare(b.team)).map((row,index)=>({...row,rank:index+1}));
 }

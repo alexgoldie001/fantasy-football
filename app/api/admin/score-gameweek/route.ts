@@ -1,36 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { calculatePoints } from '@/lib/scoring';
-import { supabaseAdmin } from '@/lib/supabase-admin';
 import { cronAuthorised } from '@/lib/api-auth';
+import { loadCustomScoreStats } from '@/lib/custom-score-stats';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 
-// Snapshot custom scores per manager. Run after FPL updates, and once after the gameweek closes.
-export async function POST(request: NextRequest) {
-  if (!cronAuthorised(request)) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 });
+// Snapshot the same weekly custom scores used throughout the app.
+export async function POST(request:NextRequest) {
+  if (!cronAuthorised(request)) return NextResponse.json({ error:'Unauthorised' }, { status:401 });
   const { leagueId, gameweek } = await request.json();
-  if (!leagueId || !gameweek) return NextResponse.json({ error: 'leagueId and gameweek are required' }, { status: 400 });
+  if (!leagueId || !gameweek) return NextResponse.json({ error:'leagueId and gameweek are required' }, { status:400 });
   try {
     const db = supabaseAdmin();
-    const [live, rulesResult, squadsResult] = await Promise.all([
-      fetch(`https://fantasy.premierleague.com/api/event/${gameweek}/live/`, { headers: { 'User-Agent': 'TheDraftLeague/1.0' } }).then(r => r.json()),
-      db.from('scoring_rules').select('*').eq('league_id', leagueId).eq('is_active', true).single(),
-      db.from('squads').select('id,manager_id,squad_players(fpl_id,released_at,score_offset_gameweek,score_offset_points,fpl_players(position))').eq('league_id', leagueId),
-    ]);
-    if (rulesResult.error) throw rulesResult.error;
-    const liveStats = new Map<number, Record<string, number>>(live.elements.map((row: { id: number; stats: Record<string, number> }) => [row.id, row.stats] as [number, Record<string, number>]));
-    const playerHistory: { squad_id:string; fpl_id:number; gameweek:number; points:number }[] = [];
-    const records = (squadsResult.data || []).map(squad => {
-      const scores = (squad.squad_players || []).filter(p => !p.released_at).map(p => { const points=Math.max(0,calculatePoints(liveStats.get(p.fpl_id) || ({} as Record<string, number>), p.fpl_players[0]?.position || 'MID', rulesResult.data) - (p.score_offset_gameweek===gameweek?p.score_offset_points||0:0)); playerHistory.push({squad_id:squad.id,fpl_id:p.fpl_id,gameweek,points}); return { fplId: p.fpl_id, points }; });
-      return { league_id: leagueId, manager_id: squad.manager_id, gameweek, points: scores.reduce((total, p) => total + p.points, 0), total_points: 0, breakdown: scores };
-    });
-    // Running totals must include this snapshot but not a prior snapshot for this gameweek.
-    for (const record of records) {
-      const { data: previous } = await db.from('gameweek_scores').select('points').eq('league_id', leagueId).eq('manager_id', record.manager_id).lt('gameweek', gameweek);
-      record.total_points = (previous || []).reduce((total, score) => total + score.points, 0) + record.points;
+    const { data:squads, error:squadsError } = await db.from('squads').select('id,manager_id').eq('league_id', leagueId);
+    if (squadsError) throw squadsError;
+    const squadIds = (squads || []).map(squad => squad.id);
+    const { data:memberships, error:membershipsError } = squadIds.length ? await db.from('squad_players').select('squad_id,fpl_id,acquired_at,released_at').in('squad_id', squadIds) : { data:[], error:null };
+    if (membershipsError) throw membershipsError;
+    const custom = await loadCustomScoreStats([...new Set((memberships || []).map(row => row.fpl_id))]);
+    const weekStats = custom.rows.filter(row => row.gameweek === Number(gameweek));
+    const pointsBySquad = new Map<string, number>();
+    const playerHistory:{ squad_id:string; fpl_id:number; gameweek:number; points:number }[] = [];
+    for (const stat of weekStats) {
+      const owner = (memberships || []).find(row => row.fpl_id === stat.fpl_id && row.acquired_at <= stat.kickoff_at && (!row.released_at || row.released_at > stat.kickoff_at));
+      if (!owner) continue;
+      pointsBySquad.set(owner.squad_id, (pointsBySquad.get(owner.squad_id) || 0) + stat.points);
+      playerHistory.push({ squad_id:owner.squad_id, fpl_id:stat.fpl_id, gameweek:Number(gameweek), points:stat.points });
     }
-    const { error } = await db.from('gameweek_scores').upsert(records, { onConflict: 'league_id,manager_id,gameweek' });
+    const records = [];
+    for (const squad of squads || []) {
+      const { data:previous, error:previousError } = await db.from('gameweek_scores').select('points').eq('league_id', leagueId).eq('manager_id', squad.manager_id).lt('gameweek', Number(gameweek));
+      if (previousError) throw previousError;
+      const points = pointsBySquad.get(squad.id) || 0;
+      records.push({ league_id:leagueId, manager_id:squad.manager_id, gameweek:Number(gameweek), points, total_points:(previous || []).reduce((total, row) => total + Number(row.points || 0), 0) + points, breakdown:playerHistory.filter(row => row.squad_id === squad.id).map(row => ({ fplId:row.fpl_id, points:row.points })) });
+    }
+    const { error } = await db.from('gameweek_scores').upsert(records, { onConflict:'league_id,manager_id,gameweek' });
     if (error) throw error;
-    const { error: historyError } = await db.from('squad_player_gameweeks').upsert(playerHistory, { onConflict: 'squad_id,fpl_id,gameweek' });
-    if (historyError) throw historyError;
-    return NextResponse.json({ scored: records.length, gameweek });
-  } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : 'Scoring failed' }, { status: 500 }); }
+    if (playerHistory.length) { const { error:historyError } = await db.from('squad_player_gameweeks').upsert(playerHistory, { onConflict:'squad_id,fpl_id,gameweek' }); if (historyError) throw historyError; }
+    return NextResponse.json({ scored:records.length, gameweek:Number(gameweek), unmatchedPlayers:custom.unmatchedPlayers });
+  } catch (error) { return NextResponse.json({ error:error instanceof Error ? error.message : 'Scoring failed' }, { status:500 }); }
 }

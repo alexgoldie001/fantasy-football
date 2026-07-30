@@ -1,5 +1,5 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { loadSeasonFixtureStats } from '@/lib/fixture-stats';
+import { loadCustomScoreStats } from '@/lib/custom-score-stats';
 
 type Fixture={id:string;division_id:string;home_squad_id:string;away_squad_id:string;starts_at:string;ends_at:string};
 type Membership={squad_id:string;fpl_id:number;acquired_at:string;released_at:string|null};
@@ -13,7 +13,7 @@ export async function scoreCupFixtures(fixtures:Fixture[]){
   // Uses the same paginated, de-duplicated fixture source as League and My Team.
   // A direct Supabase select is limited to one page, which previously caused cup
   // fixtures later in the season to omit players and return too few points.
-  const stats=await loadSeasonFixtureStats([...new Set((memberships||[]).map(row=>row.fpl_id))]);
+  const stats=await loadCustomScoreStats([...new Set((memberships||[]).map(row=>row.fpl_id))]).then(result => result.rows);
   const owned=new Map<number,Membership[]>();
   for(const row of memberships||[])owned.set(row.fpl_id,[...(owned.get(row.fpl_id)||[]),row]);
 
@@ -26,8 +26,8 @@ export async function scoreCupFixtures(fixtures:Fixture[]){
       if(kickoff<start||kickoff>=end)continue;
       const owner=(owned.get(stat.fpl_id)||[]).find(row=>new Date(row.acquired_at).getTime()<=kickoff&&(!row.released_at||new Date(row.released_at).getTime()>kickoff));
       if(!owner)continue;
-      if(owner.squad_id===fixture.home_squad_id)home+=Number(stat.points_excluding_bonus||0);
-      if(owner.squad_id===fixture.away_squad_id)away+=Number(stat.points_excluding_bonus||0);
+      if(owner.squad_id===fixture.home_squad_id)home+=Number(stat.points||0);
+      if(owner.squad_id===fixture.away_squad_id)away+=Number(stat.points||0);
     }
     result.set(fixture.id,{home,away});
   }

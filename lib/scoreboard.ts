@@ -1,5 +1,5 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { loadSeasonFixtureStats, type FixtureStat } from '@/lib/fixture-stats';
+import { loadCustomScoreStats, type CustomScoreStat } from '@/lib/custom-score-stats';
 
 type Period = 'season' | 'week' | 'month';
 type PeriodOption = { key:string; label:string; start:string; end:string };
@@ -22,25 +22,23 @@ const ranked = (totals:Map<string, any>) => [...totals.values()].sort((a, b) => 
 
 export async function scoreBoard(period:Period = 'season', key?:string) {
   const db = supabaseAdmin();
-  const [{ data:memberships, error:membershipsError }, { data:squads, error:squadsError }, { data:profiles, error:profilesError }, { data:players, error:playersError }] = await Promise.all([
+  const [{ data:memberships, error:membershipsError }, { data:squads, error:squadsError }, { data:profiles, error:profilesError }] = await Promise.all([
     db.from('squad_players').select('squad_id,fpl_id,acquired_at,released_at'),
     db.from('squads').select('id,name,manager_id'),
     db.from('profiles').select('id,display_name'),
-    db.from('fpl_players').select('fpl_id,raw'),
   ]);
   if (membershipsError) throw membershipsError;
   if (squadsError) throw squadsError;
   if (profilesError) throw profilesError;
-  if (playersError) throw playersError;
 
   const playerIds = [...new Set((memberships || []).map((membership:any) => membership.fpl_id))];
-  const allStats = await loadSeasonFixtureStats(playerIds);
+  const allStats = await loadCustomScoreStats(playerIds).then(result => result.rows);
 
   const squadById = new Map((squads || []).map((squad:any) => [squad.id, squad]));
   const profileById = new Map((profiles || []).map((profile:any) => [profile.id, profile]));
   const membershipsByPlayer = new Map<number, any[]>();
   for (const membership of memberships || []) membershipsByPlayer.set(membership.fpl_id, [...(membershipsByPlayer.get(membership.fpl_id) || []), membership]);
-  const addFixtureStats = (filter:(stat:FixtureStat) => boolean, includeEmpty:boolean) => {
+  const addFixtureStats = (filter:(stat:CustomScoreStat) => boolean, includeEmpty:boolean) => {
     const totals = new Map<string, any>();
     for (const stat of allStats) {
       if (!filter(stat)) continue;
@@ -49,7 +47,7 @@ export async function scoreBoard(period:Period = 'season', key?:string) {
       const squad = squadById.get(owner.squad_id);
       if (!squad) continue;
       const row = totals.get(squad.id) || emptyRow(squad, profileById);
-      row.points += Number(stat.points_excluding_bonus || 0);
+      row.points += Number(stat.points || 0);
       row.goals += Number(stat.goals || 0);
       row.assists += Number(stat.assists || 0);
       row.cleanSheets += Number(stat.clean_sheets || 0);
@@ -59,28 +57,11 @@ export async function scoreBoard(period:Period = 'season', key?:string) {
     return totals;
   };
 
-  const latestWeek = weeks[weeks.length - 1];
-  const latestMonth = months[months.length - 1];
+  const latestKickoff = allStats.reduce((latest, stat) => stat.kickoff_at > latest ? stat.kickoff_at : latest, '');
+  const latestWeek = weeks.find(option => latestKickoff >= option.start && latestKickoff < option.end) || weeks[weeks.length - 1];
+  const latestMonth = months.find(option => latestKickoff >= option.start && latestKickoff < option.end) || months[months.length - 1];
   const selected = period === 'week' ? (weeks.find(option => option.key === (key || latestWeek.key)) || latestWeek) : period === 'month' ? (months.find(option => option.key === (key || latestMonth.key)) || latestMonth) : undefined;
-  let seasonTotals = addFixtureStats(() => true, true);
-  if (!allStats.length) {
-    seasonTotals = new Map<string, any>();
-    const playerById = new Map((players || []).map((player:any) => [player.fpl_id, player.raw || {}]));
-    for (const [fplId, owned] of membershipsByPlayer) {
-      const owner = owned.find(member => !member.released_at);
-      const squad = owner && squadById.get(owner.squad_id);
-      const player:any = playerById.get(fplId);
-      if (!squad || !player) continue;
-      const row = seasonTotals.get(squad.id) || emptyRow(squad, profileById);
-      row.points += Number(player.total_points || 0) - Number(player.bonus || 0);
-      row.goals += Number(player.goals_scored || 0);
-      row.assists += Number(player.assists || 0);
-      row.cleanSheets += Number(player.clean_sheets || 0);
-      seasonTotals.set(squad.id, row);
-    }
-    for (const squad of squads || []) if (!seasonTotals.has(squad.id)) seasonTotals.set(squad.id, emptyRow(squad, profileById));
-  }
-
+  const seasonTotals = addFixtureStats(() => true, true);
   const weeklyTotals = addFixtureStats(stat => stat.kickoff_at >= latestWeek.start && stat.kickoff_at < latestWeek.end, false);
   const monthlyTotals = addFixtureStats(stat => stat.kickoff_at >= latestMonth.start && stat.kickoff_at < latestMonth.end, false);
   for (const [id, row] of seasonTotals) { row.weekPoints = weeklyTotals.get(id)?.points || 0; row.monthPoints = monthlyTotals.get(id)?.points || 0; }

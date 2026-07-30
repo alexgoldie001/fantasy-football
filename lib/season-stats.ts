@@ -1,5 +1,5 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { loadSeasonFixtureStats, type FixtureStat } from '@/lib/fixture-stats';
+import { loadCustomScoreStats, type CustomScoreStat } from '@/lib/custom-score-stats';
 
 type Period = { label:string; start:string; end:string };
 type RecordRow = { id:string; category:string; subject:string; value:string; detail:string; playerId?:number };
@@ -14,16 +14,16 @@ export async function seasonStats() {
   const [{ data:memberships, error:membershipsError }, { data:squads, error:squadsError }, { data:players, error:playersError }] = await Promise.all([db.from('squad_players').select('squad_id,fpl_id,acquired_at,released_at'), db.from('squads').select('id,name'), db.from('fpl_players').select('fpl_id,web_name,position')]);
   if (membershipsError) throw membershipsError; if (squadsError) throw squadsError; if (playersError) throw playersError;
   const playerIds = [...new Set((memberships || []).map((member:any) => member.fpl_id))];
-  const stats = await loadSeasonFixtureStats(playerIds);
+  const stats = await loadCustomScoreStats(playerIds).then(result => result.rows);
   const squadNames = new Map((squads || []).map((squad:any) => [squad.id, squad.name]));
   const playerInfo = new Map((players || []).map((player:any) => [player.fpl_id, player]));
   const playerNames = new Map((players || []).map((player:any) => [player.fpl_id, player.web_name]));
   const membershipsByPlayer = new Map<number, any[]>(); for (const member of memberships || []) membershipsByPlayer.set(member.fpl_id, [...(membershipsByPlayer.get(member.fpl_id) || []), member]);
   const ownedStats = stats.flatMap(stat => { const owner = (membershipsByPlayer.get(stat.fpl_id) || []).find(member => member.acquired_at <= stat.kickoff_at && (!member.released_at || member.released_at > stat.kickoff_at)); return owner ? [{ stat, owner }] : []; });
-  const teamPeriod = (periods:Period[]) => { const values = new Map<string, number>(), names = new Map<string, string>(); for (const { stat, owner } of ownedStats) for (const period of periods) if (stat.kickoff_at >= period.start && stat.kickoff_at < period.end) { const key = `${period.label}|${owner.squad_id}`; values.set(key, (values.get(key) || 0) + Number(stat.points_excluding_bonus || 0)); names.set(key, `${squadNames.get(owner.squad_id) || 'Team'} · ${period.label}`); } return topEntry(values, names); };
-  const playerPeriod = (periods:Period[]) => { const values = new Map<string, number>(), names = new Map<string, string>(); for (const { stat } of ownedStats) for (const period of periods) if (stat.kickoff_at >= period.start && stat.kickoff_at < period.end) { const key = `${period.label}|${stat.fpl_id}`; values.set(key, (values.get(key) || 0) + Number(stat.points_excluding_bonus || 0)); names.set(key, `${playerNames.get(stat.fpl_id) || 'Player'} · ${period.label}`); } return topEntry(values, names); };
-  const playerTotal = (field:'goals'|'assists'|'points_excluding_bonus', goalkeeperOnly = false) => { const values = new Map<string, number>(); for (const { stat } of ownedStats) { if (goalkeeperOnly && playerInfo.get(stat.fpl_id)?.position !== 'GK') continue; const id = String(stat.fpl_id); values.set(id, (values.get(id) || 0) + Number(stat[field] || 0)); } return topEntry(values, new Map([...playerNames].map(([id, name]) => [String(id), name]))); };
-  const topTeamWeek = teamPeriod(weeks), topTeamMonth = teamPeriod(months), topPlayerWeek = playerPeriod(weeks), topPlayerMonth = playerPeriod(months), topGoals = playerTotal('goals'), topAssists = playerTotal('assists'), topGoalkeeper = playerTotal('points_excluding_bonus', true);
+  const teamPeriod = (periods:Period[]) => { const values = new Map<string, number>(), names = new Map<string, string>(); for (const { stat, owner } of ownedStats) for (const period of periods) if (stat.kickoff_at >= period.start && stat.kickoff_at < period.end) { const key = `${period.label}|${owner.squad_id}`; values.set(key, (values.get(key) || 0) + Number(stat.points || 0)); names.set(key, `${squadNames.get(owner.squad_id) || 'Team'} · ${period.label}`); } return topEntry(values, names); };
+  const playerPeriod = (periods:Period[]) => { const values = new Map<string, number>(), names = new Map<string, string>(); for (const { stat } of ownedStats) for (const period of periods) if (stat.kickoff_at >= period.start && stat.kickoff_at < period.end) { const key = `${period.label}|${stat.fpl_id}`; values.set(key, (values.get(key) || 0) + Number(stat.points || 0)); names.set(key, `${playerNames.get(stat.fpl_id) || 'Player'} · ${period.label}`); } return topEntry(values, names); };
+  const playerTotal = (field:'goals'|'assists'|'points', goalkeeperOnly = false) => { const values = new Map<string, number>(); for (const { stat } of ownedStats) { if (goalkeeperOnly && playerInfo.get(stat.fpl_id)?.position !== 'GK') continue; const id = String(stat.fpl_id); values.set(id, (values.get(id) || 0) + Number(stat[field] || 0)); } return topEntry(values, new Map([...playerNames].map(([id, name]) => [String(id), name]))); };
+  const topTeamWeek = teamPeriod(weeks), topTeamMonth = teamPeriod(months), topPlayerWeek = playerPeriod(weeks), topPlayerMonth = playerPeriod(months), topGoals = playerTotal('goals'), topAssists = playerTotal('assists'), topGoalkeeper = playerTotal('points', true);
   const playerId = (key:string) => Number(key.split('|').pop()) || undefined;
   const records:RecordRow[] = [
     { id:'team-week', category:'Highest manager team weekly score', subject:topTeamWeek.name, value:`${topTeamWeek.value} pts`, detail:'League-specific fixture points' },

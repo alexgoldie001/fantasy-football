@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { currentSeasonBudgetDate, remainingBudget } from '@/lib/budget';
+import { loadCustomScoreStats } from '@/lib/custom-score-stats';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -20,25 +21,22 @@ export async function GET(request:NextRequest, { params }:{ params:Promise<{ slu
     const { data:squads, error:squadsError } = await db.from('squads').select('id,name,budget,manager_id'); if (squadsError) throw squadsError;
     const squad = (squads || []).find(row => row.id === slug) || (squads || []).find(row => slugify(row.name) === slug); if (!squad) return NextResponse.json({ error:'Team not found.' }, { status:404 });
     const [{ data:profile, error:profileError }, { data:memberships, error:membershipError }] = await Promise.all([db.from('profiles').select('display_name').eq('id', squad.manager_id).single(), db.from('squad_players').select('id,fpl_id,purchase_price,acquired_at,released_at').eq('squad_id', squad.id)]); if (profileError) throw profileError; if (membershipError) throw membershipError;
-    const relevant = selectedPeriod ? (memberships || []).filter(member => member.acquired_at < selectedPeriod.end && (!member.released_at || member.released_at > selectedPeriod.start)) : (memberships || []).filter(member => !member.released_at);
+    const relevant = selectedPeriod ? (memberships || []).filter(member => member.acquired_at < selectedPeriod.end && (!member.released_at || member.released_at > selectedPeriod.start)) : (memberships || []);
     const ids = [...new Set(relevant.map(row => row.fpl_id))];
     const { data:fplPlayers, error:playersError } = ids.length ? await db.from('fpl_players').select('fpl_id,web_name,team_id,team_name,position').in('fpl_id', ids) : { data:[], error:null }; if (playersError) throw playersError;
     const byId = new Map((fplPlayers || []).map(player => [player.fpl_id, player])); const pointsById = new Map<number, number>();
-    if (ids.length) { let statsQuery = db.from('fpl_fixture_player_stats').select('fpl_id,kickoff_at,points_excluding_bonus').in('fpl_id', ids); if (selectedPeriod) statsQuery = statsQuery.gte('kickoff_at', selectedPeriod.start).lt('kickoff_at', selectedPeriod.end); else statsQuery = statsQuery.gte('kickoff_at', '2025-08-01T00:00:00.000Z').lt('kickoff_at', '2026-06-01T00:00:00.000Z'); const { data:stats, error:statsError } = await statsQuery; if (statsError) throw statsError; for (const stat of stats || []) { const ownedAtKickoff = relevant.some(member => member.fpl_id === stat.fpl_id && member.acquired_at <= stat.kickoff_at && (!member.released_at || member.released_at > stat.kickoff_at)); if (ownedAtKickoff) pointsById.set(stat.fpl_id, (pointsById.get(stat.fpl_id) || 0) + Number(stat.points_excluding_bonus || 0)); } }
+    if (ids.length) { const custom = await loadCustomScoreStats(ids); for (const stat of custom.rows) { if (selectedPeriod && (stat.kickoff_at < selectedPeriod.start || stat.kickoff_at >= selectedPeriod.end)) continue; const ownedAtKickoff = relevant.some(member => member.fpl_id === stat.fpl_id && member.acquired_at <= stat.kickoff_at && (!member.released_at || member.released_at > stat.kickoff_at)); if (ownedAtKickoff) pointsById.set(stat.fpl_id, (pointsById.get(stat.fpl_id) || 0) + Number(stat.points || 0)); } }
     // Keep a sale and its replacement in the same slot for the selected period.
     // This preserves the player-out / player-in presentation in both team views.
     const sameTransferMoment = (left:string | null, right:string) => Boolean(left) && new Date(left!).getTime() === new Date(right).getTime();
     const groupedMemberships:any[][] = [];
-    if (selectedPeriod) {
-      const assigned = new Set<string>();
-      for (const incoming of relevant) {
-        const candidates = relevant.filter(outgoing => outgoing.id !== incoming.id && !assigned.has(outgoing.id) && sameTransferMoment(outgoing.released_at, incoming.acquired_at));
-        const outgoing = candidates.find(candidate => (byId.get(candidate.fpl_id) as any)?.position === (byId.get(incoming.fpl_id) as any)?.position) || candidates[0];
-        if (outgoing) { groupedMemberships.push([outgoing, incoming]); assigned.add(outgoing.id); assigned.add(incoming.id); }
-      }
-      for (const member of relevant) if (!assigned.has(member.id)) groupedMemberships.push([member]);
-    } else groupedMemberships.push(...relevant.map(member => [member]));
-    const players = groupedMemberships.map(group => {
+    const assigned = new Set<string>();
+    for (const incoming of relevant) {
+      const candidates = relevant.filter(outgoing => outgoing.id !== incoming.id && !assigned.has(outgoing.id) && sameTransferMoment(outgoing.released_at, incoming.acquired_at));
+      const outgoing = candidates.find(candidate => (byId.get(candidate.fpl_id) as any)?.position === (byId.get(incoming.fpl_id) as any)?.position) || candidates[0];
+      if (outgoing) { groupedMemberships.push([outgoing, incoming]); assigned.add(outgoing.id); assigned.add(incoming.id); }
+    }
+    for (const member of relevant) if (!assigned.has(member.id)) groupedMemberships.push([member]);    const players = groupedMemberships.map(group => {
       const orderedGroup = [...group].sort((a, b) => a.acquired_at.localeCompare(b.acquired_at));
       const records = orderedGroup.map(row => byId.get(row.fpl_id) as any);
       const points = orderedGroup.map(row => pointsById.get(row.fpl_id) || 0);
