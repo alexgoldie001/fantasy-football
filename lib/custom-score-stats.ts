@@ -87,5 +87,5 @@ export async function loadCustomScoreStats(playerIds?:number[]) {
       rows.push({ fpl_id:player.fpl_id, gameweek, kickoff_at:fixture?.kickoff_at || new Date(fallbackSeasonStart + (gameweek - 1) * 604800000).toISOString(), points, goals:fixture?.goals || 0, assists:fixture?.assists || 0, clean_sheets:cleanSheets, position:source.position });
     }
   }
-  return { rows, matchedPlayerIds:new Set(matched.keys()), unmatchedPlayers:((players || []) as FplPlayer[]).filter(player => !matched.has(player.fpl_id)).map(player => ({ fplId:player.fpl_id, name:player.web_name, team:player.team_name })) };
+  return { rows, matchedPlayerIds:new Set(matched.keys()), matchedPositions:new Map([...matched].map(([fplId, player]) => [fplId, player.position])), unmatchedPlayers:((players || []) as FplPlayer[]).filter(player => !matched.has(player.fpl_id)).map(player => ({ fplId:player.fpl_id, name:player.web_name, team:player.team_name })) };
 }

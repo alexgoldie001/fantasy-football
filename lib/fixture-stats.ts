@@ -9,6 +9,7 @@ export type FixtureStat = {
   goals: number;
   assists: number;
   clean_sheets: number;
+  raw?: { stats?: Array<{ identifier?:string; value?:number; points?:number }> } | null;
 };
 
 const PAGE_SIZE = 1000;
@@ -26,7 +27,7 @@ export async function loadSeasonFixtureStats(playerIds: number[]) {
   const db = supabaseAdmin();
   const baseQuery = () => db
     .from('fpl_fixture_player_stats')
-    .select('fixture_id,fpl_id,gameweek,kickoff_at,points_excluding_bonus,goals,assists,clean_sheets')
+    .select('fixture_id,fpl_id,gameweek,kickoff_at,points_excluding_bonus,goals,assists,clean_sheets,raw')
     .in('fpl_id', playerIds)
     .gte('kickoff_at', SEASON_START)
     .lt('kickoff_at', SEASON_END)
