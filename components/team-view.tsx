@@ -1,8 +1,6 @@
 'use client';
 
 import { AppShell } from '@/components/app-shell';
-import { players as demoPlayers } from '@/lib/demo-data';
-import { getTeam } from '@/lib/teams';
 import { Coins, UsersRound } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { PlayerStatsModal } from '@/components/player-stats-modal';
@@ -15,19 +13,21 @@ const positions = ['GK', 'DEF', 'MID', 'FWD'];
 const positionOrder:Record<string, number> = { GK:1, DEF:2, MID:3, FWD:4 };
 
 export function TeamView({ slug = 'north-bank' }:{ slug?:string }) {
-  const fallback = getTeam(slug) ?? getTeam('north-bank')!;
   const [week, setWeek] = useState('');
   const [month, setMonth] = useState('');
-  const [team, setTeam] = useState<Team>({ name:fallback.name, manager:fallback.manager, budget:85, players:demoPlayers.slice(0, 11).map(player => ({ name:player.name, team:player.team, position:player.position, points:player.points, price:player.price })) });
+  const [team, setTeam] = useState<Team | null>(null);
   const [loadError, setLoadError] = useState('');
   const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
     const query = new URLSearchParams(); if (week) query.set('week', week); if (month) query.set('month', month);
-    fetch(`/api/teams/${slug}${query.size ? `?${query}` : ''}`, { cache:'no-store' }).then(async response => { if (!response.ok) throw new Error('Team not found.'); return response.json(); }).then(data => { setTeam(data); setLoadError(''); }).catch(error => { if (slug !== 'north-bank') setLoadError(error.message); });
+    fetch(`/api/teams/${slug}${query.size ? `?${query}` : ''}`, { cache:'no-store', signal:controller.signal }).then(async response => { if (!response.ok) throw new Error('Team not found.'); return response.json(); }).then(data => { setTeam(data); setLoadError(''); }).catch(error => { if (error.name !== 'AbortError') setLoadError(error.message); });
+    return () => controller.abort();
   }, [slug, week, month]);
 
   if (loadError) return <AppShell><section className="page-heading"><p className="eyebrow">Team unavailable</p><h1>{loadError}</h1><p className="sub">Return to the league table and open the team again from its current link.</p></section></AppShell>;
+  if (!team) return <AppShell>{null}</AppShell>;
   const orderedPlayers = [...team.players].sort((a, b) => (positionOrder[a.position] || 9) - (positionOrder[b.position] || 9) || a.name.localeCompare(b.name));
   const showingPeriod = Boolean(week || month);
   const pointsTotal = team.teamPoints ?? team.players.reduce((sum, player) => sum + (player.totalPoints ?? Number(player.points)), 0);

@@ -24,10 +24,13 @@ export async function GET(request:NextRequest, { params }:{ params:Promise<{ slu
     const relevant = selectedPeriod ? (memberships || []).filter(member => member.acquired_at < selectedPeriod.end && (!member.released_at || member.released_at > selectedPeriod.start)) : (memberships || []).filter(member => !member.released_at);
     const ids = [...new Set(relevant.map(row => row.fpl_id))];
     const allIds = [...new Set((memberships || []).map(row => row.fpl_id))];
-    const { data:fplPlayers, error:playersError } = ids.length ? await db.from('fpl_players').select('fpl_id,web_name,team_id,team_name,position').in('fpl_id', ids) : { data:[], error:null }; if (playersError) throw playersError;
+    const [{ data:fplPlayers, error:playersError }, custom] = await Promise.all([
+      ids.length ? db.from('fpl_players').select('fpl_id,web_name,team_id,team_name,position').in('fpl_id', ids) : Promise.resolve({ data:[], error:null }),
+      allIds.length ? loadCustomScoreStats(allIds) : Promise.resolve({ rows:[] }),
+    ]); if (playersError) throw playersError;
     const byId = new Map((fplPlayers || []).map(player => [player.fpl_id, player])); const pointsById = new Map<number, number>();
     let teamPoints = 0;
-    if (allIds.length) { const custom = await loadCustomScoreStats(allIds); for (const stat of custom.rows) { if (selectedPeriod && (stat.kickoff_at < selectedPeriod.start || stat.kickoff_at >= selectedPeriod.end)) continue; const ownedBySquad = (memberships || []).some(member => member.fpl_id === stat.fpl_id && member.acquired_at <= stat.kickoff_at && (!member.released_at || member.released_at > stat.kickoff_at)); if (ownedBySquad) teamPoints += Number(stat.points || 0); const ownedByDisplayedPlayer = relevant.some(member => member.fpl_id === stat.fpl_id && member.acquired_at <= stat.kickoff_at && (!member.released_at || member.released_at > stat.kickoff_at)); if (ownedByDisplayedPlayer) pointsById.set(stat.fpl_id, (pointsById.get(stat.fpl_id) || 0) + Number(stat.points || 0)); } }
+    for (const stat of custom.rows) { if (selectedPeriod && (stat.kickoff_at < selectedPeriod.start || stat.kickoff_at >= selectedPeriod.end)) continue; const ownedBySquad = (memberships || []).some(member => member.fpl_id === stat.fpl_id && member.acquired_at <= stat.kickoff_at && (!member.released_at || member.released_at > stat.kickoff_at)); if (ownedBySquad) teamPoints += Number(stat.points || 0); const ownedByDisplayedPlayer = relevant.some(member => member.fpl_id === stat.fpl_id && member.acquired_at <= stat.kickoff_at && (!member.released_at || member.released_at > stat.kickoff_at)); if (ownedByDisplayedPlayer) pointsById.set(stat.fpl_id, (pointsById.get(stat.fpl_id) || 0) + Number(stat.points || 0)); }
     // Keep a sale and its replacement in the same slot for the selected period.
     // This preserves the player-out / player-in presentation in both team views.
     const sameTransferMoment = (left:string | null, right:string) => Boolean(left) && new Date(left!).getTime() === new Date(right).getTime();
