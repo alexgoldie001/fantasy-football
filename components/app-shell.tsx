@@ -36,7 +36,7 @@ export function AppShell({ children }:{ children:React.ReactNode }) {
   const links = [
     { href:'/league', label:'League', icon:Trophy },
     { href:account.squad ? `/team/${account.squad.id}` : '/team', label:'My team', icon:Shield },
-    { href:'/players', label:'Players', icon:Users },
+    { href:'/players/tff-stats', label:'Players', icon:Users },
     { href:'/transfers', label:'Transfers', icon:BarChart3 },
     { href:'/cup', label:'Cup', icon:Trophy },
     ...(account.isAdmin ? [{ href:'/admin/managers', label:'Manage', icon:UserRoundCog }] : []),
