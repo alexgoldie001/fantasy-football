@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { leaguePosition } from '@/lib/tff-position';
 import { saleReturn } from '@/lib/budget';
 
 export const dynamic = 'force-dynamic';
@@ -27,7 +28,7 @@ export async function GET() {
       db.from('squads').select('id,name,manager_id'),
       db.from('profiles').select('id,display_name'),
       db.from('squad_players').select('id,squad_id,fpl_id,purchase_price,acquired_at,released_at'),
-      db.from('fpl_players').select('fpl_id,web_name,position'),
+      db.from('fpl_players').select('fpl_id,web_name,first_name,second_name,team_name,position'),
     ]);
     if (squadsError) throw squadsError;
     if (profilesError) throw profilesError;
@@ -35,7 +36,7 @@ export async function GET() {
     if (playersError) throw playersError;
 
     const managerNames = new Map((profiles || []).map(profile => [profile.id, profile.display_name]));
-    const playersById = new Map((players || []).map(player => [player.fpl_id, { name:player.web_name, position:player.position }]));
+    const playersById = new Map((players || []).map(player => [player.fpl_id, { name:player.web_name, position:leaguePosition(player) }]));
     const membershipsBySquad = new Map<string, any[]>();
     for (const membership of memberships || []) membershipsBySquad.set(membership.squad_id, [...(membershipsBySquad.get(membership.squad_id) || []), membership]);
     const playerDetails = (fplId:number) => playersById.get(fplId) || { name:'Unknown player', position:'—' };

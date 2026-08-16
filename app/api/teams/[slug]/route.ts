@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { currentSeasonBudgetDate, remainingBudget } from '@/lib/budget';
 import { loadCustomScoreStats } from '@/lib/custom-score-stats';
+import { leaguePosition } from '@/lib/tff-position';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -25,10 +26,10 @@ export async function GET(request:NextRequest, { params }:{ params:Promise<{ slu
     const ids = [...new Set(relevant.map(row => row.fpl_id))];
     const allIds = [...new Set((memberships || []).map(row => row.fpl_id))];
     const [{ data:fplPlayers, error:playersError }, custom] = await Promise.all([
-      ids.length ? db.from('fpl_players').select('fpl_id,web_name,team_id,team_name,position').in('fpl_id', ids) : Promise.resolve({ data:[], error:null }),
+      ids.length ? db.from('fpl_players').select('fpl_id,web_name,first_name,second_name,team_id,team_name,position').in('fpl_id', ids) : Promise.resolve({ data:[], error:null }),
       allIds.length ? loadCustomScoreStats(allIds) : Promise.resolve({ rows:[] }),
     ]); if (playersError) throw playersError;
-    const byId = new Map((fplPlayers || []).map(player => [player.fpl_id, player])); const pointsById = new Map<number, number>();
+    const byId = new Map((fplPlayers || []).map(player => [player.fpl_id, { ...player, position:leaguePosition(player) }])); const pointsById = new Map<number, number>();
     let teamPoints = 0;
     for (const stat of custom.rows) { if (selectedPeriod && (stat.kickoff_at < selectedPeriod.start || stat.kickoff_at >= selectedPeriod.end)) continue; const ownedBySquad = (memberships || []).some(member => member.fpl_id === stat.fpl_id && member.acquired_at <= stat.kickoff_at && (!member.released_at || member.released_at > stat.kickoff_at)); if (ownedBySquad) teamPoints += Number(stat.points || 0); const ownedByDisplayedPlayer = relevant.some(member => member.fpl_id === stat.fpl_id && member.acquired_at <= stat.kickoff_at && (!member.released_at || member.released_at > stat.kickoff_at)); if (ownedByDisplayedPlayer) pointsById.set(stat.fpl_id, (pointsById.get(stat.fpl_id) || 0) + Number(stat.points || 0)); }
     // Keep a sale and its replacement in the same slot for the selected period.

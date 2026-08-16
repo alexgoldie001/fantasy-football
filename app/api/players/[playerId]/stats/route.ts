@@ -3,6 +3,7 @@ import { loadCustomScoreStats } from '@/lib/custom-score-stats';
 import { fixtureCustomScore } from '@/lib/fixture-custom-score';
 import { loadSeasonFixtureStats } from '@/lib/fixture-stats';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { leaguePosition } from '@/lib/tff-position';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,12 +14,12 @@ export async function GET(_:Request, { params }:{ params:Promise<{ playerId:stri
     if (!Number.isInteger(fplId)) return NextResponse.json({ error:'Player not found.' }, { status:404 });
     const db = supabaseAdmin();
     const [{ data:player, error:playerError }, custom, fixtures] = await Promise.all([
-      db.from('fpl_players').select('fpl_id,web_name,team_name,position').eq('fpl_id', fplId).single(),
+      db.from('fpl_players').select('fpl_id,web_name,first_name,second_name,team_name,position').eq('fpl_id', fplId).single(),
       loadCustomScoreStats([fplId]),
       loadSeasonFixtureStats([fplId]),
     ]);
     if (playerError) throw playerError;
-    const position = custom.matchedPositions.get(fplId) || player.position;
+    const position = leaguePosition(player);
     const grouped = new Map<number, { gameweek:number; date:string; points:number; goals:number; assists:number; cleanSheets:number }>();
     for (const stat of fixtures) {
       const current = grouped.get(stat.gameweek) || { gameweek:stat.gameweek, date:stat.kickoff_at, points:0, goals:0, assists:0, cleanSheets:0 };
