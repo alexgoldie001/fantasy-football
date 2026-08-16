@@ -8,17 +8,18 @@ export const dynamic = 'force-dynamic';
 type Period = { key:string; label:string; start:string; end:string };
 const positionOrder: Record<string, number> = { GK: 1, DEF: 2, MID: 3, FWD: 4 };
 const positionPrefix: Record<string, string> = { GK: 'G', DEF: 'D', MID: 'M', FWD: 'F' };
+const openingSquadStart = '2026-08-01T00:00:00.000Z';
 const weeks: Period[] = Array.from({ length: 42 }, (_, index) => {
-  const start = new Date(Date.parse('2025-08-12T05:00:00.000Z') + index * 7 * 24 * 60 * 60 * 1000);
+  const start = new Date(Date.parse('2026-08-18T00:01:00.000Z') + index * 7 * 24 * 60 * 60 * 1000);
   const end = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
   return { key:String(index + 1), label:`Week ${index + 1}`, start:start.toISOString(), end:end.toISOString() };
 });
 const months: Period[] = ['Aug','Sept','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May'].map((label, index) => {
-  const year = index < 5 ? 2025 : 2026;
+  const year = index < 5 ? 2026 : 2027;
   const month = index < 5 ? index + 7 : index - 5;
   const start = new Date(Date.UTC(year, month, 1));
   const end = new Date(Date.UTC(year, month + 1, 1));
-  return { key:`${year}-${month + 1}`, label, start:start.toISOString(), end:end.toISOString() };
+  return { key:`${year}-${String(month + 1).padStart(2, '0')}`, label:`${label} ${year}`, start:start.toISOString(), end:end.toISOString() };
 });
 
 export async function GET() {
@@ -28,7 +29,7 @@ export async function GET() {
       db.from('squads').select('id,name,manager_id'),
       db.from('profiles').select('id,display_name'),
       db.from('squad_players').select('id,squad_id,fpl_id,purchase_price,acquired_at,released_at'),
-      db.from('fpl_players').select('fpl_id,web_name,first_name,second_name,team_name,position'),
+      db.from('fpl_players_2026_27').select('fpl_id,web_name,first_name,second_name,team_name,position').eq('season', '2026/27'),
     ]);
     if (squadsError) throw squadsError;
     if (profilesError) throw profilesError;
@@ -62,7 +63,7 @@ export async function GET() {
       }
       for (const member of owned) if (!assigned.has(member.id)) {
         const player = playerDetails(member.fpl_id);
-        const joined = member.acquired_at >= period.start && member.acquired_at < period.end;
+        const joined = member.acquired_at >= period.start && member.acquired_at < period.end && !(period.key === '2026-08' && member.acquired_at === openingSquadStart);
         const left = Boolean(member.released_at && member.released_at >= period.start && member.released_at < period.end);
         playerRows.push({ name:`${positionPrefix[player.position] || '—'} ${player.name}${joined && member.purchase_price > 0 ? ` £${(member.purchase_price / 10).toFixed(1)}m` : ''}`, position:player.position, changed:joined || left });
       }
