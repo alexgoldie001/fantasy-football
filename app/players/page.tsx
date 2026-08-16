@@ -1,53 +1,20 @@
 'use client';
 
 import { AppShell } from '@/components/app-shell';
-import { Download, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 
-type Player = { id:number; name:string; team:string; position:string; price:number; owner:string|null; points:number; cleanSheets:number; defensiveContribution:number; assists:number; goals:number; penaltiesMissed:number; penaltiesSaved:number; yellowCards:number; redCards:number };
+type Player = { id:number; name:string; team:string; position:string; price:number; owner:string|null; points:number; starts:number; substituteAppearances:number; goals:number; assists:number; fullCleanSheets:number; partialCleanSheets:number; saves:number; goalsConceded:number; tackles:number; yellowCards:number; redCards:number; penaltiesMissed:number; penaltiesSaved:number; ownGoals:number };
 const columns: { key:keyof Player; label:string }[] = [
-  { key:'goals', label:'G' }, { key:'assists', label:'A' }, { key:'cleanSheets', label:'CS' }, { key:'defensiveContribution', label:'Def con.' },
-  { key:'yellowCards', label:'YC' }, { key:'redCards', label:'RC' }, { key:'penaltiesMissed', label:'Pen miss' }, { key:'penaltiesSaved', label:'Pen saved' },
+  { key:'starts', label:'Starts' }, { key:'substituteAppearances', label:'Sub apps' }, { key:'goals', label:'G' }, { key:'assists', label:'A' }, { key:'fullCleanSheets', label:'Full CS' }, { key:'partialCleanSheets', label:'Part CS' }, { key:'saves', label:'Saves' }, { key:'goalsConceded', label:'GC' }, { key:'tackles', label:'Tkl' }, { key:'yellowCards', label:'YC' }, { key:'redCards', label:'RC' }, { key:'penaltiesMissed', label:'Pen miss' }, { key:'penaltiesSaved', label:'Pen saved' }, { key:'ownGoals', label:'OG' },
 ];
 const positionOrder: Record<string, number> = { GK:1, DEF:2, MID:3, FWD:4 };
 
 export default function PlayersPage() {
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [search, setSearch] = useState('');
-  const [position, setPosition] = useState('All');
-  const [club, setClub] = useState('All');
-  const [ownership, setOwnership] = useState('All');
-  const [sort, setSort] = useState<keyof Player>('points');
-
-  useEffect(() => {
-    fetch('/api/players').then(async response => {
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
-      setPlayers(data.players || []);
-    }).catch(reason => setError(reason.message || 'Unable to load the FPL player list.')).finally(() => setLoading(false));
-  }, []);
-
+  const [players, setPlayers] = useState<Player[]>([]), [loading, setLoading] = useState(true), [error, setError] = useState(''), [search, setSearch] = useState(''), [position, setPosition] = useState('All'), [club, setClub] = useState('All'), [ownership, setOwnership] = useState('All'), [sort, setSort] = useState<keyof Player>('points');
+  useEffect(() => { fetch('/api/players').then(async response => { const data = await response.json(); if (!response.ok) throw new Error(data.error); setPlayers(data.players || []); }).catch(reason => setError(reason.message || 'Unable to load 2026/27 player scores.')).finally(() => setLoading(false)); }, []);
   const clubs = useMemo(() => [...new Set(players.map(player => player.team).filter(Boolean))].sort((a, b) => a.localeCompare(b)), [players]);
-  const filtered = useMemo(() => players.filter(player =>
-    (position === 'All' || player.position === position) &&
-    (club === 'All' || player.team === club) &&
-    (ownership === 'All' || (ownership === 'Available' ? !player.owner : !!player.owner)) &&
-    `${player.name} ${player.team}`.toLowerCase().includes(search.toLowerCase()),
-  ).sort((a, b) => (sort === 'position' ? positionOrder[a.position] - positionOrder[b.position] : Number(b[sort]) - Number(a[sort])) || a.name.localeCompare(b.name)), [players, search, position, club, ownership, sort]);
-
-  return <AppShell>
-    <section className="page-heading"><p className="eyebrow">Official FPL data</p><h1>The player market.</h1><div className="player-page-links"><a className="excel-link" href="/api/players/export"><Download size={16}/> Excel format</a><Link className="excel-link" href="/players/tff-stats">25/26 Scores</Link><Link className="excel-link" href="/players/2026-27">26/27 Players</Link></div></section>
-    <section className="filters"><label><Search size={18}/><input value={search} onChange={event => setSearch(event.target.value)} placeholder="Search players or teams"/></label><div className="selects">
-      <select value={position} onChange={event => setPosition(event.target.value)}><option value="All">All Positions</option><option>GK</option><option>DEF</option><option>MID</option><option>FWD</option></select>
-      <select value={club} onChange={event => setClub(event.target.value)}><option value="All">All Teams</option>{clubs.map(team => <option key={team}>{team}</option>)}</select>
-      <select value={ownership} onChange={event => setOwnership(event.target.value)}><option value="All">All Ownership</option><option>Available</option><option>Owned</option></select>
-    </div></section>
-    <section className="panel player-table player-market">{loading ? <p className="table-message">Loading the official FPL player list...</p> : error ? <p className="form-error">{error}</p> : <div className="market-scroll">
-      <div className="market-head"><span>Player</span><button onClick={() => setSort('position')} className={sort === 'position' ? 'sorted' : ''}>Pos.</button><span>Owner</span><button onClick={() => setSort('points')} className={sort === 'points' ? 'sorted' : ''}>Pts</button><span>FPL price</span>{columns.map(column => <button key={column.key} onClick={() => setSort(column.key)} className={sort === column.key ? 'sorted' : ''}>{column.label}</button>)}</div>
-      {filtered.map(player => <div className="market-row" key={player.id}><div><strong>{player.name}</strong><small>{player.team}</small></div><span className={`position-chip ${player.position.toLowerCase()}`}>{player.position}</span><span className={player.owner ? 'owner' : 'available'}>{player.owner || 'Available'}</span><strong>{player.points}</strong><span>&pound;{(player.price / 10).toFixed(1)}m</span>{columns.map(column => <strong key={column.key}>{player[column.key] as number}</strong>)}</div>)}
-    </div>}</section>
-  </AppShell>;
+  const filtered = useMemo(() => players.filter(player => (position === 'All' || player.position === position) && (club === 'All' || player.team === club) && (ownership === 'All' || (ownership === 'Available' ? !player.owner : !!player.owner)) && `${player.name} ${player.team}`.toLowerCase().includes(search.toLowerCase())).sort((a, b) => (sort === 'position' ? positionOrder[a.position] - positionOrder[b.position] : Number(b[sort]) - Number(a[sort])) || a.name.localeCompare(b.name)), [players, search, position, club, ownership, sort]);
+  return <AppShell><section className="page-heading"><p className="eyebrow">Official FPL data · 2026/27</p><h1>The player market.</h1><p className="sub">Points use your league scoring system, not FPL’s scoring.</p><div className="player-page-links"><Link className="excel-link" href="/players/tff-stats">View 2025/26 archive</Link></div></section><section className="filters"><label><Search size={18}/><input value={search} onChange={event => setSearch(event.target.value)} placeholder="Search players or teams"/></label><div className="selects"><select value={position} onChange={event => setPosition(event.target.value)}><option value="All">All Positions</option><option>GK</option><option>DEF</option><option>MID</option><option>FWD</option></select><select value={club} onChange={event => setClub(event.target.value)}><option value="All">All Teams</option>{clubs.map(team => <option key={team}>{team}</option>)}</select><select value={ownership} onChange={event => setOwnership(event.target.value)}><option value="All">All Ownership</option><option>Available</option><option>Owned</option></select></div></section><section className="panel player-table player-market">{loading ? <p className="table-message">Loading official 2026/27 player scores...</p> : error ? <p className="form-error">{error}</p> : <div className="market-scroll"><div className="market-head tff-market-head"><span>Player</span><button onClick={() => setSort('position')} className={sort === 'position' ? 'sorted' : ''}>Pos.</button><span>Ownership</span><button onClick={() => setSort('points')} className={sort === 'points' ? 'sorted' : ''}>Pts</button><span>FPL price</span>{columns.map(column => <button key={column.key} onClick={() => setSort(column.key)} className={sort === column.key ? 'sorted' : ''}>{column.label}</button>)}</div>{filtered.map(player => <div className="market-row tff-market-row" key={player.id}><div><strong>{player.name}</strong><small>{player.team}</small></div><span className={`position-chip ${player.position.toLowerCase()}`}>{player.position}</span><span className={player.owner ? 'owner' : 'available'}>{player.owner || 'Available'}</span><strong>{player.points}</strong><span>£{(player.price / 10).toFixed(1)}m</span>{columns.map(column => <strong key={column.key}>{player[column.key] as number}</strong>)}</div>)}</div>}</section></AppShell>;
 }

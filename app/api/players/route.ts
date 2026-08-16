@@ -1,28 +1,31 @@
 import { NextResponse } from 'next/server';
+import { fixtureCustomScore } from '@/lib/fixture-custom-score';
+import { loadCurrentSeasonFixtureStats } from '@/lib/fixture-stats';
+import { syncFpl2026Players } from '@/lib/fpl-2026-sync';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 
-const positions = ['', 'GK', 'DEF', 'MID', 'FWD'];
-const stat = (raw: Record<string, unknown>, key: string) => Number(raw[key] || 0);
-async function loadPlayers() {
-  const db = supabaseAdmin();
-  let result = await db.from('fpl_players').select('fpl_id,web_name,first_name,second_name,team_name,position,current_price,raw').order('web_name');
-  if (result.error) throw result.error;
-  if ((result.data || []).length) return result.data;
-  const response = await fetch('https://fantasy.premierleague.com/api/bootstrap-static/', { headers: { 'User-Agent': 'BailsAndGoldiesFantasy/1.0' }, cache: 'no-store' });
-  if (!response.ok) throw new Error('Unable to reach the official FPL player feed.');
-  const fpl = await response.json();
-  const names = new Map(fpl.teams.map((team: { id:number; name:string }) => [team.id, team.name]));
-  const records = fpl.elements.map((p: Record<string, any>) => ({ fpl_id:p.id, web_name:p.web_name, first_name:p.first_name, second_name:p.second_name, team_id:p.team, team_name:names.get(p.team), position:positions[p.element_type], current_price:p.now_cost, photo:p.photo, status:p.status, raw:p, updated_at:new Date().toISOString() }));
-  const { error } = await db.from('fpl_players').upsert(records, { onConflict:'fpl_id' });
-  if (error) throw error;
-  return records;
-}
+const stat = (fixture: { raw?: { stats?: Array<{ identifier?:string; value?:number }> } | null }, identifier: string) => Number(fixture.raw?.stats?.find(item => item.identifier === identifier)?.value || 0);
+
 export async function GET() {
   try {
     const db = supabaseAdmin();
-    const [players, ownershipResult] = await Promise.all([loadPlayers(), db.from('squad_players').select('fpl_id,squads(name)').is('released_at', null)]);
-    if (ownershipResult.error) throw ownershipResult.error;
-    const owners = new Map((ownershipResult.data || []).map((row: any) => [row.fpl_id, row.squads?.name || null]));
-    return NextResponse.json({ players: players.map((player: any) => { const raw = player.raw as Record<string, unknown>; return { id: player.fpl_id, name: player.web_name, fullName: `${player.first_name || ''} ${player.second_name || ''}`.trim() || player.web_name, team: player.team_name, position: player.position, price: player.current_price, owner: owners.get(player.fpl_id) || null, points: stat(raw, 'total_points') - stat(raw, 'bonus'), starts: stat(raw, 'starts'), cleanSheets: stat(raw, 'clean_sheets'), defensiveContribution: stat(raw, 'defensive_contribution'), assists: stat(raw, 'assists'), goals: stat(raw, 'goals_scored'), penaltiesMissed: stat(raw, 'penalties_missed'), penaltiesSaved: stat(raw, 'penalties_saved'), yellowCards: stat(raw, 'yellow_cards'), redCards: stat(raw, 'red_cards') }; }) });
-  } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : 'Unable to load players.' }, { status: 500 }); }
+    let { data: players, error } = await db.from('fpl_players_2026_27').select('fpl_id,web_name,team_name,position,current_price').eq('season', '2026/27').order('web_name');
+    if (error) throw error;
+    if (!(players || []).length) { await syncFpl2026Players(); const refreshed = await db.from('fpl_players_2026_27').select('fpl_id,web_name,team_name,position,current_price').eq('season', '2026/27').order('web_name'); if (refreshed.error) throw refreshed.error; players = refreshed.data; }
+    const ids = (players || []).map(player => player.fpl_id);
+    const [fixtures, ownership] = await Promise.all([loadCurrentSeasonFixtureStats(ids), db.from('squad_players').select('fpl_id,squads(name)').is('released_at', null)]);
+    if (ownership.error) throw ownership.error;
+    const ownerByPlayer = new Map((ownership.data || []).map((row: any) => [row.fpl_id, row.squads?.name || null]));
+    const byPlayer = new Map<number, typeof fixtures>();
+    for (const fixture of fixtures) byPlayer.set(fixture.fpl_id, [...(byPlayer.get(fixture.fpl_id) || []), fixture]);
+    return NextResponse.json({ season: '2026/27', players: (players || []).map(player => {
+      const rows = byPlayer.get(player.fpl_id) || [];
+      const sum = (key: string) => rows.reduce((total, row) => total + stat(row, key), 0);
+      const starts = rows.filter(row => stat(row, 'starts') > 0).length;
+      const substituteAppearances = rows.filter(row => stat(row, 'minutes') > 0 && stat(row, 'starts') === 0).length;
+      const fullCleanSheets = rows.filter(row => stat(row, 'clean_sheets') > 0 && stat(row, 'minutes') >= 60).length;
+      const partialCleanSheets = rows.filter(row => stat(row, 'clean_sheets') > 0 && stat(row, 'minutes') > 0 && stat(row, 'minutes') < 60).length;
+      return { id:player.fpl_id, name:player.web_name, team:player.team_name, position:player.position, price:player.current_price, owner:ownerByPlayer.get(player.fpl_id) || null, points:rows.reduce((total, row) => total + fixtureCustomScore(row, player.position), 0), starts, substituteAppearances, goals:sum('goals_scored'), assists:sum('assists'), fullCleanSheets, partialCleanSheets, saves:sum('saves'), goalsConceded:sum('goals_conceded'), tackles:sum('tackles'), yellowCards:sum('yellow_cards'), redCards:sum('red_cards'), penaltiesMissed:sum('penalties_missed'), penaltiesSaved:sum('penalties_saved'), ownGoals:sum('own_goals') };
+    }) }, { headers: { 'Cache-Control': 'no-store' } });
+  } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : 'Unable to load 2026/27 player scores.' }, { status: 500 }); }
 }

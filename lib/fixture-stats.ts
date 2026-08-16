@@ -22,6 +22,15 @@ const SEASON_END = '2026-06-01T00:00:00.000Z';
  * defensive guard so a fixture can never be counted twice in a score total.
  */
 export async function loadSeasonFixtureStats(playerIds: number[]) {
+  return loadFixtureStats(playerIds, SEASON_START, SEASON_END);
+}
+
+/** Live 2026/27 data, kept separate from the completed 2025/26 archive. */
+export async function loadCurrentSeasonFixtureStats(playerIds: number[]) {
+  return loadFixtureStats(playerIds, '2026-08-01T00:00:00.000Z', '2027-06-01T00:00:00.000Z');
+}
+
+async function loadFixtureStats(playerIds: number[], start: string, end: string) {
   if (!playerIds.length) return [] as FixtureStat[];
 
   const db = supabaseAdmin();
@@ -29,8 +38,8 @@ export async function loadSeasonFixtureStats(playerIds: number[]) {
     .from('fpl_fixture_player_stats')
     .select('fixture_id,fpl_id,gameweek,kickoff_at,points_excluding_bonus,goals,assists,clean_sheets,raw')
     .in('fpl_id', playerIds)
-    .gte('kickoff_at', SEASON_START)
-    .lt('kickoff_at', SEASON_END)
+    .gte('kickoff_at', start)
+    .lt('kickoff_at', end)
     .order('fpl_id', { ascending: true })
     .order('fixture_id', { ascending: true });
 
@@ -38,8 +47,8 @@ export async function loadSeasonFixtureStats(playerIds: number[]) {
     .from('fpl_fixture_player_stats')
     .select('*', { count: 'exact', head: true })
     .in('fpl_id', playerIds)
-    .gte('kickoff_at', SEASON_START)
-    .lt('kickoff_at', SEASON_END);
+    .gte('kickoff_at', start)
+    .lt('kickoff_at', end);
   if (countError) throw countError;
 
   const pages = await Promise.all(

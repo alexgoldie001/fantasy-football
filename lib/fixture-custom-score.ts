@@ -5,7 +5,7 @@ const value = (stat:FixtureStat, identifier:string) => Number(stat.raw?.stats?.f
 export function fixtureCustomScore(stat:FixtureStat, position:string) {
   const minutes = value(stat, 'minutes');
   const starts = value(stat, 'starts');
-  let points = starts > 0 || minutes >= 45 ? 2 : minutes > 0 ? 1 : 0;
+  let points = starts > 0 ? 2 : minutes > 0 ? 1 : 0;
   points += value(stat, 'goals_scored') * 5;
   points += value(stat, 'assists') * 3;
   points -= value(stat, 'red_cards') * 3;
