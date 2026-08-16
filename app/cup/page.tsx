@@ -1,19 +1,20 @@
 'use client';
 
 import { AppShell } from '@/components/app-shell';
-import { useEffect, useState } from 'react';
 import { Trophy } from 'lucide-react';
-import { supabaseBrowser } from '@/lib/supabase-browser';
 
-const cupName=(name:string)=>(({ 'Olivier Giroud':'Olivier Giroud Trophy', 'Ian Dowie':'Ian Dowie Plate', 'James Milner':'James Milner Cup' } as Record<string,string>)[name]||name);
-
-export default function CupPage(){
- const [data,setData]=useState<any>(null),[snapshot,setSnapshot]=useState<any[]>([]),[active,setActive]=useState(0),[admin,setAdmin]=useState(false),[message,setMessage]=useState('');
- const load=()=>fetch('/api/cups',{cache:'no-store'}).then(response=>response.json()).then(setData);
- useEffect(()=>{load();fetch('/api/cups/snapshot',{cache:'no-store'}).then(response=>response.json()).then(result=>setSnapshot(result.rows||[]));supabaseBrowser().auth.getSession().then(async({data:{session}})=>{if(!session)return;const response=await fetch('/api/me',{headers:{Authorization:`Bearer ${session.access_token}`}});const result=await response.json();setAdmin(Boolean(result.user?.isAdmin));});},[]);
- async function changeDate(id:string,date:string){const {data:{session}}=await supabaseBrowser().auth.getSession();const response=await fetch('/api/cups',{method:'PATCH',headers:{'Content-Type':'application/json',Authorization:`Bearer ${session?.access_token||''}`},body:JSON.stringify({fixtureId:id,date})});const result=await response.json();setMessage(response.ok?'Fixture date saved.':result.error);if(response.ok)load();}
- const divisions=data?.divisions||[],division=divisions[active],final=division?.fixtures?.find((fixture:any)=>fixture.isPlayoff);
- const championId=division?.entries?.length>=5?(final&&final.score.home!==final.score.away?(final.score.home>final.score.away?final.home_squad_id:final.away_squad_id):null):(division?.fixtures?.length&&division.fixtures.every((fixture:any)=>new Date(fixture.ends_at).getTime()<=Date.now())?division.table?.[0]?.squadId:null);
- const tableTitle=division?.name?cupName(division.name):'';
- return <AppShell><section className="page-heading"><p className="eyebrow">Head-to-head competition</p><h1>Cup.</h1></section>{!data?<p className="helper">Loading cups…</p>:!data.cup?<section className="panel"><h2>COMING SOON</h2><p className="sub">League standings on Jan 1st will determine qualification for Olivier Giroud Trophy and Ian Dowie Plate - Watch this space!</p></section>:<><div className="score-links cup-nav">{divisions.map((item:any,index:number)=><button className={`table-link ${active===index?'active-cup-link':''}`} key={item.id} onClick={()=>setActive(index)}>{cupName(item.name)}</button>)}</div><section className="panel cup-panel"><div className="cup-panel-heading"><h2>{tableTitle}</h2></div><div className="cup-table-scroll"><div className="cup-table-head"><span>Place in the league</span><span>Manager name</span><strong>Points</strong><span>Games played</span><span>Wins</span><span>Draws</span><span>Losses</span><span>Goal difference</span></div>{division.table.map((row:any,index:number)=><div className="cup-table-row" key={row.squadId}><b>{index+1}</b><div><strong>{row.manager}{row.squadId===championId&&<Trophy className="champion-trophy team-trophy" size={15}/>}</strong><small>{row.team}</small></div><strong>{row.points}</strong><span>{row.played}</span><span>{row.wins}</span><span>{row.draws}</span><span>{row.losses}</span><span>{row.for-row.against}</span></div>)}</div>{division.playoff&&<p className="cup-note">Top two qualify for a play-off to decide the winner.</p>}<div className="cup-fixtures-heading"><div><p className="eyebrow">Match centre</p><h2>Fixtures &amp; results</h2></div></div><div className="cup-fixtures">{division.fixtures.sort((a:any,b:any)=>a.round_number-b.round_number).map((fixture:any)=>{const home=division.entries.find((entry:any)=>entry.squad_id===fixture.home_squad_id),away=division.entries.find((entry:any)=>entry.squad_id===fixture.away_squad_id);return <article className="cup-fixture" key={fixture.id}><div className="cup-fixture-meta"><span>{fixture.isPlayoff?'Final':`Round ${fixture.round_number}`}</span>{admin?<label>Fixture starts<input type="date" value={fixture.starts_at.slice(0,10)} onChange={event=>changeDate(fixture.id,event.target.value)}/></label>:<small>{new Date(fixture.starts_at).toLocaleDateString('en-GB',{day:'numeric',month:'long'})}</small>}</div><div className="cup-fixture-result"><strong>{home?.team}</strong><b><i>{fixture.score.home}</i><em>–</em><i>{fixture.score.away}</i></b><strong>{away?.team}</strong></div></article>;})}</div><div className="cup-snapshot-heading"><p className="eyebrow">January 1 seeding snapshot</p><p className="sub">Highlighted managers were placed into {cupName(division.name)}.</p></div><div className="cup-snapshot"><div className="cup-snapshot-head"><span>Place</span><span>Manager name</span><strong>Points</strong></div>{snapshot.map((row:any)=><div className={`cup-snapshot-row ${division.entries.some((entry:any)=>entry.squad_id===row.id)?'leader':''}`} key={row.id}><b>{row.rank}</b><div><strong>{row.manager}</strong><small>{row.team}</small></div><strong>{row.points}</strong></div>)}</div></section>{message&&<p className="success">{message}</p>}</>}</AppShell>;
+export default function CupPage() {
+  return <AppShell>
+    <section className="page-heading">
+      <p className="eyebrow">Head-to-head competition</p>
+      <h1>Cup.</h1>
+    </section>
+    <section className="panel cup-coming-soon">
+      <Trophy size={28}/>
+      <div>
+        <h2>COMING SOON</h2>
+        <p className="sub">The cup competitions will be generated by the commissioner midway through the 2026/27 season.</p>
+      </div>
+    </section>
+  </AppShell>;
 }
