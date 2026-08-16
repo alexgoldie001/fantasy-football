@@ -30,8 +30,16 @@ export async function GET(request:NextRequest, { params }:{ params:Promise<{ slu
       allIds.length ? loadCustomScoreStats(allIds) : Promise.resolve({ rows:[] }),
     ]); if (playersError) throw playersError;
     const byId = new Map((fplPlayers || []).map(player => [player.fpl_id, { ...player, position:leaguePosition(player) }])); const pointsById = new Map<number, number>();
-    let teamPoints = 0;
-    for (const stat of custom.rows) { if (selectedPeriod && (stat.kickoff_at < selectedPeriod.start || stat.kickoff_at >= selectedPeriod.end)) continue; const ownedBySquad = (memberships || []).some(member => member.fpl_id === stat.fpl_id && member.acquired_at <= stat.kickoff_at && (!member.released_at || member.released_at > stat.kickoff_at)); if (ownedBySquad) teamPoints += Number(stat.points || 0); const ownedByDisplayedPlayer = relevant.some(member => member.fpl_id === stat.fpl_id && member.acquired_at <= stat.kickoff_at && (!member.released_at || member.released_at > stat.kickoff_at)); if (ownedByDisplayedPlayer) pointsById.set(stat.fpl_id, (pointsById.get(stat.fpl_id) || 0) + Number(stat.points || 0)); }
+    let seasonPoints = 0, teamPoints = 0;
+    for (const stat of custom.rows) {
+      const ownedBySquad = (memberships || []).some(member => member.fpl_id === stat.fpl_id && member.acquired_at <= stat.kickoff_at && (!member.released_at || member.released_at > stat.kickoff_at));
+      if (ownedBySquad) seasonPoints += Number(stat.points || 0);
+      if (selectedPeriod && (stat.kickoff_at < selectedPeriod.start || stat.kickoff_at >= selectedPeriod.end)) continue;
+      if (ownedBySquad) teamPoints += Number(stat.points || 0);
+      const ownedByDisplayedPlayer = relevant.some(member => member.fpl_id === stat.fpl_id && member.acquired_at <= stat.kickoff_at && (!member.released_at || member.released_at > stat.kickoff_at));
+      if (ownedByDisplayedPlayer) pointsById.set(stat.fpl_id, (pointsById.get(stat.fpl_id) || 0) + Number(stat.points || 0));
+    }
+    if (!selectedPeriod) teamPoints = seasonPoints;
     // Keep a sale and its replacement in the same slot for the selected period.
     // This preserves the player-out / player-in presentation in both team views.
     const sameTransferMoment = (left:string | null, right:string) => Boolean(left) && new Date(left!).getTime() === new Date(right).getTime();
@@ -50,6 +58,6 @@ export async function GET(request:NextRequest, { params }:{ params:Promise<{ slu
       return { fplId:orderedGroup[orderedGroup.length - 1]?.fpl_id || null, name:records.map(player => player?.web_name || 'Unknown player').join(' / '), teamId:incoming?.team_id || null, team:records.map(player => player?.team_name || '—').join(' / '), position:incoming?.position || 'MID', points:points.length > 1 ? points.join(' / ') : points[0] || 0, totalPoints:points.reduce((total, value) => total + value, 0), price:orderedGroup.map(row => row.purchase_price).join(' / ') };
     }).sort((a,b) => positionOrder[a.position] - positionOrder[b.position] || a.name.localeCompare(b.name));
     const budget = remainingBudget(memberships || [], currentSeasonBudgetDate());
-    return NextResponse.json({ name:squad.name, manager:profile.display_name, budget, teamPoints, players, weeks:weeks.map(({ key,label }) => ({ key,label })), months:months.map(({ key,label }) => ({ key,label })), selectedWeek:selectedWeek?.key || '', selectedMonth:selectedMonth?.key || '', pointsLabel:selectedPeriod?.label || 'Season points' }, { headers:{ 'Cache-Control':'no-store' } });
+    return NextResponse.json({ name:squad.name, manager:profile.display_name, budget, teamPoints, seasonPoints, players, weeks:weeks.map(({ key,label }) => ({ key,label })), months:months.map(({ key,label }) => ({ key,label })), selectedWeek:selectedWeek?.key || '', selectedMonth:selectedMonth?.key || '', pointsLabel:selectedPeriod?.label || 'Season points' }, { headers:{ 'Cache-Control':'no-store' } });
   } catch (error) { return NextResponse.json({ error:error instanceof Error ? error.message : 'Unable to load team.' }, { status:500 }); }
 }

@@ -7,7 +7,7 @@ import { PlayerStatsModal } from '@/components/player-stats-modal';
 
 type Player = { fplId?:number | null; name:string; teamId?:number | null; team:string; position:string; points:number | string; totalPoints?:number; price:number | string };
 type Period = { key:string; label:string };
-type Team = { name:string; manager:string; budget:number; teamPoints?:number; players:Player[]; weeks?:Period[]; months?:Period[]; selectedWeek?:string; selectedMonth?:string; pointsLabel?:string };
+type Team = { name:string; manager:string; budget:number; teamPoints?:number; seasonPoints?:number; players:Player[]; weeks?:Period[]; months?:Period[]; selectedWeek?:string; selectedMonth?:string; pointsLabel?:string };
 
 const positions = ['GK', 'DEF', 'MID', 'FWD'];
 const positionOrder:Record<string, number> = { GK:1, DEF:2, MID:3, FWD:4 };
@@ -31,6 +31,7 @@ export function TeamView({ slug = 'north-bank' }:{ slug?:string }) {
   const orderedPlayers = [...team.players].sort((a, b) => (positionOrder[a.position] || 9) - (positionOrder[b.position] || 9) || a.name.localeCompare(b.name));
   const showingPeriod = Boolean(week || month);
   const pointsTotal = team.teamPoints ?? team.players.reduce((sum, player) => sum + (player.totalPoints ?? Number(player.points)), 0);
+  const seasonPoints = team.seasonPoints ?? pointsTotal;
   const formation = `${orderedPlayers.filter(player => player.position === 'DEF').length}-${orderedPlayers.filter(player => player.position === 'MID').length}-${orderedPlayers.filter(player => player.position === 'FWD').length}`;
   const selectWeek = (value:string) => { setWeek(value); if (value) setMonth(''); };
   const selectMonth = (value:string) => { setMonth(value); if (value) setWeek(''); };
@@ -40,7 +41,7 @@ export function TeamView({ slug = 'north-bank' }:{ slug?:string }) {
     <section className="team-stats">
       <div><UsersRound/><span><small>Formation</small><strong>{formation}</strong></span></div>
       <div><Coins/><span><small>Available funds</small><strong>£{(team.budget / 10).toFixed(1)}m</strong></span></div>
-      <div className="team-points"><span><small>{week ? 'Weekly score' : 'Season points'}</small><strong>{`${pointsTotal} pts`}</strong></span><select aria-label="Select weekly score" value={week} onChange={event => selectWeek(event.target.value)}><option value="">Weekly scores</option>{(team.weeks || []).map(option => <option key={option.key} value={option.key}>{option.label}</option>)}</select></div>
+      <div className="team-points"><span><small>{week ? 'Weekly score' : 'Season points'}</small><strong>{`${week ? pointsTotal : seasonPoints} pts`}</strong></span><select aria-label="Select weekly score" value={week} onChange={event => selectWeek(event.target.value)}><option value="">Weekly scores</option>{(team.weeks || []).map(option => <option key={option.key} value={option.key}>{option.label}</option>)}</select></div>
       <div className="team-points"><span><small>{month ? 'Monthly score' : 'Monthly scores'}</small><strong>{month ? `${pointsTotal} pts` : '—'}</strong></span><select aria-label="Select monthly score" value={month} onChange={event => selectMonth(event.target.value)}><option value="">Monthly scores</option>{(team.months || []).map(option => <option key={option.key} value={option.key}>{option.label}</option>)}</select></div>
     </section>
     <section className="panel squad-pitch">
