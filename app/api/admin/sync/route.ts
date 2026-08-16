@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { syncFixtureScores } from '@/lib/fixture-sync';
 import { cronAuthorised, leagueMemberFromRequest } from '@/lib/api-auth';
-import { syncFpl2026Players } from '@/lib/fpl-2026-sync';
+import { addMissingFpl2026Players } from '@/lib/fpl-2026-sync';
 
 const positions = ['', 'GK', 'DEF', 'MID', 'FWD'];
 
@@ -17,9 +17,13 @@ async function sync(request: NextRequest) {
     const fpl = await fetch('https://fantasy.premierleague.com/api/bootstrap-static/', { headers: { 'User-Agent': 'TheDraftLeague/1.0' } }).then(r => r.json());
     const firstDeadline = fpl.events?.find((event: { id?:number }) => event.id === 1)?.deadline_time || '';
     if (String(firstDeadline).startsWith('2026-')) {
-      const synced = await syncFpl2026Players();
+      const officialPlayerCount = Array.isArray(fpl.elements) ? fpl.elements.length : 0;
+      const { count:storedPlayerCount, error:countError } = await db.from('fpl_players_2026_27').select('*', { count:'exact', head:true }).eq('season', '2026/27');
+      if (countError) throw countError;
+      const playersAdded = officialPlayerCount > Number(storedPlayerCount || 0) ? await addMissingFpl2026Players(fpl) : 0;
+      const fixtureStatsSynced = await syncFixtureScores();
       await db.rpc('finish_fpl_sync', { success: true, detail: null });
-      return NextResponse.json({ synced, season: '2026/27', fixtureStatsSynced: 0, at: new Date().toISOString() });
+      return NextResponse.json({ season:'2026/27', playersChecked:officialPlayerCount, playersAdded, synced:playersAdded, fixtureStatsSynced, at:new Date().toISOString() });
     }
     const teamNames = new Map(fpl.teams.map((team: { id: number; name: string }) => [team.id, team.name]));
     const records = fpl.elements.map((p: Record<string, unknown>) => ({ fpl_id:p.id, web_name:p.web_name, first_name:p.first_name, second_name:p.second_name, team_id:p.team, team_name:teamNames.get(p.team as number), position:positions[p.element_type as number], current_price:p.now_cost, photo:`https://resources.premierleague.com/premierleague/photos/players/110x140/p${p.code}.png`, status:p.status, raw:{ ...p, team_code:(fpl.teams.find((team: { id:number }) => team.id === p.team) || {}).code }, updated_at:new Date().toISOString() }));
