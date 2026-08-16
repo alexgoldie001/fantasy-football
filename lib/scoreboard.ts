@@ -16,6 +16,7 @@ const weeks:PeriodOption[] = Array.from({ length:42 }, (_, index) => {
   const end = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
   return { key:String(index + 1), label:`Week ${index + 1} · ${start.toLocaleDateString('en-GB', { day:'numeric', month:'short', timeZone:'Europe/London' })} – ${new Date(end.getTime() - 1).toLocaleDateString('en-GB', { day:'numeric', month:'short', timeZone:'Europe/London' })}`, start:start.toISOString(), end:end.toISOString() };
 });
+const currentPeriod = (periods:PeriodOption[], now = new Date().toISOString()) => periods.find(period => now >= period.start && now < period.end) || (now < periods[0].start ? periods[0] : periods[periods.length - 1]);
 
 const emptyRow = (squad:any, profiles:Map<string, any>) => ({ id:squad.id, manager:profiles.get(squad.manager_id)?.display_name || 'Manager', team:squad.name, points:0, goals:0, assists:0, cleanSheets:0, weekPoints:0, monthPoints:0 });
 const ranked = (totals:Map<string, any>) => [...totals.values()].sort((a, b) => b.points - a.points || a.team.localeCompare(b.team)).map((row, index) => ({ ...row, rank:index + 1 }));
@@ -58,9 +59,10 @@ export async function scoreBoard(period:Period = 'season', key?:string) {
   };
 
   const latestKickoff = allStats.reduce((latest, stat) => stat.kickoff_at > latest ? stat.kickoff_at : latest, '');
-  const latestWeek = weeks.find(option => latestKickoff >= option.start && latestKickoff < option.end) || weeks[weeks.length - 1];
-  const latestMonth = months.find(option => latestKickoff >= option.start && latestKickoff < option.end) || months[months.length - 1];
-  const selected = period === 'week' ? (weeks.find(option => option.key === (key || latestWeek.key)) || latestWeek) : period === 'month' ? (months.find(option => option.key === (key || latestMonth.key)) || latestMonth) : undefined;
+  const currentWeek = currentPeriod(weeks), currentMonth = currentPeriod(months);
+  const latestWeek = weeks.find(option => latestKickoff >= option.start && latestKickoff < option.end) || currentWeek;
+  const latestMonth = months.find(option => latestKickoff >= option.start && latestKickoff < option.end) || currentMonth;
+  const selected = period === 'week' ? (weeks.find(option => option.key === (key || currentWeek.key)) || currentWeek) : period === 'month' ? (months.find(option => option.key === (key || currentMonth.key)) || currentMonth) : undefined;
   const seasonTotals = addFixtureStats(() => true, true);
   const weeklyTotals = addFixtureStats(stat => stat.kickoff_at >= latestWeek.start && stat.kickoff_at < latestWeek.end, false);
   const monthlyTotals = addFixtureStats(stat => stat.kickoff_at >= latestMonth.start && stat.kickoff_at < latestMonth.end, false);
