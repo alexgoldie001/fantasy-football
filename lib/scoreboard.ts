@@ -6,13 +6,13 @@ type PeriodOption = { key:string; label:string; start:string; end:string };
 
 const monthNames = ['August','September','October','November','December','January','February','March','April','May'];
 const months:PeriodOption[] = monthNames.map((name, index) => {
-  const year = index < 5 ? 2025 : 2026;
+  const year = index < 5 ? 2026 : 2027;
   const month = index < 5 ? index + 7 : index - 5;
   const start = new Date(Date.UTC(year, month, 1));
   return { key:`${year}-${String(month + 1).padStart(2, '0')}`, label:`${name} ${year}`, start:start.toISOString(), end:new Date(Date.UTC(year, month + 1, 1)).toISOString() };
 });
 const weeks:PeriodOption[] = Array.from({ length:42 }, (_, index) => {
-  const start = new Date(Date.parse('2025-08-12T05:00:00.000Z') + index * 7 * 24 * 60 * 60 * 1000);
+  const start = new Date(Date.parse('2026-08-18T00:01:00.000Z') + index * 7 * 24 * 60 * 60 * 1000);
   const end = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
   return { key:String(index + 1), label:`Week ${index + 1} · ${start.toLocaleDateString('en-GB', { day:'numeric', month:'short', timeZone:'Europe/London' })} – ${new Date(end.getTime() - 1).toLocaleDateString('en-GB', { day:'numeric', month:'short', timeZone:'Europe/London' })}`, start:start.toISOString(), end:end.toISOString() };
 });
