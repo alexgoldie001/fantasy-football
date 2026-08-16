@@ -53,7 +53,7 @@ export async function PATCH(request:NextRequest, { params }:{ params:Promise<{ m
       if (Number.isNaN(effectiveAt.getTime()) || effectiveAt.getTime() > Date.now()) return NextResponse.json({ error:'Swap dates cannot be in the future.' }, { status:400 });
       const { data:owner } = await db.from('squad_players').select('id').eq('fpl_id', change.replacementFplId).is('released_at', null).maybeSingle();
       if (owner) return NextResponse.json({ error:'That replacement player is already owned by another manager.' }, { status:409 });
-      const { data:replacement, error:replacementError } = await db.from('fpl_players').select('position').eq('fpl_id', change.replacementFplId).single();
+      const { data:replacement, error:replacementError } = await db.from('fpl_players_2026_27').select('position').eq('season', '2026/27').eq('fpl_id', change.replacementFplId).single();
       if (replacementError || !replacement) throw replacementError || new Error('Replacement player not found.');
       const offset = 0;
       const transferAt = effectiveAt.toISOString();

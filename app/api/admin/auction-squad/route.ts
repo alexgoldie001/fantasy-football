@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     const db = supabaseAdmin();
     const { data: squad, error: squadError } = await db.from('squads').select('id').eq('manager_id', managerId).eq('league_id', commissioner.leagueId).single();
     if (squadError || !squad) throw squadError || new Error('Squad not found.');
-    const { data: allPlayers, error: playersError } = await db.from('fpl_players').select('fpl_id,raw');
+    const { data: allPlayers, error: playersError } = await db.from('fpl_players_2026_27').select('fpl_id,web_name,first_name,second_name').eq('season', '2026/27');
     if (playersError) throw playersError;
     const validIds = new Set((allPlayers || []).map(player => player.fpl_id));
     const fplIds = entries.map(entry => entry.fplId);
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     if (ownedError) throw ownedError;
     const conflictingIds = new Set((owned || []).filter(owner => owner.squad_id !== squad.id).map(owner => owner.fpl_id));
     if (conflictingIds.size) {
-      const playerById = new Map((allPlayers || []).map(player => [player.fpl_id, player.raw || {}]));
+      const playerById = new Map((allPlayers || []).map(player => [player.fpl_id, player]));
       const conflicts = [...conflictingIds].map(id => {
         const player:any = playerById.get(id) || {};
         return player.web_name || [player.first_name, player.second_name].filter(Boolean).join(' ') || `Player ${id}`;
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     if (historyDeleteError) throw historyDeleteError;
     const { error: squadDeleteError } = await db.from('squad_players').delete().eq('squad_id', squad.id);
     if (squadDeleteError) throw squadDeleteError;
-    const seasonStart = '2025-08-01T00:00:00.000Z';
+    const seasonStart = '2026-08-01T00:00:00.000Z';
     const { error: insertError } = await db.from('squad_players').insert(entries.map((entry, index) => ({ squad_id: squad.id, fpl_id: fplIds[index], purchase_price: entry.price, acquired_at: seasonStart })));
     if (insertError) return NextResponse.json({ error: detailedError(insertError, 'The old Bryce squad was cleared, but the replacement 11 could not be saved') }, { status: 500 });
     const { error: budgetError } = await db.from('squads').update({ budget: 1000 - spend }).eq('id', squad.id);
