@@ -13,7 +13,7 @@
 .manager-item .manager-email{color:var(--green);font:10px 'DM Mono';margin-top:3px}
 .manager-identity{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.manager-identity .manager-email{margin:0}.manager-item>div>small:last-child{margin-top:4px}
 @media(max-width:720px){.brand-logo-link{width:112px;height:48px;flex-basis:112px}.brand-logo-image{width:112px;height:48px}}
-.ownership-section-heading{margin:44px 0 14px}.ownership-section-heading h2{margin:0}.monthly-ownership-table .ownership-head,.monthly-ownership-table .ownership-row{min-width:1490px;grid-template-columns:190px repeat(10,130px)}
+.ownership-section-heading{margin:44px 0 14px}.ownership-section-heading h2{margin:0}.monthly-ownership-table .ownership-head,.monthly-ownership-table .ownership-row{min-width:1840px;grid-template-columns:190px repeat(10,165px)}.monthly-ownership-table .ownership-row>div:not(:first-child){padding:10px 8px}.monthly-ownership-table .ownership-row>div:not(:first-child) span{white-space:nowrap;font-size:10px}
 /* Pitch readability corrections */
 .squad-pitch-grass .pitch-goal{top:18px!important}.squad-pitch-grass .pitch-player-card small{color:#fff!important;background:#081d15d9!important;box-shadow:0 2px 8px #04150d73!important;font:700 9px 'DM Mono'!important;text-shadow:0 1px 3px #08291d!important}
 /* Team pitch: richer turf, restrained markings and readable player cards */

@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 type Period = { key:string; label:string; start:string; end:string };
 const positionOrder: Record<string, number> = { GK: 1, DEF: 2, MID: 3, FWD: 4 };
-const positionPrefix: Record<string, string> = { GK: 'G', DEF: 'D', MID: 'M', FWD: 'F' };
+const positionPrefix: Record<string, string> = { GK: 'GK', DEF: 'DF', MID: 'MF', FWD: 'ST' };
 const openingSquadStart = '2026-08-01T00:00:00.000Z';
 const weeks: Period[] = Array.from({ length: 42 }, (_, index) => {
   const start = new Date(Date.parse('2026-08-18T00:01:00.000Z') + index * 7 * 24 * 60 * 60 * 1000);
