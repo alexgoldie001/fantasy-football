@@ -67,7 +67,8 @@ export async function GET() {
         const left = Boolean(member.released_at && member.released_at >= period.start && member.released_at < period.end);
         playerRows.push({ name:`${positionPrefix[player.position] || '—'} ${player.name}${joined && member.purchase_price > 0 ? ` £${(member.purchase_price / 10).toFixed(1)}m` : ''}`, position:player.position, changed:joined || left });
       }
-      return { key:period.key, players:playerRows.sort((a, b) => (positionOrder[a.position] || 9) - (positionOrder[b.position] || 9) || a.name.localeCompare(b.name)), budget:budgetAtPeriodEnd(allMemberships, period) };
+      const hasStarted = Date.now() >= new Date(period.start).getTime();
+      return { key:period.key, players:hasStarted ? playerRows.sort((a, b) => (positionOrder[a.position] || 9) - (positionOrder[b.position] || 9) || a.name.localeCompare(b.name)) : [], budget:budgetAtPeriodEnd(allMemberships, period) };
     };
 
     const managers = (squads || []).map(squad => {
