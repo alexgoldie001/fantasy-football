@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 import { syncFixtureScores } from '@/lib/fixture-sync';
 import { cronAuthorised, leagueMemberFromRequest } from '@/lib/api-auth';
 import { addMissingFpl2026Players } from '@/lib/fpl-2026-sync';
+import { leaguePosition } from '@/lib/tff-position';
 
 const positions = ['', 'GK', 'DEF', 'MID', 'FWD'];
 
@@ -25,8 +26,8 @@ async function sync(request: NextRequest) {
       await db.rpc('finish_fpl_sync', { success: true, detail: null });
       return NextResponse.json({ season:'2026/27', playersChecked:officialPlayerCount, playersAdded, synced:playersAdded, fixtureStatsSynced, at:new Date().toISOString() });
     }
-    const teamNames = new Map(fpl.teams.map((team: { id: number; name: string }) => [team.id, team.name]));
-    const records = fpl.elements.map((p: Record<string, unknown>) => ({ fpl_id:p.id, web_name:p.web_name, first_name:p.first_name, second_name:p.second_name, team_id:p.team, team_name:teamNames.get(p.team as number), position:positions[p.element_type as number], current_price:p.now_cost, photo:`https://resources.premierleague.com/premierleague/photos/players/110x140/p${p.code}.png`, status:p.status, raw:{ ...p, team_code:(fpl.teams.find((team: { id:number }) => team.id === p.team) || {}).code }, updated_at:new Date().toISOString() }));
+    const teamNames = new Map<number, string>(fpl.teams.map((team: { id: number; name: string }) => [team.id, team.name] as [number, string]));
+    const records = fpl.elements.map((p: Record<string, unknown>) => ({ fpl_id:p.id, web_name:p.web_name, first_name:p.first_name, second_name:p.second_name, team_id:p.team, team_name:teamNames.get(p.team as number), position:leaguePosition({ first_name:p.first_name as string, second_name:p.second_name as string, web_name:p.web_name as string, team_name:teamNames.get(p.team as number), position:positions[p.element_type as number] as string | undefined }), current_price:p.now_cost, photo:`https://resources.premierleague.com/premierleague/photos/players/110x140/p${p.code}.png`, status:p.status, raw:{ ...p, team_code:(fpl.teams.find((team: { id:number }) => team.id === p.team) || {}).code }, updated_at:new Date().toISOString() }));
     const { error } = await db.from('fpl_players').upsert(records, { onConflict:'fpl_id' });
     if (error) throw error;
     const currentGameweek = fpl.events?.find((event: { is_current?:boolean }) => event.is_current)?.id;

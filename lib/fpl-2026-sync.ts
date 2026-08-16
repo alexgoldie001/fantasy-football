@@ -1,4 +1,5 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { leaguePosition } from '@/lib/tff-position';
 
 const FPL_URL = 'https://fantasy.premierleague.com/api/bootstrap-static/';
 const positions = ['', 'GK', 'DEF', 'MID', 'FWD'];
@@ -12,7 +13,7 @@ function recordsFromFeed(fpl:any) {
     const team = teams.get(player.team);
     return {
       fpl_id:player.id, season:'2026/27', web_name:player.web_name, first_name:player.first_name, second_name:player.second_name,
-      team_id:player.team, team_name:team?.name || 'Unknown', position:positions[player.element_type] || 'MID',
+      team_id:player.team, team_name:team?.name || 'Unknown', position:leaguePosition({ first_name:player.first_name, second_name:player.second_name, web_name:player.web_name, team_name:team?.name, position:positions[player.element_type] || 'MID' }),
       current_price:player.now_cost, photo:`https://resources.premierleague.com/premierleague/photos/players/110x140/p${player.code}.png`, status:player.status,
       raw:{ ...player, team_code:team?.code, team_short_name:team?.short_name }, source_updated_at:syncedAt, updated_at:syncedAt,
     };

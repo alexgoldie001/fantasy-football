@@ -1,0 +1,3494 @@
+﻿[
+  {
+    "club": "Manchester City",
+    "fullName": "Erling Braut Haaland",
+    "position": "Forward",
+    "shortName": "Haaland"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Antoine Serlom Semenyo",
+    "position": "Midfielder",
+    "shortName": "A. Semenyo"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Bruno Miguel Borges Fernandes",
+    "position": "Midfielder",
+    "shortName": "Bruno Fernandes"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Igor Thiago Nascimento Rodrigues",
+    "position": "Forward",
+    "shortName": "Igor Thiago"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Addji Keaninkin Marc-Israel GuÃ©hi",
+    "position": "Defender",
+    "shortName": "M. GuÃ©hi"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "JoÃ£o Pedro Junqueira de Jesus",
+    "position": "Forward",
+    "shortName": "JoÃ£o Pedro"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Gabriel dos Santos MagalhÃ£es",
+    "position": "Defender",
+    "shortName": "Gabriel MagalhÃ£es"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "David Raya MartÃ­n",
+    "position": "Goalkeeper",
+    "shortName": "David Raya"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Enzo JeremÃ­as FernÃ¡ndez",
+    "position": "Midfielder",
+    "shortName": "E. FernÃ¡ndez"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Mathis Rayan Cherki",
+    "position": "Midfielder",
+    "shortName": "R. Cherki"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Morgan Elliot Rogers",
+    "position": "Midfielder",
+    "shortName": "M. Rogers"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Nico O'Reilly",
+    "position": "Defender",
+    "shortName": "N. O'Reilly"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "William Alain AndrÃ© Gabriel Saliba",
+    "position": "Defender",
+    "shortName": "W. Saliba"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Morgan Anthony Gibbs-White",
+    "position": "Midfielder",
+    "shortName": "M. Gibbs-White"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "CaoimhÃ­n OdhrÃ¡n Kelleher",
+    "position": "Goalkeeper",
+    "shortName": "C. Kelleher"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Oliver George Arthur Watkins",
+    "position": "Forward",
+    "shortName": "O. Watkins"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Gianluigi Donnarumma",
+    "position": "Goalkeeper",
+    "shortName": "G. Donnarumma"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Robert Lynch SÃ¡nchez",
+    "position": "Goalkeeper",
+    "shortName": "Robert SÃ¡nchez"
+  },
+  {
+    "club": "Everton",
+    "fullName": "James David Garner",
+    "position": "Midfielder",
+    "shortName": "J. Garner"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "JurriÃ«n David Norman Timber",
+    "position": "Defender",
+    "shortName": "J. Timber"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Harry Wilson",
+    "position": "Midfielder",
+    "shortName": "H. Wilson"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Robin Gerardus Petrus Roefs",
+    "position": "Goalkeeper",
+    "shortName": "R. Roefs"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Declan Rice",
+    "position": "Midfielder",
+    "shortName": "D. Rice"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Pedro Lomba Neto",
+    "position": "Forward",
+    "shortName": "Pedro Neto"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Bruno GuimarÃ£es Rodriguez Moura",
+    "position": "Midfielder",
+    "shortName": "Bruno GuimarÃ£es"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Jordan Lee Pickford",
+    "position": "Goalkeeper",
+    "shortName": "J. Pickford"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Enzo JÃ©rÃ©my Le FÃ©e",
+    "position": "Midfielder",
+    "shortName": "E. Le FÃ©e"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Viktor Einar GyÃ¶keres",
+    "position": "Forward",
+    "shortName": "V. GyÃ¶keres"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Dominik Szoboszlai",
+    "position": "Midfielder",
+    "shortName": "D. Szoboszlai"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Bart Verbruggen",
+    "position": "Goalkeeper",
+    "shortName": "B. Verbruggen"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Bukayo Ayoyinka Temidayo Saka",
+    "position": "Midfielder",
+    "shortName": "B. Saka"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Dean Bradley Henderson",
+    "position": "Goalkeeper",
+    "shortName": "D. Henderson"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "ÄorÄ‘e PetroviÄ‡",
+    "position": "Goalkeeper",
+    "shortName": "Ä. PetroviÄ‡"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Dominic Nathaniel Calvert-Lewin",
+    "position": "Forward",
+    "shortName": "D. Calvert-Lewin"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Jaidon Kya Denley Anthony",
+    "position": "Midfielder",
+    "shortName": "J. Anthony"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Mateus GonÃ§alo Espanha Fernandes",
+    "position": "Midfielder",
+    "shortName": "Mateus Fernandes"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "JÃ©rÃ©my Baffour Doku",
+    "position": "Midfielder",
+    "shortName": "J. Doku"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Elliot Junior Anderson",
+    "position": "Midfielder",
+    "shortName": "E. Anderson"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Diego Alexander GÃ³mez Amarilla",
+    "position": "Midfielder",
+    "shortName": "D. GÃ³mez"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Virgil van Dijk",
+    "position": "Defender",
+    "shortName": "V. van Dijk"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Matheus Luiz Nunes",
+    "position": "Defender",
+    "shortName": "Matheus Nunes"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Brenden Russell Aaronson",
+    "position": "Midfielder",
+    "shortName": "B. Aaronson"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Philip Walter Foden",
+    "position": "Midfielder",
+    "shortName": "P. Foden"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "MartÃ­n Zubimendi IbÃ¡Ã±ez",
+    "position": "Midfielder",
+    "shortName": "MartÃ­n Zubimendi"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Kiernan Frank Dewsbury-Hall",
+    "position": "Midfielder",
+    "shortName": "K. Dewsbury-Hall"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Daniel Nii Tackie Mensah Welbeck",
+    "position": "Forward",
+    "shortName": "D. Welbeck"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Bernd Leno",
+    "position": "Goalkeeper",
+    "shortName": "B. Leno"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Ryan Jiro Gravenberch",
+    "position": "Midfielder",
+    "shortName": "R. Gravenberch"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Kevin Schade",
+    "position": "Midfielder",
+    "shortName": "K. Schade"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Hugo TimothÃ©e EkitikÃ©",
+    "position": "Forward",
+    "shortName": "H. EkitikÃ©"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Nick Woltemade",
+    "position": "Forward",
+    "shortName": "N. Woltemade"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "JoÃ£o Victor Gomes da Silva",
+    "position": "Midfielder",
+    "shortName": "JoÃ£o Gomes"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Anton Levi Stach",
+    "position": "Midfielder",
+    "shortName": "A. Stach"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Eberechi Oluchi Eze",
+    "position": "Midfielder",
+    "shortName": "E. Eze"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Bryan Tetsadong Marceau Mbeumo",
+    "position": "Midfielder",
+    "shortName": "B. Mbeumo"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "DamiÃ¡n Emiliano MartÃ­nez Romero",
+    "position": "Goalkeeper",
+    "shortName": "E. MartÃ­nez"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Igor Jesus Maciel da Cruz",
+    "position": "Forward",
+    "shortName": "Igor Jesus"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Riccardo Calafiori",
+    "position": "Defender",
+    "shortName": "R. Calafiori"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Alexis Mac Allister",
+    "position": "Midfielder",
+    "shortName": "A. Mac Allister"
+  },
+  {
+    "club": "Everton",
+    "fullName": "James Alan Tarkowski",
+    "position": "Defender",
+    "shortName": "J. Tarkowski"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Daniel MuÃ±oz MejÃ­a",
+    "position": "Defender",
+    "shortName": "D. MuÃ±oz"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Iliman Cheikh Baroy Ndiaye",
+    "position": "Midfielder",
+    "shortName": "I. Ndiaye"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Adrien Lilian GaÃ«tan Truffert",
+    "position": "Defender",
+    "shortName": "A. Truffert"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Matheus Santos Carneiro da Cunha",
+    "position": "Forward",
+    "shortName": "Matheus Cunha"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Tyrick Kwon Mitchell",
+    "position": "Defender",
+    "shortName": "T. Mitchell"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Ferdi Erenay KadÄ±oÄŸlu",
+    "position": "Defender",
+    "shortName": "F. KadÄ±oÄŸlu"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Harvey Lewis Barnes",
+    "position": "Midfielder",
+    "shortName": "H. Barnes"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Jean-Philippe Mateta",
+    "position": "Forward",
+    "shortName": "J. Mateta"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Mathias Jensen",
+    "position": "Midfielder",
+    "shortName": "M. Jensen"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Marcus Joseph Tavernier",
+    "position": "Midfielder",
+    "shortName": "M. Tavernier"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Michael Olabode Kayode",
+    "position": "Defender",
+    "shortName": "M. Kayode"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Nordi Mukiele Mulere",
+    "position": "Defender",
+    "shortName": "N. Mukiele"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Cody MathÃ¨s Gakpo",
+    "position": "Forward",
+    "shortName": "C. Gakpo"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Francisco Evanilson de Lima Barbosa",
+    "position": "Forward",
+    "shortName": "Evanilson"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Matz Willy Els Sels",
+    "position": "Goalkeeper",
+    "shortName": "M. Sels"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Florian Richard Wirtz",
+    "position": "Midfielder",
+    "shortName": "F. Wirtz"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Senne Lammens",
+    "position": "Goalkeeper",
+    "shortName": "S. Lammens"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Yankuba Minteh",
+    "position": "Forward",
+    "shortName": "Y. Minteh"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Nathan Michael Collins",
+    "position": "Defender",
+    "shortName": "N. Collins"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Sandro Tonali",
+    "position": "Midfielder",
+    "shortName": "S. Tonali"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Emiliano BuendÃ­a Stati",
+    "position": "Midfielder",
+    "shortName": "E. BuendÃ­a"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Dango Aboubacar Faissal Ouattara",
+    "position": "Forward",
+    "shortName": "D. Ouattara"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Alex Jay Scott",
+    "position": "Midfielder",
+    "shortName": "A. Scott"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Richarlison de Andrade",
+    "position": "Forward",
+    "shortName": "Richarlison"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "MoisÃ©s Isaac Caicedo Corozo",
+    "position": "Midfielder",
+    "shortName": "M. Caicedo"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Eli Junior Ã‰ric Anatole Rainha Kroupi",
+    "position": "Forward",
+    "shortName": "J. Kroupi"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "IsmaÃ¯la Sarr",
+    "position": "Midfielder",
+    "shortName": "I. Sarr"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Mikkel Krogh Damsgaard",
+    "position": "Midfielder",
+    "shortName": "M. Damsgaard"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Malo Arthur Gusto",
+    "position": "Defender",
+    "shortName": "M. Gusto"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Matthew Stuart Cash",
+    "position": "Defender",
+    "shortName": "M. Cash"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Trevoh Tom Chalobah",
+    "position": "Defender",
+    "shortName": "T. Chalobah"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Sepp van den Berg",
+    "position": "Defender",
+    "shortName": "S. van den Berg"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Benjamin Å eÅ¡ko",
+    "position": "Forward",
+    "shortName": "B. Å eÅ¡ko"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Jan Paul van Hecke",
+    "position": "Defender",
+    "shortName": "J. van Hecke"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Jake Patrick O'Brien",
+    "position": "Defender",
+    "shortName": "J. O'Brien"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Tijjani Martinus Jan Reijnders Lekatompessy",
+    "position": "Midfielder",
+    "shortName": "T. Reijnders"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Maxence Guy Lacroix",
+    "position": "Defender",
+    "shortName": "M. Lacroix"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Marcos NicolÃ¡s Senesi BarÃ³n",
+    "position": "Defender",
+    "shortName": "M. Senesi"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "JÃ¸rgen Strand Larsen",
+    "position": "Forward",
+    "shortName": "J. Strand Larsen"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Trai Hume",
+    "position": "Defender",
+    "shortName": "T. Hume"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Cole Jermaine Palmer",
+    "position": "Midfielder",
+    "shortName": "C. Palmer"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Adam James Wharton",
+    "position": "Midfielder",
+    "shortName": "A. Wharton"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Keane William Lewis-Potter",
+    "position": "Midfielder",
+    "shortName": "K. Lewis-Potter"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Yehor Yarmoliuk",
+    "position": "Midfielder",
+    "shortName": "Y. Yarmoliuk"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Reece Lewis James",
+    "position": "Defender",
+    "shortName": "R. James"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Alisson RamsÃ©s Becker",
+    "position": "Goalkeeper",
+    "shortName": "Alisson Becker"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Guglielmo Vicario",
+    "position": "Goalkeeper",
+    "shortName": "G. Vicario"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Emile Smith Rowe",
+    "position": "Midfielder",
+    "shortName": "E. Smith Rowe"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Nicholas David Pope",
+    "position": "Goalkeeper",
+    "shortName": "N. Pope"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Noah Arinzechukwu Okafor",
+    "position": "Forward",
+    "shortName": "N. Okafor"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Christopher Jeffrey Richards",
+    "position": "Defender",
+    "shortName": "C. Richards"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Abdukodir Khusanov",
+    "position": "Defender",
+    "shortName": "A. Khusanov"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Norberto Bercique Gomes Betuncal",
+    "position": "Forward",
+    "shortName": "Beto"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Alejandro Garnacho Ferreyra",
+    "position": "Midfielder",
+    "shortName": "A. Garnacho"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "John McGinn",
+    "position": "Midfielder",
+    "shortName": "J. McGinn"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Pedro Antonio Porro Sauceda",
+    "position": "Defender",
+    "shortName": "Pedro Porro"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "YÃ©remy JesÃºs Pino Santos",
+    "position": "Midfielder",
+    "shortName": "YÃ©remy Pino"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "RÃºben dos Santos Gato Alves Dias",
+    "position": "Defender",
+    "shortName": "RÃºben Dias"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Micky van de Ven",
+    "position": "Defender",
+    "shortName": "M. van de Ven"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Andrey Nascimento dos Santos",
+    "position": "Midfielder",
+    "shortName": "Andrey Santos"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Malick Thiaw",
+    "position": "Defender",
+    "shortName": "M. Thiaw"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Martin DÃºbravka",
+    "position": "Goalkeeper",
+    "shortName": "M. DÃºbravka"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Michael Vincent Keane",
+    "position": "Defender",
+    "shortName": "M. Keane"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Omar Federico Alderete FernÃ¡ndez",
+    "position": "Defender",
+    "shortName": "O. Alderete"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Curtis Julian Jones",
+    "position": "Midfielder",
+    "shortName": "C. Jones"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Yasin Abbas Ayari",
+    "position": "Midfielder",
+    "shortName": "Y. Ayari"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Ethan Kwame Colm Raymond Ampadu",
+    "position": "Midfielder",
+    "shortName": "E. Ampadu"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Jayden Ian Bogle",
+    "position": "Defender",
+    "shortName": "J. Bogle"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Granit Xhaka",
+    "position": "Midfielder",
+    "shortName": "G. Xhaka"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Alexander Chuka Iwobi",
+    "position": "Midfielder",
+    "shortName": "A. Iwobi"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Thierno Mamadou Barry",
+    "position": "Forward",
+    "shortName": "T. Barry"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Luke Paul Hoare Shaw",
+    "position": "Defender",
+    "shortName": "L. Shaw"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Piero MartÃ­n HincapiÃ© Reyna",
+    "position": "Defender",
+    "shortName": "P. HincapiÃ©"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Ezri Ngoyo Konsa",
+    "position": "Defender",
+    "shortName": "E. Konsa"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "JosÃ© Diogo Dalot Teixeira",
+    "position": "Defender",
+    "shortName": "Diogo Dalot"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Amad Diallo",
+    "position": "Midfielder",
+    "shortName": "A. Diallo"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Gabriel Teodoro Martinelli Silva",
+    "position": "Midfielder",
+    "shortName": "Gabriel Martinelli"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Kouassi Ryan Sessegnon",
+    "position": "Defender",
+    "shortName": "R. Sessegnon"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Sander Gard Bolin Berge",
+    "position": "Midfielder",
+    "shortName": "S. Berge"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "James Michael Justin",
+    "position": "Defender",
+    "shortName": "J. Justin"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Callum James Hudson-Odoi",
+    "position": "Midfielder",
+    "shortName": "C. Hudson-Odoi"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Mats Henrik Berne Wieffer",
+    "position": "Midfielder",
+    "shortName": "M. Wieffer"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "MiloÅ¡ Kerkez",
+    "position": "Defender",
+    "shortName": "M. Kerkez"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Lukas Okechukwu Nmecha",
+    "position": "Forward",
+    "shortName": "L. Nmecha"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Nikola MilenkoviÄ‡",
+    "position": "Defender",
+    "shortName": "N. MilenkoviÄ‡"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Vitalii Mykolenko",
+    "position": "Defender",
+    "shortName": "V. Mykolenko"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Jaka Bijol",
+    "position": "Defender",
+    "shortName": "J. Bijol"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Jack Luca Hinshelwood",
+    "position": "Midfielder",
+    "shortName": "J. Hinshelwood"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "James Harrington Trafford",
+    "position": "Goalkeeper",
+    "shortName": "J. Trafford"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Brian Ebenezer Adjei Brobbey",
+    "position": "Forward",
+    "shortName": "B. Brobbey"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Diop Tehuti Djed-Hotep Spence",
+    "position": "Defender",
+    "shortName": "D. Spence"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Omar Khaled Mohamed Abdelsalam Marmoush",
+    "position": "Forward",
+    "shortName": "Omar Marmoush"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "William Idamudia Daugaard Osula",
+    "position": "Forward",
+    "shortName": "W. Osula"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Callum Eddie Graham Wilson",
+    "position": "Forward",
+    "shortName": "C. Wilson"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Ibrahim SangarÃ©",
+    "position": "Midfielder",
+    "shortName": "I. SangarÃ©"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "EstÃªvÃ£o Willian Almeida de Oliveira GonÃ§alves",
+    "position": "Midfielder",
+    "shortName": "EstÃªvÃ£o"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Ao Tanaka",
+    "position": "Midfielder",
+    "shortName": "A. Tanaka"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Joseph Peter Rodon",
+    "position": "Defender",
+    "shortName": "J. Rodon"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Youri Marion Tielemans",
+    "position": "Midfielder",
+    "shortName": "Y. Tielemans"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Georginio Lucius Rutter",
+    "position": "Forward",
+    "shortName": "G. Rutter"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Kevin Santos Lopes de Macedo",
+    "position": "Midfielder",
+    "shortName": "Kevin"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "JoÅ¡ko Gvardiol",
+    "position": "Defender",
+    "shortName": "J. Gvardiol"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Rayan AÃ¯t-Nouri",
+    "position": "Defender",
+    "shortName": "R. AÃ¯t-Nouri"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Chukwunonso Azuka Tristan Madueke",
+    "position": "Midfielder",
+    "shortName": "N. Madueke"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Joelinton CÃ¡ssio ApolinÃ¡rio de Lira",
+    "position": "Midfielder",
+    "shortName": "Joelinton"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Maxim Peter De Cuyper",
+    "position": "Defender",
+    "shortName": "M. De Cuyper"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Pascal Augustus Struijk",
+    "position": "Defender",
+    "shortName": "P. Struijk"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "James Clayton Hill",
+    "position": "Defender",
+    "shortName": "J. Hill"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Daichi Kamada",
+    "position": "Midfielder",
+    "shortName": "D. Kamada"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Patrick Chinazaekpere Dorgu Larsson",
+    "position": "Midfielder",
+    "shortName": "P. Dorgu"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Calvin Chinedu Bassey",
+    "position": "Defender",
+    "shortName": "C. Bassey"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Rico Antonio Henry",
+    "position": "Defender",
+    "shortName": "R. Henry"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "SaÅ¡a LukiÄ‡",
+    "position": "Midfielder",
+    "shortName": "S. LukiÄ‡"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Xavier Quentin Shay Simons",
+    "position": "Midfielder",
+    "shortName": "X. Simons"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Omari Elijah Giraud-Hutchinson",
+    "position": "Forward",
+    "shortName": "O. Hutchinson"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Karl Darlow",
+    "position": "Goalkeeper",
+    "shortName": "K. Darlow"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Noah Junior Sadiki",
+    "position": "Midfielder",
+    "shortName": "N. Sadiki"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Benjamin William White",
+    "position": "Defender",
+    "shortName": "B. White"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Lewis Carl Dunk",
+    "position": "Defender",
+    "shortName": "L. Dunk"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Timothy Castagne",
+    "position": "Defender",
+    "shortName": "T. Castagne"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Joachim Christian Andersen",
+    "position": "Defender",
+    "shortName": "J. Andersen"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Myles Anthony Lewis-Skelly",
+    "position": "Defender",
+    "shortName": "M. Lewis-Skelly"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "NicolÃ¡s GonzÃ¡lez Iglesias",
+    "position": "Midfielder",
+    "shortName": "Nico GonzÃ¡lez"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Wilson Isidor",
+    "position": "Forward",
+    "shortName": "W. Isidor"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Lewis Miley",
+    "position": "Midfielder",
+    "shortName": "L. Miley"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Daniel George Ballard",
+    "position": "Defender",
+    "shortName": "D. Ballard"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Daniel Johnson Burn",
+    "position": "Defender",
+    "shortName": "D. Burn"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Sean David Longstaff",
+    "position": "Midfielder",
+    "shortName": "S. Longstaff"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Kristoffer Vassbakk KÃ¶pp Ajer",
+    "position": "Defender",
+    "shortName": "K. Ajer"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Martin Ã˜degaard",
+    "position": "Midfielder",
+    "shortName": "M. Ã˜degaard"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Mikel Merino ZazÃ³n",
+    "position": "Midfielder",
+    "shortName": "Mikel Merino"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Andrew Henry Robertson",
+    "position": "Defender",
+    "shortName": "A. Robertson"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Gabriel Johan Gudmundsson",
+    "position": "Defender",
+    "shortName": "G. Gudmundsson"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Rodrigo Bentancur ColmÃ¡n",
+    "position": "Midfielder",
+    "shortName": "R. Bentancur"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Timothy Emeka Iroegbunam",
+    "position": "Midfielder",
+    "shortName": "T. Iroegbunam"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Brennan Price Johnson",
+    "position": "Midfielder",
+    "shortName": "B. Johnson"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Chemsdine Talbi",
+    "position": "Midfielder",
+    "shortName": "C. Talbi"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Tyler Shaan Adams",
+    "position": "Midfielder",
+    "shortName": "T. Adams"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Cristhian Andrey Mosquera IbargÃ¼en",
+    "position": "Defender",
+    "shortName": "Cristhian Mosquera"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Wesley Tidjan Fofana",
+    "position": "Defender",
+    "shortName": "W. Fofana"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Jordan Brian Henderson",
+    "position": "Midfielder",
+    "shortName": "J. Henderson"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Pape Matar Sarr",
+    "position": "Midfielder",
+    "shortName": "P. Sarr"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Joshua David Steven King",
+    "position": "Midfielder",
+    "shortName": "J. King"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Mohammed Kudus",
+    "position": "Midfielder",
+    "shortName": "M. Kudus"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Mathys Henri Tel",
+    "position": "Forward",
+    "shortName": "M. Tel"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Amadou Ba Zeund Georges Mvom Onana",
+    "position": "Midfielder",
+    "shortName": "A. Onana"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Rodrigo HernÃ¡ndez Cascante",
+    "position": "Midfielder",
+    "shortName": "Rodri"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Pascal Alexander GroÃŸ",
+    "position": "Midfielder",
+    "shortName": "P. GroÃŸ"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Jacob Harry Maguire",
+    "position": "Defender",
+    "shortName": "H. Maguire"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Jeremie Agyekum Frimpong",
+    "position": "Defender",
+    "shortName": "J. Frimpong"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Kobbie Boateng Mainoo",
+    "position": "Midfielder",
+    "shortName": "K. Mainoo"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "NicolÃ¡s MartÃ­n DomÃ­nguez",
+    "position": "Midfielder",
+    "shortName": "N. DomÃ­nguez"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Lewis Kieran Hall",
+    "position": "Defender",
+    "shortName": "L. Hall"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Antonee Robinson",
+    "position": "Defender",
+    "shortName": "A. Robinson"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Jefferson AndrÃ©s Lerma SolÃ­s",
+    "position": "Midfielder",
+    "shortName": "J. Lerma"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Mouhamadou Habib Mbacke Diarra",
+    "position": "Midfielder",
+    "shortName": "H. Diarra"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Jack Peter Grealish",
+    "position": "Midfielder",
+    "shortName": "J. Grealish"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Anthony David Junior Elanga",
+    "position": "Midfielder",
+    "shortName": "A. Elanga"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Sven Adriaan Botman",
+    "position": "Defender",
+    "shortName": "S. Botman"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Vitaly Janelt",
+    "position": "Midfielder",
+    "shortName": "V. Janelt"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Kenny Joelle Tete",
+    "position": "Defender",
+    "shortName": "K. Tete"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Rico Henry Mark Lewis",
+    "position": "Defender",
+    "shortName": "R. Lewis"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Carlos Noom Quomah Baleba",
+    "position": "Midfielder",
+    "shortName": "C. Baleba"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Loum Tchaouna",
+    "position": "Forward",
+    "shortName": "L. Tchaouna"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Abdul-Nasir Oluwatosin Oluwadoyinsolami Adarabioyo",
+    "position": "Defender",
+    "shortName": "T. Adarabioyo"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Pau Francisco Torres",
+    "position": "Defender",
+    "shortName": "Pau Torres"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Aaron Buchanan Hickey",
+    "position": "Defender",
+    "shortName": "A. Hickey"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Reinildo Isnard Mandava",
+    "position": "Defender",
+    "shortName": "Reinildo Mandava"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Murillo Santiago Costa dos Santos",
+    "position": "Defender",
+    "shortName": "Murillo"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "David Robert Brooks",
+    "position": "Midfielder",
+    "shortName": "D. Brooks"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "SÃ¡vio Moreira de Oliveira",
+    "position": "Midfielder",
+    "shortName": "Savinho"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Kaoru Mitoma",
+    "position": "Midfielder",
+    "shortName": "K. Mitoma"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Liam Rory Delap",
+    "position": "Forward",
+    "shortName": "L. Delap"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Amine Adli",
+    "position": "Forward",
+    "shortName": "A. Adli"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Jaydee Bruce Hamady Canvot",
+    "position": "Defender",
+    "shortName": "J. Canvot"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Cristian Gabriel Romero",
+    "position": "Defender",
+    "shortName": "C. Romero"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Valentino Francisco Livramento",
+    "position": "Defender",
+    "shortName": "T. Livramento"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Temitayo Olufisayo Olaoluwa Aina",
+    "position": "Defender",
+    "shortName": "O. Aina"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Lucas Estella Perri",
+    "position": "Goalkeeper",
+    "shortName": "Lucas Perri"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Mason Tony Mount",
+    "position": "Midfielder",
+    "shortName": "M. Mount"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Dwight James Matthew McNeil",
+    "position": "Midfielder",
+    "shortName": "D. McNeil"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Joseph George Willock",
+    "position": "Midfielder",
+    "shortName": "J. Willock"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Lucas Erik Holger Bergvall",
+    "position": "Midfielder",
+    "shortName": "L. Bergvall"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Archie James Francis Gray",
+    "position": "Midfielder",
+    "shortName": "A. Gray"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Ilia Iliev Gruev",
+    "position": "Midfielder",
+    "shortName": "I. Gruev"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "William James Hughes",
+    "position": "Midfielder",
+    "shortName": "W. Hughes"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Degnand Wilfried Gnonto",
+    "position": "Midfielder",
+    "shortName": "W. Gnonto"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Adam James Smith",
+    "position": "Defender",
+    "shortName": "A. Smith"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Jorrel Evan Hato",
+    "position": "Defender",
+    "shortName": "J. Hato"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Rayan Vitor SimplÃ­cio Rocha",
+    "position": "Forward",
+    "shortName": "Rayan"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Ian Ethan Maatsen",
+    "position": "Defender",
+    "shortName": "I. Maatsen"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Kevin Danso",
+    "position": "Defender",
+    "shortName": "K. Danso"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Leny Jean-Luc Yoro",
+    "position": "Defender",
+    "shortName": "L. Yoro"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Oscar Bobb",
+    "position": "Midfielder",
+    "shortName": "O. Bobb"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Olivier Maxime Boscagli",
+    "position": "Defender",
+    "shortName": "O. Boscagli"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Fabian Lukas SchÃ¤r",
+    "position": "Defender",
+    "shortName": "F. SchÃ¤r"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Axel Wilson Arthur Disasi Mhakinis Belho",
+    "position": "Defender",
+    "shortName": "A. Disasi"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Ryan Christie",
+    "position": "Midfielder",
+    "shortName": "R. Christie"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Joshua Kofi Acheampong",
+    "position": "Defender",
+    "shortName": "J. Acheampong"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Kai Lukas Havertz",
+    "position": "Forward",
+    "shortName": "K. Havertz"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Dan Assane Ndoye",
+    "position": "Midfielder",
+    "shortName": "D. Ndoye"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Ross Barkley",
+    "position": "Midfielder",
+    "shortName": "R. Barkley"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Wilson Serge Eric Odobert",
+    "position": "Midfielder",
+    "shortName": "W. Odobert"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Manuel Ugarte Ribeiro",
+    "position": "Midfielder",
+    "shortName": "M. Ugarte"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Federico Chiesa",
+    "position": "Forward",
+    "shortName": "F. Chiesa"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Jorge Cuenca Barreno",
+    "position": "Defender",
+    "shortName": "Jorge Cuenca"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Gabriel Fernando de Jesus",
+    "position": "Forward",
+    "shortName": "Gabriel Jesus"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Thomas Cairney",
+    "position": "Midfielder",
+    "shortName": "T. Cairney"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Issa Laye Lucas Jean Diop",
+    "position": "Defender",
+    "shortName": "I. Diop"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Joseph Dave Gomez",
+    "position": "Defender",
+    "shortName": "J. Gomez"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Kepa Arrizabalaga Revuelta",
+    "position": "Goalkeeper",
+    "shortName": "Kepa Arrizabalaga"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Lamare Trenton Chansey Bogarde",
+    "position": "Midfielder",
+    "shortName": "L. Bogarde"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Alexander Isak",
+    "position": "Forward",
+    "shortName": "A. Isak"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Rio Bass Ray Ngumoha Adigun",
+    "position": "Forward",
+    "shortName": "R. Ngumoha"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Justin Devenny",
+    "position": "Midfielder",
+    "shortName": "J. Devenny"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Jamie Jermaine Bynoe-Gittens",
+    "position": "Forward",
+    "shortName": "J. Gittens"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Lisandro MartÃ­nez",
+    "position": "Defender",
+    "shortName": "Lisandro MartÃ­nez"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Giorgi Mamardashvili",
+    "position": "Goalkeeper",
+    "shortName": "G. Mamardashvili"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "NicolÃ² Savona",
+    "position": "Defender",
+    "shortName": "N. Savona"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Evann Ludovic Vidjannagni Guessand",
+    "position": "Forward",
+    "shortName": "E. Guessand"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Noussair Mazraoui",
+    "position": "Defender",
+    "shortName": "N. Mazraoui"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Taiwo Micheal Awoniyi",
+    "position": "Forward",
+    "shortName": "T. Awoniyi"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Christopher John Rigg",
+    "position": "Midfielder",
+    "shortName": "C. Rigg"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Dominic Ayodele Solanke-Mitchell",
+    "position": "Forward",
+    "shortName": "D. Solanke"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Conor John Gallagher",
+    "position": "Midfielder",
+    "shortName": "C. Gallagher"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Christopher Grant Wood",
+    "position": "Forward",
+    "shortName": "C. Wood"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Conor Bradley",
+    "position": "Defender",
+    "shortName": "C. Bradley"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Justin Dean Kluivert",
+    "position": "Midfielder",
+    "shortName": "J. Kluivert"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "BafodÃ© DiakitÃ©",
+    "position": "Defender",
+    "shortName": "B. DiakitÃ©"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Joshua Orobosa Zirkzee",
+    "position": "Forward",
+    "shortName": "J. Zirkzee"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Yoane Wissa Bileko",
+    "position": "Forward",
+    "shortName": "Y. Wissa"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Rodrigo Muniz Carvalho",
+    "position": "Forward",
+    "shortName": "Rodrigo Muniz"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Tyrone Deon Mings",
+    "position": "Defender",
+    "shortName": "T. Mings"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Charalampos Kostoulas",
+    "position": "Forward",
+    "shortName": "C. Kostoulas"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Merlin RÃ¶hl",
+    "position": "Midfielder",
+    "shortName": "M. RÃ¶hl"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Carlos JonÃ¡s Alcaraz DurÃ¡n",
+    "position": "Midfielder",
+    "shortName": "C. Alcaraz"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "HÃ¡kon Rafn Valdimarsson",
+    "position": "Goalkeeper",
+    "shortName": "H. Valdimarsson"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Lewis John Cook",
+    "position": "Midfielder",
+    "shortName": "L. Cook"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Harrison James Reed",
+    "position": "Midfielder",
+    "shortName": "H. Reed"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Sebastiaan Bornauw",
+    "position": "Defender",
+    "shortName": "S. Bornauw"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Victor JÃ¶rgen Nilsson LindelÃ¶f",
+    "position": "Defender",
+    "shortName": "V. LindelÃ¶f"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Marc Guiu Paz",
+    "position": "Forward",
+    "shortName": "Marc Guiu"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Stefanos Tzimas",
+    "position": "Forward",
+    "shortName": "S. Tzimas"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Ethan Rupert Pinnock",
+    "position": "Defender",
+    "shortName": "E. Pinnock"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Ayden Edford Heaven",
+    "position": "Defender",
+    "shortName": "A. Heaven"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Iyenoma Destiny Udogie",
+    "position": "Defender",
+    "shortName": "D. Udogie"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Ryan James Yates",
+    "position": "Midfielder",
+    "shortName": "R. Yates"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Harrison David Armstrong",
+    "position": "Midfielder",
+    "shortName": "H. Armstrong"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Christian Thers BarsÃ¸e NÃ¸rgaard",
+    "position": "Midfielder",
+    "shortName": "C. NÃ¸rgaard"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "AntonÃ­n KinskÃ½",
+    "position": "Goalkeeper",
+    "shortName": "A. KinskÃ½"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "FÃ¡bio Leandro Freitas Gouveia de Carvalho",
+    "position": "Midfielder",
+    "shortName": "FÃ¡bio Carvalho"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "JoÃ«l Mohammed Ramzan Piroe",
+    "position": "Forward",
+    "shortName": "J. Piroe"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Tyrique Aaron Delali Yusuff George",
+    "position": "Forward",
+    "shortName": "T. George"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Tammy Bakumo-Abraham",
+    "position": "Forward",
+    "shortName": "T. Abraham"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Simon Adingra",
+    "position": "Forward",
+    "shortName": "S. Adingra"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Facundo ValentÃ­n Buonanotte",
+    "position": "Midfielder",
+    "shortName": "F. Buonanotte"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Matthijs de Ligt",
+    "position": "Defender",
+    "shortName": "M. de Ligt"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Dilane Bakwa",
+    "position": "Midfielder",
+    "shortName": "D. Bakwa"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Enes Ãœnal",
+    "position": "Forward",
+    "shortName": "E. Ãœnal"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Jarrad Paul Branthwaite",
+    "position": "Defender",
+    "shortName": "J. Branthwaite"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Benjamin Pascal Lecomte",
+    "position": "Goalkeeper",
+    "shortName": "B. Lecomte"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Reiss Luke Nelson",
+    "position": "Midfielder",
+    "shortName": "R. Nelson"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "RomÃ©o Lavia",
+    "position": "Midfielder",
+    "shortName": "R. Lavia"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Jason Sean Steele",
+    "position": "Goalkeeper",
+    "shortName": "J. Steele"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Edward Keddar Nketiah",
+    "position": "Forward",
+    "shortName": "E. Nketiah"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Ogochukwu Frank Onyeka",
+    "position": "Midfielder",
+    "shortName": "F. Onyeka"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Leon Patrick Bailey Butler",
+    "position": "Midfielder",
+    "shortName": "L. Bailey"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Walter Daniel BenÃ­tez",
+    "position": "Goalkeeper",
+    "shortName": "W. BenÃ­tez"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Marco Bizot",
+    "position": "Goalkeeper",
+    "shortName": "M. Bizot"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "James John McAtee",
+    "position": "Midfielder",
+    "shortName": "J. McAtee"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Luke Terry O'Nien",
+    "position": "Midfielder",
+    "shortName": "L. O'Nien"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Max Lewis Rowe Alleyne",
+    "position": "Defender",
+    "shortName": "M. Alleyne"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Tyler-Jay Robert Dibling",
+    "position": "Forward",
+    "shortName": "T. Dibling"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Wataru Endo",
+    "position": "Midfielder",
+    "shortName": "W. Endo"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Romaine Lee Mundle",
+    "position": "Midfielder",
+    "shortName": "R. Mundle"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Ethan Chidiebere Nwaneri",
+    "position": "Midfielder",
+    "shortName": "E. Nwaneri"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Borna Sosa",
+    "position": "Defender",
+    "shortName": "B. Sosa"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Melker Ã…ke Ellborg",
+    "position": "Goalkeeper",
+    "shortName": "M. Ellborg"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Matthew Sean O'Riley",
+    "position": "Midfielder",
+    "shortName": "M. O'Riley"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "BenoÃ®t Ntambue Badiashile Mukinayi Baya",
+    "position": "Defender",
+    "shortName": "B. Badiashile"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Nilson David Angulo RamÃ­rez",
+    "position": "Forward",
+    "shortName": "N. Angulo"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Jair Paula da Cunha Filho",
+    "position": "Defender",
+    "shortName": "Jair Cunha"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Mateo KovaÄiÄ‡",
+    "position": "Midfielder",
+    "shortName": "M. KovaÄiÄ‡"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Harvey Daniel James Elliott",
+    "position": "Midfielder",
+    "shortName": "H. Elliott"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Ben Gannon-Doak",
+    "position": "Forward",
+    "shortName": "B. Gannon-Doak"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Veljko MilosavljeviÄ‡",
+    "position": "Defender",
+    "shortName": "V. MilosavljeviÄ‡"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Treymaurice Nyoni",
+    "position": "Midfielder",
+    "shortName": "T. Nyoni"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Benjamin Kristian Arthur",
+    "position": "Defender",
+    "shortName": "B. Arthur"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "John Victor Maciel Furtado",
+    "position": "Goalkeeper",
+    "shortName": "John Victor"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "DÃ¡rio Cassia LuÃ­s Essugo",
+    "position": "Midfielder",
+    "shortName": "DÃ¡rio Essugo"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Igor Julio dos Santos de Paulo",
+    "position": "Defender",
+    "shortName": "Igor Julio"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Mamadou Sarr",
+    "position": "Defender",
+    "shortName": "M. Sarr"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Arnaud Kalimuendo Muinga",
+    "position": "Forward",
+    "shortName": "A. Kalimuendo"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Jonah Daniel Kusi-Asare",
+    "position": "Forward",
+    "shortName": "J. Kusi-Asare"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Benjamin Thomas Davies",
+    "position": "Defender",
+    "shortName": "B. Davies"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Alex LÃ¡szlÃ³ TÃ³th",
+    "position": "Midfielder",
+    "shortName": "A. TÃ³th"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Luca Netz",
+    "position": "Defender",
+    "shortName": "L. Netz"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Frederick John Woodman",
+    "position": "Goalkeeper",
+    "shortName": "F. Woodman"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Mark Travers",
+    "position": "Goalkeeper",
+    "shortName": "M. Travers"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Antoni-Djibu Milambo",
+    "position": "Midfielder",
+    "shortName": "A. Milambo"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Romain Joy Kouakou Esse",
+    "position": "Midfielder",
+    "shortName": "R. Esse"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Levi Lamar Samuels Colwill",
+    "position": "Defender",
+    "shortName": "L. Colwill"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Fuka-Arthur Masuaku Kawela",
+    "position": "Defender",
+    "shortName": "A. Masuaku"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "JoÃ£o Victor de Souza Menezes",
+    "position": "Defender",
+    "shortName": "Souza"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Alex Murphy",
+    "position": "Defender",
+    "shortName": "A. Murphy"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Julio CÃ©sar Soler Barreto",
+    "position": "Defender",
+    "shortName": "J. Soler"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Jack Andrew Davidson Fletcher",
+    "position": "Midfielder",
+    "shortName": "J. Fletcher"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Jenson Seelt",
+    "position": "Defender",
+    "shortName": "J. Seelt"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Adam Aznou Ben Cheikh",
+    "position": "Defender",
+    "shortName": "A. Aznou"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Kaye Furo Tamuno Iyowuna",
+    "position": "Forward",
+    "shortName": "K. Furo"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "James Daniel Maddison",
+    "position": "Midfielder",
+    "shortName": "J. Maddison"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Alysson Edward Franco da Rocha dos Santos",
+    "position": "Forward",
+    "shortName": "Alysson"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Dane Pharrell Scarlett",
+    "position": "Forward",
+    "shortName": "D. Scarlett"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Djiamgone Jocelin Ta Bi",
+    "position": "Midfielder",
+    "shortName": "J. Bi"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Anthony Patterson",
+    "position": "Goalkeeper",
+    "shortName": "A. Patterson"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Calvin William Ramsay",
+    "position": "Defender",
+    "shortName": "C. Ramsay"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Zach MacFarlane Abbott",
+    "position": "Defender",
+    "shortName": "Z. Abbott"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Gustavo Nunes Fernandes Gomes",
+    "position": "Forward",
+    "shortName": "Gustavo Nunes"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Giovanni Leoni",
+    "position": "Defender",
+    "shortName": "G. Leoni"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Jamaldeen Ayomide Jimoh-Aloba",
+    "position": "Midfielder",
+    "shortName": "J. Jimoh-Aloba"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Yunus Emre Konak",
+    "position": "Midfielder",
+    "shortName": "Y. Konak"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Remy William James Rees-Dottin",
+    "position": "Forward",
+    "shortName": "R. Rees-Dottin"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Benjamin George Winterburn",
+    "position": "Midfielder",
+    "shortName": "B. Winterburn"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Shea Lacey",
+    "position": "Forward",
+    "shortName": "S. Lacey"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Marcus Rashford",
+    "position": "Midfielder",
+    "shortName": "M. Rashford"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Dejan Kulusevski",
+    "position": "Midfielder",
+    "shortName": "D. Kulusevski"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Mykhailo Mudryk",
+    "position": "Midfielder",
+    "shortName": "M. Mudryk"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Ronald Araujo",
+    "position": "Defender",
+    "shortName": "R. Araujo"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "JÃ©rÃ©my Jacquet",
+    "position": "Defender",
+    "shortName": "J. Jacquet"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Nicolas Jackson",
+    "position": "Forward",
+    "shortName": "N. Jackson"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Christos Tzolis",
+    "position": "Midfielder",
+    "shortName": "Tzolis"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "VÃ­ctor MuÃ±oz Villanueva",
+    "position": "Forward",
+    "shortName": "VÃ­ctor MuÃ±oz"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Johan Kula Manzambi",
+    "position": "Midfielder",
+    "shortName": "J. Manzambi"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Valentin Barco",
+    "position": "Midfielder",
+    "shortName": "V. Barco"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Gonzalo GarcÃ­a Torres",
+    "position": "Forward",
+    "shortName": "G. Garcia"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Bazoumana TourÃ©",
+    "position": "Midfielder",
+    "shortName": "B. TourÃ©"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Evan Joe Ferguson",
+    "position": "Forward",
+    "shortName": "E. Ferguson"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Lukas Hornicek",
+    "position": "Goalkeeper",
+    "shortName": "L. Hornicek"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Pep Chavarria",
+    "position": "Defender",
+    "shortName": "P. Chavarria"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Samuel Iling-Junior",
+    "position": "Forward",
+    "shortName": "S. Iling-Junior"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "David Datro Fofana",
+    "position": "Forward",
+    "shortName": "D. Fofana"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Emmanuel Esseh Emegha",
+    "position": "Forward",
+    "shortName": "E. Emegha"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Jacob Matthew Ramsey",
+    "position": "Midfielder",
+    "shortName": "J. Ramsey"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Max Robert Dowman",
+    "position": "Midfielder",
+    "shortName": "M. Dowman"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "FÃ¡bio Daniel Ferreira Vieira",
+    "position": "Midfielder",
+    "shortName": "FÃ¡bio Vieira"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "JoÃ£o Pedro Loureiro da Costa",
+    "position": "Defender",
+    "shortName": "Costinha"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Konstantinos Tsimikas",
+    "position": "Defender",
+    "shortName": "K. Tsimikas"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Mamadou SangarÃ©",
+    "position": "Midfielder",
+    "shortName": "SangarÃ©"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Neco Shay Williams",
+    "position": "Defender",
+    "shortName": "N. Williams"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Ã“scar Mingueza GarcÃ­a",
+    "position": "Defender",
+    "shortName": "Ã“scar Mingueza"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Geovany Tcherno Quenda",
+    "position": "Midfielder",
+    "shortName": "Geovany Quenda"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Boubacar Bernard Kamara",
+    "position": "Midfielder",
+    "shortName": "B. Kamara"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Cheick Oumar DoucourÃ©",
+    "position": "Midfielder",
+    "shortName": "C. DoucourÃ©"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Chidozie Obi-Martin",
+    "position": "Forward",
+    "shortName": "C. Obi"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Ellis Reco Simms",
+    "position": "Forward",
+    "shortName": "E. Simms"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Jaden Richard Philogene-Bidace",
+    "position": "Midfielder",
+    "shortName": "J. Philogene"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Luka VuÅ¡koviÄ‡",
+    "position": "Defender",
+    "shortName": "L. VuÅ¡koviÄ‡"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Oliver Robert McBurnie",
+    "position": "Forward",
+    "shortName": "O. McBurnie"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Shea Charles",
+    "position": "Midfielder",
+    "shortName": "S. Charles"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Takehiro Tomiyasu",
+    "position": "Defender",
+    "shortName": "T. Tomiyasu"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Xaver Schlager",
+    "position": "Midfielder",
+    "shortName": "X. Schlager"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Aladji Bamba",
+    "position": "Midfielder",
+    "shortName": "A. Bamba"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Ãlvaro Daniel RodrÃ­guez MuÃ±oz",
+    "position": "Forward",
+    "shortName": "Ã. RodrÃ­guez"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "AntÃ³nio JoÃ£o Pereira de Albuquerque Tavares da Silva",
+    "position": "Defender",
+    "shortName": "Antonio S."
+  },
+  {
+    "club": "Fulham",
+    "fullName": "CÃ©sar Palacios PÃ©rez",
+    "position": "Midfielder",
+    "shortName": "C. Palacios"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Claudio JeremÃ­as Echeverri",
+    "position": "Midfielder",
+    "shortName": "C. Echeverri"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Daizen Maeda",
+    "position": "Forward",
+    "shortName": "D. Maeda"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Haji Amir Wright",
+    "position": "Forward",
+    "shortName": "H. Wright"
+  },
+  {
+    "club": "Arsenal",
+    "fullName": "Illan StÃ©phane Meslier",
+    "position": "Goalkeeper",
+    "shortName": "I. Meslier"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Ji-Soo Kim",
+    "position": "Defender",
+    "shortName": "Kim Ji-Soo"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Modou KÃ©ba CissÃ©",
+    "position": "Defender",
+    "shortName": "M. CissÃ©"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Vitor de Oliveira Nunes dos Reis",
+    "position": "Defender",
+    "shortName": "Vitor Reis"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Yasin Ã–zcan",
+    "position": "Defender",
+    "shortName": "Y. Ã–zcan"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "AurÃ¨le Florian Amenda",
+    "position": "Defender",
+    "shortName": "A. Amenda"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Daniel Owen James",
+    "position": "Midfielder",
+    "shortName": "D. James"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Emersonn Correia da Silva",
+    "position": "Forward",
+    "shortName": "Emersonn"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Felipe Rodrigues da Silva",
+    "position": "Defender",
+    "shortName": "Morato"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Fraser Gerard Forster",
+    "position": "Goalkeeper",
+    "shortName": "F. Forster"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Hayden Rhys Hackney",
+    "position": "Midfielder",
+    "shortName": "H. Hackney"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Jack Edward Rudoni",
+    "position": "Midfielder",
+    "shortName": "J. Rudoni"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Jack Raymond Clarke",
+    "position": "Midfielder",
+    "shortName": "J. Clarke"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Juan Luis SÃ¡nchez Velasco",
+    "position": "Defender",
+    "shortName": "Juanlu Sanchez"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Kosta NedeljkoviÄ‡",
+    "position": "Defender",
+    "shortName": "K. NedeljkoviÄ‡"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Largie Ramazani",
+    "position": "Forward",
+    "shortName": "L. Ramazani"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Liam Alan Millar",
+    "position": "Forward",
+    "shortName": "L. Millar"
+  },
+  {
+    "club": "Fulham",
+    "fullName": "Luke Bernard Harris",
+    "position": "Midfielder",
+    "shortName": "L. Harris"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Marco Palestra",
+    "position": "Defender",
+    "shortName": "M. Palestra"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Matt Targett",
+    "position": "Defender",
+    "shortName": "M. Targett"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Solomon Brandon Michael Clarke Thomas-Asante",
+    "position": "Forward",
+    "shortName": "B. Thomas-Asante"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Stefan BajÄetiÄ‡ Maquieira",
+    "position": "Midfielder",
+    "shortName": "Stefan BajÄetiÄ‡"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Tarik MuharemoviÄ‡",
+    "position": "Defender",
+    "shortName": "T. MuharemoviÄ‡"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Victor Torp Overgaard",
+    "position": "Midfielder",
+    "shortName": "V. Torp"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Abdoullah Mustapha Ba",
+    "position": "Midfielder",
+    "shortName": "A. Ba"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Abdul Fatawu Issahaku",
+    "position": "Forward",
+    "shortName": "A. Fatawu"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Abdulai Juma Bah",
+    "position": "Defender",
+    "shortName": "J. Bah"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Ali Ibrahim Karim Ali Al Hamadi",
+    "position": "Forward",
+    "shortName": "Ali Al Hamadi"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Azor Matusiwa",
+    "position": "Midfielder",
+    "shortName": "A. Matusiwa"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Caleb Yirenkyi",
+    "position": "Midfielder",
+    "shortName": "C. Yirenkyi"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Carl Andrew Rushworth",
+    "position": "Goalkeeper",
+    "shortName": "C. Rushworth"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Daniel David Jebbison",
+    "position": "Forward",
+    "shortName": "D. Jebbison"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Gustavo Hamer",
+    "position": "Midfielder",
+    "shortName": "G. Hamer"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Hidemasa Morita",
+    "position": "Midfielder",
+    "shortName": "H. Morita"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Jay Rhys Dasilva",
+    "position": "Defender",
+    "shortName": "Jay Dasilva"
+  },
+  {
+    "club": "Liverpool",
+    "fullName": "Jayden Alexander Danns",
+    "position": "Forward",
+    "shortName": "J. Danns"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Jesurun Rak-Sakyi",
+    "position": "Midfielder",
+    "shortName": "J. Rak-Sakyi"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Joseph Paul Gelhardt",
+    "position": "Forward",
+    "shortName": "J. Gelhardt"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Leif Davis",
+    "position": "Defender",
+    "shortName": "L. Davis"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Mikey Steven Danny Moore",
+    "position": "Forward",
+    "shortName": "M. Moore"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Milan Fabrizio van Ewijk",
+    "position": "Defender",
+    "shortName": "M. van Ewijk"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Min-Hyeok Yang",
+    "position": "Forward",
+    "shortName": "Yang Min-Hyeok"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Nathan Kenneth Patterson",
+    "position": "Defender",
+    "shortName": "N. Patterson"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Ousmane Diomande",
+    "position": "Defender",
+    "shortName": "O. Diomande"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Ryan John Giles",
+    "position": "Defender",
+    "shortName": "R. Giles"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Tatsuhiro Sakamoto",
+    "position": "Midfielder",
+    "shortName": "T. Sakamoto"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Thomas AndrÃ© Meunier",
+    "position": "Defender",
+    "shortName": "T. Meunier"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "William Jonathan Dennis",
+    "position": "Goalkeeper",
+    "shortName": "W. Dennis"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "AbdÃ¼lkadir Ã–mÃ¼r",
+    "position": "Midfielder",
+    "shortName": "A. Ã–mÃ¼r"
+  },
+  {
+    "club": "Aston Villa",
+    "fullName": "Brian Djomeni Madjo",
+    "position": "Forward",
+    "shortName": "B. Madjo"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "CÃ©dric KiprÃ©",
+    "position": "Defender",
+    "shortName": "C. KiprÃ©"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Chiedozie Somkelechukwu Ogbene",
+    "position": "Midfielder",
+    "shortName": "C. Ogbene"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Christian Timothy Walton",
+    "position": "Goalkeeper",
+    "shortName": "C. Walton"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Dara Joseph O'Shea",
+    "position": "Defender",
+    "shortName": "D. O'Shea"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "David Ikechukwu Ozoh",
+    "position": "Midfielder",
+    "shortName": "D. Ozoh"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Diego Basilio LeÃ³n Blanco",
+    "position": "Defender",
+    "shortName": "D. LeÃ³n"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Ephron Jardell Mason-Clark",
+    "position": "Midfielder",
+    "shortName": "E. Mason-Clark"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Ewen Jaouen",
+    "position": "Goalkeeper",
+    "shortName": "E. Jaouen"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Florentino Ibrain Morris LuÃ­s",
+    "position": "Midfielder",
+    "shortName": "Florentino"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "George David Eric Hirst",
+    "position": "Forward",
+    "shortName": "G. Hirst"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Jack Butland",
+    "position": "Goalkeeper",
+    "shortName": "J. Butland"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Jake Brian Bidwell",
+    "position": "Defender",
+    "shortName": "J. Bidwell"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Jannik Schuster",
+    "position": "Defender",
+    "shortName": "J. Schuster"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Joshua Elliot Eccles",
+    "position": "Midfielder",
+    "shortName": "J. Eccles"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Kaine Kesler-Hayden",
+    "position": "Defender",
+    "shortName": "K. Kesler-Hayden"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Kayne van Oevelen",
+    "position": "Goalkeeper",
+    "shortName": "K. van Oevelen"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Konstantinos Tzolakis",
+    "position": "Goalkeeper",
+    "shortName": "K. Tzolakis"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Kota Takai",
+    "position": "Defender",
+    "shortName": "K. Takai"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Marcelino Ignacio NÃºÃ±ez Espinoza",
+    "position": "Midfielder",
+    "shortName": "M. NÃºÃ±ez"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Mateo Joseph FernÃ¡ndez-Regatillo",
+    "position": "Forward",
+    "shortName": "Mateo Joseph"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Matheus FranÃ§a de Oliveira",
+    "position": "Forward",
+    "shortName": "Matheus FranÃ§a"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Matt Davidson Rider Crooks",
+    "position": "Midfielder",
+    "shortName": "M. Crooks"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Matthew Jacob Grimes",
+    "position": "Midfielder",
+    "shortName": "M. Grimes"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "Maximillian James Aarons",
+    "position": "Defender",
+    "shortName": "M. Aarons"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Mohamed El Bachir Belloumi",
+    "position": "Forward",
+    "shortName": "M. Belloumi"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Regan Newman Slater",
+    "position": "Midfielder",
+    "shortName": "R. Slater"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Seung-Soo Park",
+    "position": "Forward",
+    "shortName": "Park Seung-Soo"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Anis Mehmeti",
+    "position": "Midfielder",
+    "shortName": "A. Mehmeti"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Benjamin Anthony Johnson",
+    "position": "Defender",
+    "shortName": "B. Johnson"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Charlie Roger Hughes",
+    "position": "Defender",
+    "shortName": "C. Hughes"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Chuba Amechi Akpom",
+    "position": "Forward",
+    "shortName": "C. Akpom"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Darnell Anthony Furlong",
+    "position": "Defender",
+    "shortName": "D. Furlong"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Ellery Ronald Balcombe",
+    "position": "Goalkeeper",
+    "shortName": "E. Balcombe"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Elliot Stroud",
+    "position": "Midfielder",
+    "shortName": "E. Stroud"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Enis Destan",
+    "position": "Forward",
+    "shortName": "E. Destan"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Jack Henry Philip Taylor",
+    "position": "Midfielder",
+    "shortName": "J. Taylor"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Jacob John Greaves",
+    "position": "Defender",
+    "shortName": "J. Greaves"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Jens Hjerto-Dahl",
+    "position": "Midfielder",
+    "shortName": "J. Hjerto-Dahl"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Joel Owen Latibeaudiere",
+    "position": "Defender",
+    "shortName": "J. Latibeaudiere"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "John Patrick Egan",
+    "position": "Defender",
+    "shortName": "J. Egan"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Kasey Ian McAteer",
+    "position": "Midfielder",
+    "shortName": "K. McAteer"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Kjell Scherpen",
+    "position": "Goalkeeper",
+    "shortName": "K. Scherpen"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Lewie Jacob Coyle",
+    "position": "Defender",
+    "shortName": "L. Coyle"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Liam James Kitching",
+    "position": "Defender",
+    "shortName": "L. Kitching"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "LuÃ­s Hemir Silva Semedo",
+    "position": "Forward",
+    "shortName": "LuÃ­s Semedo"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Luke Matthew Woolfenden",
+    "position": "Defender",
+    "shortName": "L. Woolfenden"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Oluwasemilogo Adesewo Ibidapo Ajayi",
+    "position": "Defender",
+    "shortName": "S. Ajayi"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Sean Steur",
+    "position": "Midfielder",
+    "shortName": "S. Steur"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Tobias Christopher Collyer",
+    "position": "Midfielder",
+    "shortName": "T. Collyer"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Aaron Anselmino",
+    "position": "Defender",
+    "shortName": "A. Anselmino"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Alan James Browne",
+    "position": "Midfielder",
+    "shortName": "A. Browne"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Amario Oswald Gerardo Cozier-Duberry",
+    "position": "Midfielder",
+    "shortName": "A. Cozier-Duberry"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Ashley Phillips",
+    "position": "Defender",
+    "shortName": "A. Phillips"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Babajide David Akintola",
+    "position": "Forward",
+    "shortName": "D. Akintola"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Bobby Craig Thomas",
+    "position": "Defender",
+    "shortName": "B. Thomas"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Cody Callum Pierre Drameh",
+    "position": "Defender",
+    "shortName": "C. Drameh"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Dillon Phillips",
+    "position": "Goalkeeper",
+    "shortName": "D. Phillips"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Eliot Matazo",
+    "position": "Midfielder",
+    "shortName": "E. Matazo"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Eric Emanuel da Silva Moreira",
+    "position": "Forward",
+    "shortName": "E. da Silva Moreira"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Harrison Thomas Clarke",
+    "position": "Defender",
+    "shortName": "H. Clarke"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Harry John Amass",
+    "position": "Defender",
+    "shortName": "H. Amass"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Issa KaborÃ©",
+    "position": "Defender",
+    "shortName": "I. KaborÃ©"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Jacob Kai Murphy",
+    "position": "Midfielder",
+    "shortName": "J. Murphy"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Joshua Darius Kamani Wilson-Esbrand",
+    "position": "Defender",
+    "shortName": "J. Wilson-Esbrand"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Kieran O'Neill Dowell",
+    "position": "Midfielder",
+    "shortName": "K. Dowell"
+  },
+  {
+    "club": "Manchester City",
+    "fullName": "Marcus Bettinelli",
+    "position": "Goalkeeper",
+    "shortName": "M. Bettinelli"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Mason Paul James Burstow",
+    "position": "Forward",
+    "shortName": "M. Burstow"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Matthew James Jacob",
+    "position": "Defender",
+    "shortName": "M. Jacob"
+  },
+  {
+    "club": "Leeds United",
+    "fullName": "Maximilian WÃ¶ber",
+    "position": "Defender",
+    "shortName": "M. WÃ¶ber"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Michael Svoboda",
+    "position": "Defender",
+    "shortName": "M. Svoboda"
+  },
+  {
+    "club": "Chelsea",
+    "fullName": "Mike Louis Penders",
+    "position": "Goalkeeper",
+    "shortName": "M. Penders"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Oliver Lukas Dozae Nnonyelu Dovin",
+    "position": "Goalkeeper",
+    "shortName": "O. Dovin"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Omar Tyrell Crawford Richards",
+    "position": "Defender",
+    "shortName": "O. Richards"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Ã“scar Steven Zambrano Preciado",
+    "position": "Midfielder",
+    "shortName": "Ã“. Zambrano"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Patrick James Coleman McNair",
+    "position": "Defender",
+    "shortName": "P. McNair"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Pelenda Joshua Tunga Dasilva",
+    "position": "Midfielder",
+    "shortName": "Josh Dasilva"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Raphael Borges Rodrigues",
+    "position": "Forward",
+    "shortName": "R. Borges Rodrigues"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Remi Luke Matthews",
+    "position": "Goalkeeper",
+    "shortName": "R. Matthews"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Simon William Moore",
+    "position": "Goalkeeper",
+    "shortName": "S. Moore"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Sindre Walle Egeli",
+    "position": "Forward",
+    "shortName": "S. Egeli"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Thomas David Heaton",
+    "position": "Goalkeeper",
+    "shortName": "T. Heaton"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Abu Bakarr Kamara",
+    "position": "Forward",
+    "shortName": "A. Kamara"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Aidan Harris",
+    "position": "Goalkeeper",
+    "shortName": "A. Harris"
+  },
+  {
+    "club": "Sunderland",
+    "fullName": "Ajibola Joshua Odunayo Afolarin Alese",
+    "position": "Defender",
+    "shortName": "A. Alese"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "Alexander Palmer",
+    "position": "Goalkeeper",
+    "shortName": "A. Palmer"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Ben Wilson",
+    "position": "Goalkeeper",
+    "shortName": "B. Wilson"
+  },
+  {
+    "club": "Tottenham Hotspur",
+    "fullName": "Brandon Anthony Austin",
+    "position": "Goalkeeper",
+    "shortName": "B. Austin"
+  },
+  {
+    "club": "Hull City",
+    "fullName": "Darko Boateng Gyabi",
+    "position": "Midfielder",
+    "shortName": "D. Gyabi"
+  },
+  {
+    "club": "Ipswich Town",
+    "fullName": "David Robert Edmund Button",
+    "position": "Goalkeeper",
+    "shortName": "D. Button"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Eiran Joe Cashin",
+    "position": "Defender",
+    "shortName": "E. Cashin"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Ethan Joseph Wheatley",
+    "position": "Forward",
+    "shortName": "E. Wheatley"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "George Callum Michael King",
+    "position": "Defender",
+    "shortName": "G. King"
+  },
+  {
+    "club": "Brentford",
+    "fullName": "Jayden Ade Trindade Meghoma",
+    "position": "Defender",
+    "shortName": "J. Meghoma"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Joseph Charles Whitworth",
+    "position": "Goalkeeper",
+    "shortName": "J. Whitworth"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Kai Bernard James Andrews",
+    "position": "Midfielder",
+    "shortName": "K. Andrews"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Malick Junior YalcouyÃ©",
+    "position": "Midfielder",
+    "shortName": "M. YalcouyÃ©"
+  },
+  {
+    "club": "Coventry City",
+    "fullName": "Miguel Ãngel Brau BlÃ¡nquez",
+    "position": "Defender",
+    "shortName": "Miguel Ãngel Brau"
+  },
+  {
+    "club": "Nottingham Forest",
+    "fullName": "Tyler Grant Bindon",
+    "position": "Defender",
+    "shortName": "T. Bindon"
+  },
+  {
+    "club": "Manchester United",
+    "fullName": "Tyler Robert Fletcher",
+    "position": "Midfielder",
+    "shortName": "T. Fletcher"
+  },
+  {
+    "club": "Crystal Palace",
+    "fullName": "Eyimofe Jemide",
+    "position": "Defender",
+    "shortName": "M. Jemide"
+  },
+  {
+    "club": "Newcastle United",
+    "fullName": "Mark Joseph Gillespie",
+    "position": "Goalkeeper",
+    "shortName": "M. Gillespie"
+  },
+  {
+    "club": "Everton",
+    "fullName": "Thomas Lloyd King",
+    "position": "Goalkeeper",
+    "shortName": "T. King"
+  },
+  {
+    "club": "Brighton & Hove Albion",
+    "fullName": "Thomas Peter Wayne McGill",
+    "position": "Goalkeeper",
+    "shortName": "T. McGill"
+  },
+  {
+    "club": "Bournemouth",
+    "fullName": "JuliÃ¡n Vicente Araujo ZÃºÃ±iga",
+    "position": "Defender",
+    "shortName": "J. Araujo"
+  }
+]
