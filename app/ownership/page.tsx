@@ -31,7 +31,7 @@ export default function OwnershipPage() {
   useEffect(() => { fetch('/api/ownership', { cache:'no-store' }).then(async response => { const result = await response.json(); if (!response.ok) throw new Error(result.error); setData(result); }).catch(error => setData({ months:[], managers:[], budgets:[], error:error.message || 'Unable to load player ownership.' })).finally(() => setLoading(false)); }, []);
 
   return <AppShell>
-    <section className="page-heading"><p className="eyebrow">Transfers & squad history</p><h1>Player ownership.</h1><p className="sub">Red names mark a player joining or leaving during that period. Sale returns are 50% of the purchase price, rounded down to £0.5m.</p></section>
+    <section className="page-heading"><p className="eyebrow">Transfers & squad history</p><h1>Player ownership.</h1><p className="sub">Red names mark a player joining or leaving during that period. Sale returns are 50% of the purchase price, rounded down to nearest £0.5m.</p></section>
     {!loading && !data.error && <section className="panel budget-table"><div className="budget-head"><span>Manager</span><span>Team</span><span>Remaining budget</span></div>{data.budgets.map(manager => <div className="budget-row" key={manager.id}><strong>{manager.manager}</strong><span>{manager.team}</span><strong>{formatBudget(manager.budget)}</strong></div>)}</section>}
     {loading ? <section className="panel ownership-table"><p className="table-message">Loading ownership history…</p></section> : data.error ? <p className="form-error">{data.error}</p> : <>
       <section className="ownership-section-heading"><p className="eyebrow">Month by month</p><h2>Monthly transfers</h2></section>
