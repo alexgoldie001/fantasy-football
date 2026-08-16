@@ -2,6 +2,18 @@ import { NextRequest } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 
 export type Commissioner = { id: string; leagueId: string | null };
+export type LeagueMember = { id: string; leagueId: string | null };
+
+export async function leagueMemberFromRequest(request: NextRequest): Promise<LeagueMember | null> {
+  const token = request.headers.get('authorization')?.replace(/^Bearer\s+/i, '');
+  if (!token) return null;
+  const db = supabaseAdmin();
+  const { data: auth, error: authError } = await db.auth.getUser(token);
+  if (authError || !auth.user) return null;
+  const { data: profile, error } = await db.from('profiles').select('league_id').eq('id', auth.user.id).maybeSingle();
+  if (error || !profile) return null;
+  return { id: auth.user.id, leagueId: profile.league_id };
+}
 
 /** Verifies a real signed-in commissioner, never a browser-supplied shared code. */
 export async function commissionerFromRequest(request: NextRequest): Promise<Commissioner | null> {

@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "sync:fpl": "node scripts/refresh-fpl-players.mjs",
+    "sync:fpl-kits": "node scripts/refresh-fpl-kits.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
