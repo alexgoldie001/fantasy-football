@@ -63,9 +63,11 @@ export async function GET() {
       }
       for (const member of owned) if (!assigned.has(member.id)) {
         const player = playerDetails(member.fpl_id);
-        const joined = member.acquired_at >= period.start && member.acquired_at < period.end && !(period.key === '2026-08' && member.acquired_at === openingSquadStart);
+        const isOpeningSquadMember = period.key === '2026-08' && member.acquired_at === openingSquadStart;
+        const joined = member.acquired_at >= period.start && member.acquired_at < period.end && !isOpeningSquadMember;
         const left = Boolean(member.released_at && member.released_at >= period.start && member.released_at < period.end);
-        playerRows.push({ name:`${positionPrefix[player.position] || '—'} ${player.name}${joined && member.purchase_price > 0 ? ` £${(member.purchase_price / 10).toFixed(1)}m` : ''}`, position:player.position, changed:joined || left });
+        const showPurchasePrice = (joined || isOpeningSquadMember) && member.purchase_price > 0;
+        playerRows.push({ name:`${positionPrefix[player.position] || '—'} ${player.name}${showPurchasePrice ? ` £${(member.purchase_price / 10).toFixed(1)}m` : ''}`, position:player.position, changed:joined || left });
       }
       const hasStarted = Date.now() >= new Date(period.start).getTime();
       return { key:period.key, players:hasStarted ? playerRows.sort((a, b) => (positionOrder[a.position] || 9) - (positionOrder[b.position] || 9) || a.name.localeCompare(b.name)) : [], budget:budgetAtPeriodEnd(allMemberships, period) };
