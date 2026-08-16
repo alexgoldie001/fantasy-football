@@ -63,7 +63,7 @@ export async function GET() {
       }
       for (const member of owned) if (!assigned.has(member.id)) {
         const player = playerDetails(member.fpl_id);
-        const isOpeningSquadMember = period.key === '2026-08' && member.acquired_at === openingSquadStart;
+        const isOpeningSquadMember = period.key === '2026-08' && new Date(member.acquired_at).getTime() === new Date(openingSquadStart).getTime();
         const joined = member.acquired_at >= period.start && member.acquired_at < period.end && !isOpeningSquadMember;
         const left = Boolean(member.released_at && member.released_at >= period.start && member.released_at < period.end);
         const showPurchasePrice = (joined || isOpeningSquadMember) && member.purchase_price > 0;
