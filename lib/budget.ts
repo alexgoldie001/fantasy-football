@@ -24,7 +24,9 @@ export function remainingBudget(memberships:BudgetMembership[], at?:string) {
 }
 
 export function currentSeasonBudgetDate(now = new Date()) {
-  const seasonEnd = new Date(Date.parse('2025-08-12T05:00:00.000Z') + 42 * 7 * 24 * 60 * 60 * 1000).toISOString();
+  const seasonStart = '2026-08-01T00:00:00.000Z';
+  const seasonEnd = new Date(Date.parse('2026-08-18T00:01:00.000Z') + 42 * 7 * 24 * 60 * 60 * 1000).toISOString();
   const current = now.toISOString();
+  if (current < seasonStart) return seasonStart;
   return current < seasonEnd ? current : seasonEnd;
 }
