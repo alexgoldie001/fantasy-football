@@ -4,6 +4,7 @@ type ExplainStat={identifier:string;points:number;value:number};
 type Explain={fixture:number;stats:ExplainStat[]};
 type Fixture={id:number;event:number;kickoff_time:string;started:boolean;finished:boolean};
 type LiveElement={id:number;stats?:{starts?:number};explain?:Explain[]};
+const LEAGUE_SCORING_STATS=['minutes','starts','goals_scored','assists','red_cards','yellow_cards','penalties_missed','own_goals','saves','penalties_saved','clean_sheets','goals_conceded','tackles'] as const;
 export async function syncFixtureScores() {
   const fixturesResponse=await fetch('https://fantasy.premierleague.com/api/fixtures/',{headers:{'User-Agent':'BailsAndGoldiesFantasy/1.0'},cache:'no-store'});
   if(!fixturesResponse.ok)throw new Error('Unable to retrieve FPL fixtures.');
@@ -17,11 +18,17 @@ export async function syncFixtureScores() {
   for(const result of responses){if(!result)continue;for(const element of (result.live.elements||[]) as LiveElement[]){
     const activeExplains=(element.explain||[]).filter(explain=>fixtureMap.has(explain.fixture));
     for(const explain of activeExplains){const fixture=fixtureMap.get(explain.fixture);if(!fixture)continue;const stats=new Map((explain.stats||[]).map(stat=>[stat.identifier,stat]));
-      // FPL supplies starts on the player's live Gameweek total rather than in
-      // an individual fixture explanation. For the normal one-fixture week,
-      // attach it to that fixture so starters are never shown as substitutes.
-      const starts=activeExplains.length===1?Number(element.stats?.starts||0):0;
-      const fixtureStats=starts>0?[...(explain.stats||[]),{identifier:'starts',points:0,value:starts}]:explain.stats||[];
+      // FPL's fixture explanation only lists stats that affect FPL scoring.
+      // Our rules also use starts, tackles, every second save, goals conceded
+      // and partial clean sheets, so copy the live player totals for a normal
+      // one-fixture Gameweek into this fixture's saved record.
+      const fixtureStatsById=new Map((explain.stats||[]).map(stat=>[stat.identifier,stat]));
+      if(activeExplains.length===1) for(const identifier of LEAGUE_SCORING_STATS){
+        const value=Number((element.stats as Record<string, unknown> | undefined)?.[identifier]||0);
+        const existing=fixtureStatsById.get(identifier);
+        fixtureStatsById.set(identifier,{identifier,points:existing?.points||0,value});
+      }
+      const fixtureStats=[...fixtureStatsById.values()];
       const total=(explain.stats||[]).reduce((sum,stat)=>sum+Number(stat.points||0),0);const bonus=Number(stats.get('bonus')?.points||0);records.push({fpl_id:element.id,fixture_id:explain.fixture,gameweek:result.gameweek,kickoff_at:fixture.kickoff_time,points_excluding_bonus:total-bonus,goals:Number(stats.get('goals_scored')?.value||0),assists:Number(stats.get('assists')?.value||0),clean_sheets:Number(stats.get('clean_sheets')?.value||0),raw:{...explain,stats:fixtureStats},updated_at:new Date().toISOString()});
     }
   }
