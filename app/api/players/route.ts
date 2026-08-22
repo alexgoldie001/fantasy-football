@@ -25,8 +25,9 @@ export async function GET() {
       const sum = (key: string) => rows.reduce((total, row) => total + stat(row, key), 0);
       const starts = rows.filter(row => stat(row, 'starts') > 0).length;
       const substituteAppearances = rows.filter(row => stat(row, 'minutes') > 0 && stat(row, 'starts') === 0).length;
-      const fullCleanSheets = rows.filter(row => stat(row, 'clean_sheets') > 0 && stat(row, 'minutes') >= 60).length;
-      const partialCleanSheets = rows.filter(row => stat(row, 'clean_sheets') > 0 && stat(row, 'minutes') > 0 && stat(row, 'minutes') < 60).length;
+      const eligibleForCleanSheet = position === 'GK' || position === 'DEF';
+      const fullCleanSheets = eligibleForCleanSheet ? rows.filter(row => stat(row, 'clean_sheets') > 0 && stat(row, 'minutes') >= 60).length : 0;
+      const partialCleanSheets = eligibleForCleanSheet ? rows.filter(row => stat(row, 'clean_sheets') > 0 && stat(row, 'minutes') > 0 && stat(row, 'minutes') < 60).length : 0;
       return { id:player.fpl_id, name:player.web_name, team:player.team_name, position, price:player.current_price, owner:ownerByPlayer.get(player.fpl_id) || null, points:rows.reduce((total, row) => total + fixtureCustomScore(row, position), 0), starts, substituteAppearances, goals:sum('goals_scored'), assists:sum('assists'), fullCleanSheets, partialCleanSheets, saves:sum('saves'), goalsConceded:sum('goals_conceded'), tackles:sum('tackles'), yellowCards:sum('yellow_cards'), redCards:sum('red_cards'), penaltiesMissed:sum('penalties_missed'), penaltiesSaved:sum('penalties_saved'), ownGoals:sum('own_goals') };
     }) }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : 'Unable to load 2026/27 player scores.' }, { status: 500 }); }

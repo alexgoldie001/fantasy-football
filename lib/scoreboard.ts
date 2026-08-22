@@ -51,7 +51,7 @@ export async function scoreBoard(period:Period = 'season', key?:string) {
       row.points += Number(stat.points || 0);
       row.goals += Number(stat.goals || 0);
       row.assists += Number(stat.assists || 0);
-      row.cleanSheets += Number(stat.clean_sheets || 0);
+      if (stat.position === 'GK' || stat.position === 'DEF') row.cleanSheets += Number(stat.clean_sheets || 0);
       totals.set(squad.id, row);
     }
     if (includeEmpty) for (const squad of squads || []) if (!totals.has(squad.id)) totals.set(squad.id, emptyRow(squad, profileById));

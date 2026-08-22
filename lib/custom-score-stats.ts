@@ -64,7 +64,8 @@ export async function loadCustomScoreStats(playerIds?:number[]) {
     const player = playerById.get(fixture.fpl_id);
     if (!player) return [];
     const position = leaguePosition(player);
-    return [{ fpl_id:fixture.fpl_id, gameweek:fixture.gameweek, kickoff_at:fixture.kickoff_at, points:fixtureCustomScore(fixture, position), goals:Number(fixture.goals || 0), assists:Number(fixture.assists || 0), clean_sheets:Number(fixture.clean_sheets || 0), position }];
+    const eligibleForCleanSheet = position === 'GK' || position === 'DEF';
+    return [{ fpl_id:fixture.fpl_id, gameweek:fixture.gameweek, kickoff_at:fixture.kickoff_at, points:fixtureCustomScore(fixture, position), goals:Number(fixture.goals || 0), assists:Number(fixture.assists || 0), clean_sheets:eligibleForCleanSheet ? Number(fixture.clean_sheets || 0) : 0, position }];
   });
   const matchedPlayerIds = new Set((players || []).map(player => player.fpl_id));
   return { rows, matchedPlayerIds, matchedPositions:new Map((players || []).map(player => [player.fpl_id, leaguePosition(player as FplPlayer)])), unmatchedPlayers:[] };
