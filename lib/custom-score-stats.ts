@@ -1,5 +1,7 @@
-import { loadSeasonFixtureStats } from '@/lib/fixture-stats';
+import { fixtureCustomScore } from '@/lib/fixture-custom-score';
+import { loadCurrentSeasonFixtureStats } from '@/lib/fixture-stats';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { leaguePosition } from '@/lib/tff-position';
 
 export type CustomScoreStat = {
   fpl_id:number;
@@ -14,7 +16,9 @@ export type CustomScoreStat = {
 
 export type FplPlayer = { fpl_id:number; web_name:string; first_name:string|null; second_name:string|null; team_name:string; position:string };
 export type TffPlayer = { display_name:string; team_name:string; position:string; raw:Record<string, unknown> };
-const fallbackSeasonStart = Date.parse('2025-08-12T05:00:00.000Z');
+
+// Retained for the read-only 2025/26 archive endpoint. Current league scoring
+// below uses the live 2026/27 FPL fixture feed instead.
 const normalize = (value:string) => value.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/ı/g, 'i').toLowerCase().replace(/[^a-z0-9]/g, '');
 const tokens = (value:string) => value.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/ı/g, 'i').toLowerCase().split(/[^a-z0-9]+/).filter(token => token.length > 1);
 const normalizeTeam = (value:string) => normalize(value.replace('Manchester', 'Man').replace('United', 'Utd').replace('Nottingham Forest', 'Nottm Forest').replace('Tottenham Hotspur', 'Spurs'));
@@ -30,7 +34,6 @@ export function matchTffPlayer(player:FplPlayer, tffPlayers:TffPlayer[]) {
   }
   const exact = tffPlayers.find(candidate => normalize(candidate.display_name) === full);
   if (exact) return exact;
-
   const fullTokens = tokens(fullName);
   const ranked = tffPlayers.map(candidate => {
     const candidateTokens = tokens(candidate.display_name);
@@ -38,7 +41,6 @@ export function matchTffPlayer(player:FplPlayer, tffPlayers:TffPlayer[]) {
     return { candidate, overlap, score:overlap / Math.min(fullTokens.length || 1, candidateTokens.length || 1) };
   }).sort((left, right) => right.score - left.score || right.overlap - left.overlap);
   if (ranked[0] && ranked[0].overlap >= 2 && ranked[0].score >= 0.75 && (!ranked[1] || ranked[0].score > ranked[1].score || ranked[0].overlap > ranked[1].overlap)) return ranked[0].candidate;
-
   const exactWeb = tffPlayers.filter(candidate => normalize(candidate.display_name) === web);
   if (exactWeb.length === 1) return exactWeb[0];
   const teamMatches = tffPlayers.filter(candidate => normalizeTeam(candidate.team_name) === team && (normalize(candidate.display_name).endsWith(web) || normalize(candidate.display_name).includes(web)));
@@ -47,45 +49,23 @@ export function matchTffPlayer(player:FplPlayer, tffPlayers:TffPlayer[]) {
   const surnameMatches = tffPlayers.filter(candidate => tokens(candidate.display_name).includes(surname));
   return surnameMatches.length === 1 ? surnameMatches[0] : null;
 }
+
 export async function loadCustomScoreStats(playerIds?:number[]) {
   const db = supabaseAdmin();
-  let playersQuery = db.from('fpl_players').select('fpl_id,web_name,first_name,second_name,team_name,position');
+  let playersQuery = db.from('fpl_players_2026_27').select('fpl_id,web_name,first_name,second_name,team_name,position').eq('season', '2026/27');
   if (playerIds?.length) playersQuery = playersQuery.in('fpl_id', playerIds);
-  const [{ data:players, error:playersError }, { data:tffPlayers, error:tffError }] = await Promise.all([
-    playersQuery,
-    db.from('tff_players').select('display_name,team_name,position,raw').eq('season', '2025/26'),
-  ]);
+  const { data:players, error:playersError } = await playersQuery;
   if (playersError) throw playersError;
-  if (tffError) throw tffError;
 
   const ids = (players || []).map(player => player.fpl_id);
-  const fixtures = await loadSeasonFixtureStats(ids);
-  const fixtureWeeks = new Map<string, { kickoff_at:string; goals:number; assists:number; clean_sheets:number }>();
-  for (const fixture of fixtures) {
-    const key = `${fixture.fpl_id}:${fixture.gameweek}`;
-    const current = fixtureWeeks.get(key) || { kickoff_at:fixture.kickoff_at, goals:0, assists:0, clean_sheets:0 };
-    if (fixture.kickoff_at < current.kickoff_at) current.kickoff_at = fixture.kickoff_at;
-    current.goals += Number(fixture.goals || 0);
-    current.assists += Number(fixture.assists || 0);
-    current.clean_sheets += Number(fixture.clean_sheets || 0);
-    fixtureWeeks.set(key, current);
-  }
-
-  const rows:CustomScoreStat[] = [];
-  const matched = new Map<number, TffPlayer>();
-  for (const player of (players || []) as FplPlayer[]) {
-    const source = matchTffPlayer(player, (tffPlayers || []) as TffPlayer[]);
-    if (!source) continue;
-    matched.set(player.fpl_id, source);
-    const roundScores = source.raw?.round_scores && typeof source.raw.round_scores === 'object' && !Array.isArray(source.raw.round_scores) ? source.raw.round_scores as Record<string, unknown> : {};
-    for (const [round, score] of Object.entries(roundScores)) {
-      const gameweek = Number(round);
-      if (!Number.isInteger(gameweek) || gameweek < 1 || gameweek > 38) continue;
-      const fixture = fixtureWeeks.get(`${player.fpl_id}:${gameweek}`);
-      const points = Number(score || 0);
-      const cleanSheets = (source.position === 'GK' || source.position === 'DEF') && points > 0 ? fixture?.clean_sheets || 0 : 0;
-      rows.push({ fpl_id:player.fpl_id, gameweek, kickoff_at:fixture?.kickoff_at || new Date(fallbackSeasonStart + (gameweek - 1) * 604800000).toISOString(), points, goals:fixture?.goals || 0, assists:fixture?.assists || 0, clean_sheets:cleanSheets, position:source.position });
-    }
-  }
-  return { rows, matchedPlayerIds:new Set(matched.keys()), matchedPositions:new Map([...matched].map(([fplId, player]) => [fplId, player.position])), unmatchedPlayers:((players || []) as FplPlayer[]).filter(player => !matched.has(player.fpl_id)).map(player => ({ fplId:player.fpl_id, name:player.web_name, team:player.team_name })) };
+  const fixtures = await loadCurrentSeasonFixtureStats(ids);
+  const playerById = new Map((players || []).map(player => [player.fpl_id, player as FplPlayer]));
+  const rows:CustomScoreStat[] = fixtures.flatMap(fixture => {
+    const player = playerById.get(fixture.fpl_id);
+    if (!player) return [];
+    const position = leaguePosition(player);
+    return [{ fpl_id:fixture.fpl_id, gameweek:fixture.gameweek, kickoff_at:fixture.kickoff_at, points:fixtureCustomScore(fixture, position), goals:Number(fixture.goals || 0), assists:Number(fixture.assists || 0), clean_sheets:Number(fixture.clean_sheets || 0), position }];
+  });
+  const matchedPlayerIds = new Set((players || []).map(player => player.fpl_id));
+  return { rows, matchedPlayerIds, matchedPositions:new Map((players || []).map(player => [player.fpl_id, leaguePosition(player as FplPlayer)])), unmatchedPlayers:[] };
 }
