@@ -1,4 +1,5 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { applyFixtureStatOverridesToRow } from '@/lib/fpl-stat-overrides';
 
 export type FixtureStat = {
   fixture_id: number;
@@ -60,7 +61,8 @@ async function loadFixtureStats(playerIds: number[], start: string, end: string)
   const fixtures = new Map<string, FixtureStat>();
   for (const page of pages) {
     if (page.error) throw page.error;
-    for (const stat of (page.data || []) as FixtureStat[]) {
+    for (const rawStat of (page.data || []) as FixtureStat[]) {
+      const stat = applyFixtureStatOverridesToRow(rawStat);
       fixtures.set(`${stat.fpl_id}:${stat.fixture_id}`, stat);
     }
   }

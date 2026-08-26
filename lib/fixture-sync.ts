@@ -1,4 +1,5 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { applyFixtureStatOverrides } from '@/lib/fpl-stat-overrides';
 
 type ExplainStat={identifier:string;points:number;value:number};
 type Explain={fixture:number;stats:ExplainStat[]};
@@ -43,6 +44,9 @@ export async function syncFixtureScores() {
         const existing=fixtureStatsById.get('clean_sheets');
         fixtureStatsById.set('clean_sheets',{identifier:'clean_sheets',points:existing?.points||0,value:1});
       }
+      // Re-apply any commissioner-approved corrections after FPL's latest
+      // values have been merged, so a future refresh cannot erase them.
+      applyFixtureStatOverrides(element.id, explain.fixture, fixtureStatsById);
       const fixtureStats=[...fixtureStatsById.values()];
       const total=(explain.stats||[]).reduce((sum,stat)=>sum+Number(stat.points||0),0);const bonus=Number(stats.get('bonus')?.points||0);records.push({fpl_id:element.id,fixture_id:explain.fixture,gameweek:result.gameweek,kickoff_at:fixture.kickoff_time,points_excluding_bonus:total-bonus,goals:Number(stats.get('goals_scored')?.value||0),assists:Number(stats.get('assists')?.value||0),clean_sheets:Number(fixtureStatsById.get('clean_sheets')?.value||0),raw:{...explain,stats:fixtureStats},updated_at:new Date().toISOString()});
     }
