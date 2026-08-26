@@ -1,4 +1,4 @@
-type StatValue = { identifier: string; points?: number; value: number };
+type StatValue = { identifier?: string; points?: number; value?: number };
 
 /**
  * Corrections where the league has deliberately chosen a result that differs
@@ -21,7 +21,8 @@ export function applyFixtureStatOverrides(fplId: number, fixtureId: number, stat
 }
 
 export function applyFixtureStatOverridesToRow<T extends { fpl_id: number; fixture_id: number; raw?: { stats?: StatValue[] } | null }>(row: T): T {
-  const stats = new Map((row.raw?.stats || []).map(stat => [stat.identifier, stat]));
+  const stats = new Map<string, StatValue>();
+  for (const stat of row.raw?.stats || []) if (stat.identifier) stats.set(stat.identifier, stat);
   applyFixtureStatOverrides(row.fpl_id, row.fixture_id, stats);
-  return { ...row, raw: { ...row.raw, stats: [...stats.values()] } };
+  return { ...row, raw: { ...row.raw, stats: [...stats.values()] } } as T;
 }
