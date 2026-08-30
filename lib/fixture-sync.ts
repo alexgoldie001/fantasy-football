@@ -13,8 +13,7 @@ export async function syncFixtureScores() {
   ]);
   if(!fixturesResponse.ok)throw new Error('Unable to retrieve FPL fixtures.');
   if(!bootstrapResponse.ok)throw new Error('Unable to retrieve FPL players.');
-  const [fixtures,bootstrap]=await Promise.all([fixturesResponse.json() as Promise<Fixture[]>,bootstrapResponse.json() as Promise<{elements?:Array<{id:number;team:number}>}>]);
-  const playerTeams=new Map((bootstrap.elements||[]).map(player=>[player.id,player.team]));
+  const [fixtures]=await Promise.all([fixturesResponse.json() as Promise<Fixture[]>,bootstrapResponse.json()]);
   const { data:leaguePlayers, error:leaguePlayersError }=await supabaseAdmin().from('fpl_players_2026_27').select('fpl_id,position').eq('season','2026/27');
   if(leaguePlayersError)throw leaguePlayersError;
   const leaguePositions=new Map((leaguePlayers||[]).map(player=>[player.fpl_id,player.position]));
@@ -37,10 +36,12 @@ export async function syncFixtureScores() {
         const existing=fixtureStatsById.get(identifier);
         fixtureStatsById.set(identifier,{identifier,points:existing?.points||0,value});
       }
-      const playerTeam=playerTeams.get(element.id);
-      const oppositionGoals=playerTeam===fixture.team_h ? Number(fixture.team_a_score||0) : playerTeam===fixture.team_a ? Number(fixture.team_h_score||0) : null;
       const cleanSheetEligible=leaguePositions.get(element.id)==='GK'||leaguePositions.get(element.id)==='DEF';
-      if(activeExplains.length===1 && cleanSheetEligible && Number(element.stats?.minutes||0)>0 && oppositionGoals===0){
+      // A keeper or defender locks in a clean sheet once they leave the pitch
+      // having conceded none themselves. FPL's goals_conceded stat measures
+      // goals while that player was playing, unlike the final team score.
+      const playerGoalsConceded=Number(fixtureStatsById.get('goals_conceded')?.value||0);
+      if(activeExplains.length===1 && cleanSheetEligible && Number(element.stats?.minutes||0)>0 && playerGoalsConceded===0){
         const existing=fixtureStatsById.get('clean_sheets');
         fixtureStatsById.set('clean_sheets',{identifier:'clean_sheets',points:existing?.points||0,value:1});
       }
