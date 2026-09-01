@@ -11,11 +11,20 @@ const positionOrder:Record<string, number> = { GK:1, DEF:2, MID:3, FWD:4 };
 type Period = { key:string; label:string; start:string; end:string };
 const weeks:Period[] = Array.from({ length:42 }, (_, index) => { const start = new Date(Date.parse('2026-08-18T00:01:00.000Z') + index * 7 * 86400000); const end = new Date(start.getTime() + 7 * 86400000); return { key:String(index + 1), label:`Week ${index + 1} · ${start.toLocaleDateString('en-GB', { day:'numeric', month:'short', timeZone:'Europe/London' })} – ${new Date(end.getTime() - 1).toLocaleDateString('en-GB', { day:'numeric', month:'short', timeZone:'Europe/London' })}`, start:start.toISOString(), end:end.toISOString() }; });
 const months:Period[] = ['Aug','Sept','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May'].map((label, index) => { const year = index < 5 ? 2026 : 2027; const month = index < 5 ? index + 7 : index - 5; const start = new Date(Date.UTC(year, month, 1)); const end = new Date(Date.UTC(year, month + 1, 1)); return { key:`${year}-${String(month + 1).padStart(2, '0')}`, label:`${label} ${year}`, start:start.toISOString(), end:end.toISOString() }; });
+const currentPeriod = (periods:Period[]) => {
+  const now = Date.now();
+  return periods.find(period => now >= Date.parse(period.start) && now < Date.parse(period.end))
+    || (now < Date.parse(periods[0].start) ? periods[0] : periods[periods.length - 1]);
+};
 
 export async function GET(request:NextRequest, { params }:{ params:Promise<{ slug:string }> }) {
   const { slug } = await params;
-  const selectedWeek = weeks.find(period => period.key === (request.nextUrl.searchParams.get('week') || ''));
+  const seasonSelected = request.nextUrl.searchParams.get('period') === 'season';
   const selectedMonth = months.find(period => period.key === (request.nextUrl.searchParams.get('month') || ''));
+  const requestedWeek = weeks.find(period => period.key === (request.nextUrl.searchParams.get('week') || ''));
+  // A team opens on the week containing today. Season scoring is an explicit choice,
+  // while a selected month continues to take precedence for the monthly card.
+  const selectedWeek = seasonSelected || selectedMonth ? undefined : (requestedWeek || currentPeriod(weeks));
   const selectedPeriod = selectedWeek || selectedMonth;
   try {
     const db = supabaseAdmin();
@@ -58,6 +67,6 @@ export async function GET(request:NextRequest, { params }:{ params:Promise<{ slu
       return { fplId:orderedGroup[orderedGroup.length - 1]?.fpl_id || null, name:records.map(player => player?.web_name || 'Unknown player').join(' / '), teamId:incoming?.team_id || null, team:records.map(player => player?.team_name || '—').join(' / '), position:incoming?.position || 'MID', points:points.length > 1 ? points.join(' / ') : points[0] || 0, totalPoints:points.reduce((total, value) => total + value, 0), price:orderedGroup.map(row => row.purchase_price).join(' / ') };
     }).sort((a,b) => positionOrder[a.position] - positionOrder[b.position] || a.name.localeCompare(b.name));
     const budget = remainingBudget(memberships || [], currentSeasonBudgetDate());
-    return NextResponse.json({ name:squad.name, manager:profile.display_name, budget, teamPoints, seasonPoints, players, weeks:weeks.map(({ key,label }) => ({ key,label })), months:months.map(({ key,label }) => ({ key,label })), selectedWeek:selectedWeek?.key || '', selectedMonth:selectedMonth?.key || '', pointsLabel:selectedPeriod?.label || 'Season points' }, { headers:{ 'Cache-Control':'no-store' } });
+    return NextResponse.json({ name:squad.name, manager:profile.display_name, budget, teamPoints, seasonPoints, players, weeks:weeks.map(({ key,label }) => ({ key,label })), months:months.map(({ key,label }) => ({ key,label })), selectedWeek:selectedWeek?.key || '', selectedMonth:selectedMonth?.key || '', pointsLabel:selectedPeriod?.label || 'Season score' }, { headers:{ 'Cache-Control':'no-store' } });
   } catch (error) { return NextResponse.json({ error:error instanceof Error ? error.message : 'Unable to load team.' }, { status:500 }); }
 }
