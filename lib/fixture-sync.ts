@@ -49,9 +49,9 @@ export async function syncFixtureScores() {
       const playerGoalsConceded=Number(fixtureStatsById.get('goals_conceded')?.value||0);
       const fullCleanSheet=minutes>=60 && playerGoalsConceded===0 && (started || teamGoalsConceded===0);
       const partCleanSheet=minutes>0 && minutes<60 && teamGoalsConceded===0;
-      if(activeExplains.length===1 && cleanSheetEligible && (fullCleanSheet || partCleanSheet)){
+      if(activeExplains.length===1){
         const existing=fixtureStatsById.get('clean_sheets');
-        fixtureStatsById.set('clean_sheets',{identifier:'clean_sheets',points:existing?.points||0,value:1});
+        fixtureStatsById.set('clean_sheets',{identifier:'clean_sheets',points:existing?.points||0,value:cleanSheetEligible && (fullCleanSheet || partCleanSheet) ? 1 : 0});
       }
       // Re-apply any commissioner-approved corrections after FPL's latest
       // values have been merged, so a future refresh cannot erase them.
