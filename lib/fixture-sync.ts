@@ -13,7 +13,8 @@ export async function syncFixtureScores() {
   ]);
   if(!fixturesResponse.ok)throw new Error('Unable to retrieve FPL fixtures.');
   if(!bootstrapResponse.ok)throw new Error('Unable to retrieve FPL players.');
-  const [fixtures]=await Promise.all([fixturesResponse.json() as Promise<Fixture[]>,bootstrapResponse.json()]);
+  const [fixtures,bootstrap]=await Promise.all([fixturesResponse.json() as Promise<Fixture[]>,bootstrapResponse.json() as Promise<{elements?:Array<{id:number;team:number}>}>]);
+  const playerTeams=new Map((bootstrap.elements||[]).map(player=>[player.id,player.team]));
   const { data:leaguePlayers, error:leaguePlayersError }=await supabaseAdmin().from('fpl_players_2026_27').select('fpl_id,position').eq('season','2026/27');
   if(leaguePlayersError)throw leaguePlayersError;
   const leaguePositions=new Map((leaguePlayers||[]).map(player=>[player.fpl_id,player.position]));
@@ -37,11 +38,18 @@ export async function syncFixtureScores() {
         fixtureStatsById.set(identifier,{identifier,points:existing?.points||0,value});
       }
       const cleanSheetEligible=leaguePositions.get(element.id)==='GK'||leaguePositions.get(element.id)==='DEF';
-      // A keeper or defender locks in a clean sheet once they leave the pitch
-      // having conceded none themselves. FPL's goals_conceded stat measures
-      // goals while that player was playing, unlike the final team score.
+      // A starter can lock a clean sheet after 60 minutes if no goal was
+      // conceded while they were playing. A substitute needs the whole team
+      // match to be clean, preventing a late entrant claiming a clean sheet
+      // after a goal had already been conceded.
+      const playerTeam=playerTeams.get(element.id);
+      const teamGoalsConceded=playerTeam===fixture.team_h ? Number(fixture.team_a_score||0) : playerTeam===fixture.team_a ? Number(fixture.team_h_score||0) : null;
+      const minutes=Number(fixtureStatsById.get('minutes')?.value||0);
+      const started=Number(fixtureStatsById.get('starts')?.value||0)>0;
       const playerGoalsConceded=Number(fixtureStatsById.get('goals_conceded')?.value||0);
-      if(activeExplains.length===1 && cleanSheetEligible && Number(element.stats?.minutes||0)>0 && playerGoalsConceded===0){
+      const fullCleanSheet=minutes>=60 && playerGoalsConceded===0 && (started || teamGoalsConceded===0);
+      const partCleanSheet=minutes>0 && minutes<60 && teamGoalsConceded===0;
+      if(activeExplains.length===1 && cleanSheetEligible && (fullCleanSheet || partCleanSheet)){
         const existing=fixtureStatsById.get('clean_sheets');
         fixtureStatsById.set('clean_sheets',{identifier:'clean_sheets',points:existing?.points||0,value:1});
       }
