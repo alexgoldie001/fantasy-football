@@ -1,5 +1,6 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { applyFixtureStatOverrides } from '@/lib/fpl-stat-overrides';
+import { leaguePosition } from '@/lib/tff-position';
 
 type ExplainStat={identifier:string;points:number;value:number};
 type Explain={fixture:number;stats:ExplainStat[]};
@@ -15,9 +16,11 @@ export async function syncFixtureScores() {
   if(!bootstrapResponse.ok)throw new Error('Unable to retrieve FPL players.');
   const [fixtures,bootstrap]=await Promise.all([fixturesResponse.json() as Promise<Fixture[]>,bootstrapResponse.json() as Promise<{elements?:Array<{id:number;team:number}>}>]);
   const playerTeams=new Map((bootstrap.elements||[]).map(player=>[player.id,player.team]));
-  const { data:leaguePlayers, error:leaguePlayersError }=await supabaseAdmin().from('fpl_players_2026_27').select('fpl_id,position').eq('season','2026/27');
+  const { data:leaguePlayers, error:leaguePlayersError }=await supabaseAdmin().from('fpl_players_2026_27').select('fpl_id,position,web_name,first_name,second_name,team_name').eq('season','2026/27');
   if(leaguePlayersError)throw leaguePlayersError;
-  const leaguePositions=new Map((leaguePlayers||[]).map(player=>[player.fpl_id,player.position]));
+  // Scoring eligibility must use the same Telegraph position shown in the UI.
+  // FPL's role can differ (for example Lewis-Skelly is MID in FPL, DEF in TFF).
+  const leaguePositions=new Map((leaguePlayers||[]).map(player=>[player.fpl_id,leaguePosition(player)]));
   // FPL's event/live feed contains provisional player scores while a match is
   // underway. Keep those rows, then overwrite them with the final figures on
   // the next refresh after FPL marks the fixture as finished.
