@@ -38,6 +38,10 @@ export async function syncFixtureScores() {
         fixtureStatsById.set(identifier,{identifier,points:existing?.points||0,value});
       }
       const cleanSheetEligible=leaguePositions.get(element.id)==='GK'||leaguePositions.get(element.id)==='DEF';
+      // Keep the official fixture-level award as a floor. FPL can finalise a
+      // clean sheet after a live refresh has already written an earlier row;
+      // our additional rules must never erase a clean sheet that FPL awards.
+      const officialFplCleanSheet=Number(fixtureStatsById.get('clean_sheets')?.value||0)>0;
       // A starter can lock a clean sheet after 60 minutes if no goal was
       // conceded while they were playing. A substitute needs the whole team
       // match to be clean, preventing a late entrant claiming a clean sheet
@@ -49,9 +53,10 @@ export async function syncFixtureScores() {
       const playerGoalsConceded=Number(fixtureStatsById.get('goals_conceded')?.value||0);
       const fullCleanSheet=minutes>=60 && playerGoalsConceded===0 && (started || teamGoalsConceded===0);
       const partCleanSheet=minutes>0 && minutes<60 && teamGoalsConceded===0;
-      if(activeExplains.length===1){
+      const customCleanSheet=activeExplains.length===1 && (fullCleanSheet || partCleanSheet);
+      if(activeExplains.length===1 || officialFplCleanSheet){
         const existing=fixtureStatsById.get('clean_sheets');
-        fixtureStatsById.set('clean_sheets',{identifier:'clean_sheets',points:existing?.points||0,value:cleanSheetEligible && (fullCleanSheet || partCleanSheet) ? 1 : 0});
+        fixtureStatsById.set('clean_sheets',{identifier:'clean_sheets',points:existing?.points||0,value:cleanSheetEligible && (officialFplCleanSheet || customCleanSheet) ? 1 : 0});
       }
       // Re-apply any commissioner-approved corrections after FPL's latest
       // values have been merged, so a future refresh cannot erase them.
